@@ -1,6 +1,5 @@
 package com.twoup.personalfinance.di
 
-import com.twoup.personalfinance.viewmodel.ApplicationViewModel
 import com.russhwolf.settings.AppleSettings
 import com.russhwolf.settings.ExperimentalSettingsApi
 import com.russhwolf.settings.ObservableSettings

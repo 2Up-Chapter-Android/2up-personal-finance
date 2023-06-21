@@ -2,8 +2,18 @@ plugins {
     kotlin("multiplatform")
     id("com.android.library")
     id("kotlinx-serialization")
-    id("com.google.devtools.ksp") version "1.8.0-1.0.9"
+    id("com.google.devtools.ksp") version "1.8.20-1.0.11"
     id("de.jensklingenberg.ktorfit") version "1.0.0"
+}
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+    kotlinOptions.jvmTarget = "1.8"
+}
+
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(17))
+    }
 }
 
 kotlin {
@@ -25,22 +35,15 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation(project(":data:model"))
-                implementation(libs.kotlinx.serialization.core)
+                implementation(libs.kotlinx.serialization.json)
                 implementation(libs.ktorfit)
                 implementation(libs.kotlinx.coroutines.core)
-//                implementation(libs.ktor.client.core)
-                implementation(libs.ktor.client.serialization)
+                implementation(libs.ktor.core)
                 implementation(libs.ktor.client.content.negotiation)
                 implementation(libs.ktor.serialization.kotlinx.json)
-                implementation(libs.ktor.client.logging)
-//                implementation(libs.ktor.client.cio)
-                implementation(libs.kotlinx.datetime)
+                implementation(libs.ktor.logging)
                 implementation(libs.napier)
-                implementation(libs.multiplatformSettings.core)
-                implementation(libs.multiplatformSettings.noarg)
-                implementation(libs.multiplatformSettings.coroutines)
                 implementation(libs.koin.core)
-                implementation(libs.stately.common)
             }
         }
         val commonTest by getting {
@@ -93,13 +96,11 @@ android {
     }
 }
 
-
-val ktorfitVersion = "1.0.0"
 dependencies {
-    add("kspCommonMainMetadata", "de.jensklingenberg.ktorfit:ktorfit-ksp:$ktorfitVersion")
-    add("kspDesktop", "de.jensklingenberg.ktorfit:ktorfit-ksp:$ktorfitVersion")
-    add("kspAndroid", "de.jensklingenberg.ktorfit:ktorfit-ksp:$ktorfitVersion")
-    add("kspIosX64", "de.jensklingenberg.ktorfit:ktorfit-ksp:$ktorfitVersion")
-//    add("kspJs", "de.jensklingenberg.ktorfit:ktorfit-ksp:$ktorfitVersion")
-    add("kspIosSimulatorArm64", "de.jensklingenberg.ktorfit:ktorfit-ksp:$ktorfitVersion")
+    add("kspCommonMainMetadata", libs.ktorfit.ksp)
+    add("kspDesktop", libs.ktorfit.ksp)
+    add("kspAndroid", libs.ktorfit.ksp)
+    add("kspIosX64", libs.ktorfit.ksp)
+//    add("kspJs", libs.ktorfit.ksp)
+    add("kspIosSimulatorArm64", libs.ktorfit.ksp)
 }

@@ -5,6 +5,10 @@ plugins {
     id("dev.icerock.mobile.multiplatform-resources")
 }
 
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+    kotlinOptions.jvmTarget = "1.8"
+}
+
 kotlin {
     android()
 
@@ -26,8 +30,7 @@ kotlin {
                 implementation(compose.runtime)
                 implementation(compose.foundation)
                 implementation(compose.material)
-                api(libs.moko.resources)
-                api(libs.moko.resources.compose)
+                api(libs.moko.compose.resource)
             }
         }
         val commonTest by getting {

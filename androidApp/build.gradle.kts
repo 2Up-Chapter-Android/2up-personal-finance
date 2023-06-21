@@ -1,45 +1,48 @@
 plugins {
-    kotlin("multiplatform")
     id("com.android.application")
-    id("org.jetbrains.compose")
-//    id("org.jetbrains.kotlin.android") version ("1.8.0")
-}
-
-kotlin {
-    android()
-    sourceSets {
-        val androidMain by getting {
-            dependencies {
-                implementation(project(":shared"))
-//                implementation(project(":share-ui"))
-//                implementation(libs.hyperdrive.multiplatformx.api)
-                implementation(compose.ui)
-                implementation(compose.foundation)
-                implementation(compose.material)
-                implementation(compose.runtime)
-//                implementation("androidx.activity:activity-compose:1.6.1")
-//                implementation(libs.koin.core)
-                implementation(libs.koin.android)
-                implementation(libs.koin.androidx.compose)
-//                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.0")
-
-            }
-        }
-    }
+    kotlin("android")
 }
 
 android {
     namespace = "com.twoup.personalfinance.android"
-    compileSdk = 33
+    val androidMinSdk: String by project
+    val androidCompileSdk: String by project
+    val androidTargetSdk: String by project
+    compileSdk = androidCompileSdk.toInt()
     defaultConfig {
         applicationId = "com.twoup.personalfinance"
-        minSdk = 26
-        targetSdk = 33
+        minSdk = androidMinSdk.toInt()
+        targetSdk = androidTargetSdk.toInt()
         versionCode = 1
         versionName = "1.0"
     }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+    buildFeatures {
+        compose = true
     }
+    composeOptions {
+        kotlinCompilerExtensionVersion = libs.versions.androidx.compose.compiler.get()
+    }
+    buildTypes {
+        getByName("release") {
+            isMinifyEnabled = false
+        }
+    }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+}
+
+dependencies {
+    implementation(project(":shared"))
+    implementation(libs.bundles.jetpack.compose)
+    //Coroutines
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.kotlinx.coroutines.android)
+    //DI
+    implementation(libs.koin.core)
+    implementation(libs.koin.android)
+    //Navigation
+    implementation(libs.voyager.navigator)
+    implementation(libs.hawk)
 }
