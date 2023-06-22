@@ -95,6 +95,7 @@ kotlin {
             iosArm64Main.dependsOn(this)
             iosSimulatorArm64Main.dependsOn(this)
             dependencies {
+                implementation(compose.ui)
             }
         }
 
