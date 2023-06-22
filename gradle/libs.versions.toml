@@ -38,6 +38,7 @@ plugin-resource-generator = { module = "dev.icerock.moko:resources-generator", v
 plugin-sqldelight = { module = "com.squareup.sqldelight:gradle-plugin", version.ref = "sqldelight"}
 
 moko-compose-resource = { module = "dev.icerock.moko:resources-compose", version.ref = "mobile-kotlin-resource"}
+moko-resources = { module = "dev.icerock.moko:resources", version.ref = "mobile-kotlin-resource" }
 
 androidx-compose-ui = { module = "androidx.compose.ui:ui", version.ref = "androidx-compose-ui" }
 androidx-compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "androidx-compose-ui" }

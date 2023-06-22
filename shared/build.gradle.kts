@@ -33,7 +33,7 @@ kotlin {
         framework {
             baseName = "shared"
             isStatic = false
-            export(libs.moko.compose.resource)
+            export(libs.moko.resources)
             export(project(":common:resources"))
         }
         extraSpecAttributes["resources"] = "['src/commonMain/resources/**', 'src/iosMain/resources/**']"
