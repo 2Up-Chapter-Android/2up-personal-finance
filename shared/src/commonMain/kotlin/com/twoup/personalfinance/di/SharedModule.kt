@@ -1,30 +1,22 @@
 package com.twoup.personalfinance.di
 
 import com.twoup.personalfinance.domain.di.domainModule
-import com.twoup.personalfinance.local.di.databaseModule
-import com.twoup.personalfinance.local.di.localModule
-import com.twoup.personalfinance.remote.di.remoteModule
-import org.koin.core.KoinApplication
 import org.koin.core.context.startKoin
 import org.koin.dsl.KoinAppDeclaration
-import org.koin.dsl.module
 
 fun initKoin(enableNetworkLogs: Boolean = true, appDeclaration: KoinAppDeclaration = {}) =
     startKoin {
         appDeclaration()
         modules(
-            databaseModule(),
-            localModule(),
-            remoteModule("https://swapi.dev/api/", enableNetworkLogs),
+            dataModule("https://2up-finance-service.site/api/v1/", enableNetworkLogs),
             domainModule(),
-            sharedModule,
+//            sharedModule,
         )
     }
 
 // called by iOS etc
 // fun initKoin() = initKoin(enableNetworkLogs = false) {}
 
-val sharedModule = module {
-}
-
-fun KoinApplication.Companion.start(): KoinApplication = initKoin { }
+//val sharedModule = module {
+//
+//}

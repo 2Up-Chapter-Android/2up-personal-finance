@@ -5,19 +5,14 @@ import com.twoup.personalfinance.di.initKoin
 import org.koin.android.BuildConfig
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
-import org.koin.core.KoinApplication
 import org.koin.core.logger.Level
 
 class PersonalFinanceApplication : Application() {
-    lateinit var koin: KoinApplication
-
     override fun onCreate() {
         super.onCreate()
-//        val appModules = listOf()
-        koin = initKoin {
+        initKoin {
             androidLogger(level = if (BuildConfig.DEBUG) Level.ERROR else Level.NONE)
             androidContext(androidContext = this@PersonalFinanceApplication)
-//            modules(appModules)
         }
     }
 }

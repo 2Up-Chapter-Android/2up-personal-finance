@@ -1,5 +1,3 @@
-@file:Suppress("OPT_IN_IS_NOT_ENABLED")
-
 plugins {
     kotlin("multiplatform")
     kotlin("native.cocoapods")
@@ -53,9 +51,8 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation(project(":data:local"))
-                implementation(project(":data:remote"))
                 implementation(project(":domain"))
+                implementation(project(":data"))
                 api(project(":common:resources"))
 
                 implementation(compose.runtime)
