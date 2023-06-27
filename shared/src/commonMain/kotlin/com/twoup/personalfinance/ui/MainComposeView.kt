@@ -5,8 +5,10 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import cafe.adriel.voyager.navigator.tab.Tab
+import com.twoup.personalfinance.authentication.presentation.ui.login.LoginScreen
 import com.twoup.personalfinance.resources.LightColorPalette
 
 @Composable
@@ -55,7 +57,7 @@ internal fun Content() {
 //        )
 //    }
     Scaffold {
-        Text("Hello")
+        Navigator(LoginScreen())
     }
 }
 

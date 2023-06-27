@@ -53,6 +53,7 @@ kotlin {
             dependencies {
                 implementation(project(":domain"))
                 implementation(project(":data"))
+                implementation(project(":features:authentication"))
                 api(project(":common:resources"))
 
                 implementation(compose.runtime)
