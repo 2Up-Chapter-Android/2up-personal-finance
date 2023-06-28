@@ -1,5 +1,3 @@
-@file:Suppress("OPT_IN_IS_NOT_ENABLED")
-
 plugins {
     kotlin("multiplatform")
     kotlin("native.cocoapods")
@@ -10,16 +8,6 @@ plugins {
 }
 
 version = "1.0-SNAPSHOT"
-
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-    kotlinOptions.jvmTarget = "1.8"
-}
-
-java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(11))
-    }
-}
 
 kotlin {
     android {
@@ -63,12 +51,9 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation(project(":data:local"))
-                implementation(project(":data:remote"))
                 implementation(project(":domain"))
-                implementation(project(":features:people"))
+                implementation(project(":data"))
                 api(project(":common:resources"))
-                implementation(project(":core:pin"))
 
                 implementation(compose.runtime)
                 implementation(compose.foundation)
@@ -79,35 +64,23 @@ kotlin {
 
 
                 api(libs.kotlinx.coroutines.core)
-                api(libs.kotlinx.datetime)
-                api(libs.multiplatformSettings.core)
 
-                implementation(libs.stately.common)
                 implementation(libs.koin.core)
 
                 implementation(compose.ui)
                 implementation(compose.runtime)
 
-                implementation(libs.hyperdrive.multiplatformx.api)
-
-                implementation(libs.voyager.core)
                 implementation(libs.voyager.navigator)
-                implementation(libs.voyager.bottomSheetNavigator)
-                implementation(libs.voyager.tabNavigator)
-                implementation(libs.voyager.transitions)
                 implementation(libs.voyager.koin)
+                implementation(libs.voyager.navigator.tab)
 
-                api(libs.moko.resources)
-                api(libs.moko.resources.compose)
+                api(libs.moko.compose.resource)
             }
         }
         val androidMain by getting {
             kotlin.srcDirs("src/jvmMain/kotlin")
             dependencies {
                 api(libs.activity.compose)
-                api(libs.appcompat)
-                api(libs.androidx.core.ktx)
-                implementation(libs.androidx.core.ktx)
             }
         }
         val iosX64Main by getting
@@ -119,6 +92,7 @@ kotlin {
             iosArm64Main.dependsOn(this)
             iosSimulatorArm64Main.dependsOn(this)
             dependencies {
+                implementation(compose.ui)
             }
         }
 

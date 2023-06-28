@@ -1,6 +1,5 @@
 import androidx.compose.runtime.Composable
 import com.twoup.personalfinance.ui.MainComposeView
-import com.twoup.personalfinance.viewmodel.ApplicationViewModel
 
 //import com.twoup.personalfinance.Greeting
 

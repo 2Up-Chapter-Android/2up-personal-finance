@@ -4,6 +4,10 @@ plugins {
     id("kotlinx-serialization")
 }
 
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+    kotlinOptions.jvmTarget = "1.8"
+}
+
 kotlin {
     android()
 
@@ -22,11 +26,9 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation(project(":data:model"))
-                implementation(project(":data:local"))
-                implementation(project(":data:remote"))
-                implementation(libs.kotlinx.serialization.core)
+                implementation(libs.kotlinx.serialization.json)
                 implementation(libs.koin.core)
+                implementation(project(":common:resources"))
             }
         }
         val commonTest by getting {

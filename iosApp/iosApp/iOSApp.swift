@@ -34,7 +34,7 @@ struct iOSApp: App {
 
     var body: some Scene {
         WindowGroup {
-            SwitchingRootView(viewModel: koin.applicationViewModel)
+//            SwitchingRootView(viewModel: koin.applicationViewModel)
 //                .environmentObject(lifecycleManager)
         }
     }

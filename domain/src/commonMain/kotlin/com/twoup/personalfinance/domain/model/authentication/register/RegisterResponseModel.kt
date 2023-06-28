@@ -1,0 +1,21 @@
+package com.twoup.personalfinance.domain.model.authentication.register
+
+import com.twoup.personalfinance.const.ConstDefaultValue
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class RegisterResponseModel(
+    val status: Int = 0,
+    val statusMessage: String = ConstDefaultValue.DEFAULT_VALUE_STRING,
+    val timestamp: String = ConstDefaultValue.DEFAULT_VALUE_STRING,
+    val data: RegisterResponseData = RegisterResponseData()
+) {
+    @Serializable
+    data class RegisterResponseData(
+        val id: String = ConstDefaultValue.DEFAULT_VALUE_STRING,
+        val email: String = ConstDefaultValue.DEFAULT_VALUE_STRING,
+        val username: String = ConstDefaultValue.DEFAULT_VALUE_STRING,
+        val fullName: String = ConstDefaultValue.DEFAULT_VALUE_STRING,
+        val activated: String = ConstDefaultValue.DEFAULT_VALUE_STRING
+    )
+}

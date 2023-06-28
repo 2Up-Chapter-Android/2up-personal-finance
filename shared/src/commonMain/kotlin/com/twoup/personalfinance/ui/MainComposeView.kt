@@ -5,20 +5,12 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import cafe.adriel.voyager.navigator.tab.CurrentTab
 import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import cafe.adriel.voyager.navigator.tab.Tab
-import cafe.adriel.voyager.navigator.tab.TabNavigator
 import com.twoup.personalfinance.resources.LightColorPalette
-import com.twoup.personalfinance.ui.tab.BrowserTab
-import com.twoup.personalfinance.ui.tab.DAppTab
-import com.twoup.personalfinance.ui.tab.NftTab
-import com.twoup.personalfinance.ui.tab.SwapTab
-import com.twoup.personalfinance.ui.tab.WalletTab
-import com.twoup.personalfinance.viewmodel.ApplicationViewModel
 
 @Composable
-internal fun MainComposeView(viewModel: ApplicationViewModel, modifier: Modifier = Modifier) {
+internal fun MainComposeView(modifier: Modifier = Modifier) {
     PersonalFinanceTheme {
 //        Text(stringResource(MR.strings.))
         Content()
@@ -46,21 +38,24 @@ internal fun PersonalFinanceTheme(
 
 @Composable
 internal fun Content() {
-    TabNavigator(WalletTab) { tabNavigator ->
-        Scaffold(
-            content = {
-                CurrentTab()
-            },
-            bottomBar = {
-                BottomNavigation(backgroundColor = MaterialTheme.colors.primary) {
-                    TabNavigationItem(WalletTab)
-                    TabNavigationItem(DAppTab)
-                    TabNavigationItem(SwapTab)
-                    TabNavigationItem(NftTab)
-                    TabNavigationItem(BrowserTab)
-                }
-            }
-        )
+//    TabNavigator(WalletTab) { tabNavigator ->
+//        Scaffold(
+//            content = {
+//                CurrentTab()
+//            },
+//            bottomBar = {
+////                BottomNavigation(backgroundColor = MaterialTheme.colors.primary) {
+////                    TabNavigationItem(WalletTab)
+////                    TabNavigationItem(DAppTab)
+////                    TabNavigationItem(SwapTab)
+////                    TabNavigationItem(NftTab)
+////                    TabNavigationItem(BrowserTab)
+////                }
+//            }
+//        )
+//    }
+    Scaffold {
+        Text("Hello")
     }
 }
 
