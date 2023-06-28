@@ -12,16 +12,16 @@ import shared
 
 class BackgroundCrashWorkaroundController: UIViewController {
     
-    let viewModel: ApplicationViewModel
+//    let viewModel: ApplicationViewModel
     let composeController: UIViewController
     
-    init(viewModel: ApplicationViewModel) {
-        self.viewModel = viewModel
-        
-        composeController = ComposeRootControllerKt.getRootController(viewModel: viewModel)
-        
-        super.init(nibName: nil, bundle: nil)
-    }
+//    init(viewModel: ApplicationViewModel) {
+//        self.viewModel = viewModel
+//
+//        composeController = ComposeRootControllerKt.getRootController(viewModel: viewModel)
+//
+//        super.init(nibName: nil, bundle: nil)
+//    }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
