@@ -26,7 +26,7 @@ struct SwitchingRootView: View {
                     Color("NavBar_Background")
                         .ignoresSafeArea()
                     
-//                    ComposeController(viewModel: viewModel)
+                    ComposeController()
                 }
 //            } else {
 //                MainView(viewModel: viewModel)

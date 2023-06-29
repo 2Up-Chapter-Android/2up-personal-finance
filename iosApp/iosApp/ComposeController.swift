@@ -10,15 +10,15 @@ import Foundation
 import SwiftUI
 import shared
 
-//struct ComposeController: UIViewControllerRepresentable {
+struct ComposeController: UIViewControllerRepresentable {
     
-//    let viewModel: ApplicationViewModel
-    
-//    func makeUIViewController(context: Context) -> some UIViewController {
-//        BackgroundCrashWorkaroundController(viewModel: viewModel)
-//    }
+    func makeUIViewController(context: Context) -> some UIViewController {
+        let controller = BackgroundCrashWorkaroundController()
+        controller.view.backgroundColor = UIColor.clear
+        return controller
+    }
 
-//    func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {
-//        uiViewController.view.setNeedsLayout()
-//    }
-//}
+    func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {
+        uiViewController.view.setNeedsLayout()
+    }
+}
