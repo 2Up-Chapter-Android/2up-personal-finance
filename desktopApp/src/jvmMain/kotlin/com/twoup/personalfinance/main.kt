@@ -24,6 +24,5 @@ fun main() = singleWindowApplication(
         initKoin(enableNetworkLogs = true) { }
     }
     val koin = KoinContextHandler.get()
-    val viewModel: ApplicationViewModel = koin.get()
-    MainView(viewModel)
+    MainView()
 }

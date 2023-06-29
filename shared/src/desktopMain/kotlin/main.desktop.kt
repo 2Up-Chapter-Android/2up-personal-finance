@@ -10,6 +10,6 @@ import com.twoup.personalfinance.ui.MainComposeView
 //}
 
 @Composable
-fun MainView(viewModel: ApplicationViewModel) {
-    MainComposeView(viewModel = viewModel)
+fun MainView() {
+    MainComposeView()
 }
