@@ -26,7 +26,6 @@ import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
-import androidx.compose.material.LocalContentColor
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.material.TextFieldDefaults
@@ -105,7 +104,7 @@ class LoginScreen : Screen {
         val registerScreen = rememberScreen(AuthenticationSharedScreen.RegisterScreen)
 
         LaunchedEffect(key1 = loginState.value) {
-            if (!loginUIState.value.isLoading){
+            if (loginState.value.isSuccess || loginState.value.isFailure) {
                 loginState.value.fold(
                     onSuccess = {
                         Napier.d(tag = "TestLogin", message = it.data.accessToken)
@@ -117,8 +116,7 @@ class LoginScreen : Screen {
                             )
 
                             is NetworkException -> Napier.d(
-                                tag = "TestLogin",
-                                message = "Mat mang roi"
+                                tag = "TestLogin", message = "Mat mang roi"
                             )
 
                             else -> Napier.d(
@@ -168,7 +166,7 @@ class LoginScreen : Screen {
                                 Icon(
                                     painter = painterResource(MR.images.ic_clear),
                                     contentDescription = "",
-                                    tint = LocalContentColor.current.copy(alpha = 1f),
+                                    tint = Color.Black
                                 )
                             }
                         },
@@ -218,7 +216,10 @@ class LoginScreen : Screen {
                         },
                         modifier = Modifier.fillMaxWidth().height(height_login_loginButton),
                         shape = RoundedCornerShape(cornerRadius_login_loginButton),
-                        colors = ButtonDefaults.buttonColors(backgroundColor = colorResource(MR.colors.login_loginButton)),
+                        colors = ButtonDefaults.buttonColors(
+                            backgroundColor = colorResource(MR.colors.login_loginButton),
+                            disabledBackgroundColor = colorResource(MR.colors.login_loginButton_disable)
+                        ),
                         enabled = loginUIState.value.enableLoginButton
                     ) {
                         Text(
@@ -272,28 +273,34 @@ class LoginScreen : Screen {
         trailingIcon: @Composable () -> Unit,
         hint: String
     ) {
-        OutlinedTextField(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(
-            topEnd = cornerRadius_login_loginTextField,
-            bottomStart = cornerRadius_login_loginTextField
-        ), value = text, onValueChange = { onTextChange(it) }, label = {
-            Text(
-                modifier = Modifier.alpha(ContentAlpha.medium),
-                text = hint,
-                color = Color.Black,
-                fontSize = textSize_login_loginTextField
+        OutlinedTextField(
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(
+                topEnd = cornerRadius_login_loginTextField,
+                bottomStart = cornerRadius_login_loginTextField
+            ),
+            value = text,
+            onValueChange = { onTextChange(it) },
+            label = {
+                Text(
+                    modifier = Modifier.alpha(ContentAlpha.medium),
+                    text = hint,
+                    color = Color.Black,
+                    fontSize = textSize_login_loginTextField
+                )
+            },
+            textStyle = TextStyle(fontSize = textSize_login_loginTextField),
+            singleLine = true,
+            trailingIcon = {
+                if (text.isNotBlank()) trailingIcon()
+            },
+            keyboardOptions = keyboardOption,
+            colors = TextFieldDefaults.textFieldColors(
+                backgroundColor = Color.Transparent,
+                cursorColor = Color.Black,
+                focusedIndicatorColor = Color.Black,
+                unfocusedIndicatorColor = Color.Black
             )
-        }, textStyle = TextStyle(
-            fontSize = textSize_login_loginTextField
-        ), singleLine = true, trailingIcon = {
-            if (text.isNotEmpty()) {
-                trailingIcon()
-            }
-        }, keyboardOptions = keyboardOption, colors = TextFieldDefaults.textFieldColors(
-            backgroundColor = Color.Transparent,
-            cursorColor = Color.Black,
-            focusedIndicatorColor = Color.Black,
-            unfocusedIndicatorColor = Color.Black
-        )
         )
     }
 
@@ -308,39 +315,46 @@ class LoginScreen : Screen {
         val icon = if (passwordVisibility.value) painterResource(MR.images.ic_hide_password)
         else painterResource(MR.images.ic_show_password)
 
-        OutlinedTextField(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(
-            topEnd = cornerRadius_login_loginTextField,
-            bottomStart = cornerRadius_login_loginTextField
-        ), value = text, onValueChange = { onTextChange(it) }, label = {
-            Text(
-                modifier = Modifier.alpha(ContentAlpha.medium),
-                text = MR.strings.login_hint_password.desc().localized(),
-                color = Color.Black,
-                fontSize = textSize_login_loginTextField
-            )
-        }, textStyle = TextStyle(
-            fontSize = textSize_login_loginTextField
-        ), singleLine = true, trailingIcon = {
-            if (text.isNotEmpty()) {
-                IconButton(onClick = {
-                    passwordVisibility.value = !passwordVisibility.value
-                }) {
-                    Icon(
-                        painter = icon,
-                        contentDescription = "",
-                        tint = LocalContentColor.current.copy(alpha = 1f)
-                    )
+        OutlinedTextField(
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(
+                topEnd = cornerRadius_login_loginTextField,
+                bottomStart = cornerRadius_login_loginTextField
+            ),
+            value = text,
+            onValueChange = { onTextChange(it) },
+            label = {
+                Text(
+                    modifier = Modifier.alpha(ContentAlpha.medium),
+                    text = MR.strings.login_hint_password.desc().localized(),
+                    color = Color.Black,
+                    fontSize = textSize_login_loginTextField
+                )
+            },
+            textStyle = TextStyle(fontSize = textSize_login_loginTextField),
+            singleLine = true,
+            trailingIcon = {
+                if (text.isNotEmpty()) {
+                    IconButton(onClick = { passwordVisibility.value = !passwordVisibility.value }) {
+                        Icon(
+                            painter = icon,
+                            contentDescription = "",
+                            tint = Color.Black
+                        )
+                    }
                 }
-            }
-        }, keyboardOptions = KeyboardOptions(
-            keyboardType = KeyboardType.Password, imeAction = imeAction
-        ), colors = TextFieldDefaults.textFieldColors(
-            backgroundColor = Color.Transparent,
-            cursorColor = Color.Black,
-            focusedIndicatorColor = Color.Black,
-            unfocusedIndicatorColor = Color.Black
-        ), visualTransformation = if (passwordVisibility.value) VisualTransformation.None
-        else PasswordVisualTransformation(mask = '*')
+            },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Password, imeAction = imeAction
+            ),
+            colors = TextFieldDefaults.textFieldColors(
+                backgroundColor = Color.Transparent,
+                cursorColor = Color.Black,
+                focusedIndicatorColor = Color.Black,
+                unfocusedIndicatorColor = Color.Black
+            ),
+            visualTransformation = if (passwordVisibility.value) VisualTransformation.None
+            else PasswordVisualTransformation(mask = '*')
         )
 
     }

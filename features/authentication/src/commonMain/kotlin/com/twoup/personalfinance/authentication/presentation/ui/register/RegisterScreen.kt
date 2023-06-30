@@ -193,7 +193,7 @@ class RegisterScreen : Screen {
                                     imageVector = Icons.Filled.Close,
                                     contentDescription = MR.strings.register_clear.desc()
                                         .localized(),
-                                    tint = LocalContentColor.current.copy(alpha = 1f),
+                                    tint = Color.Black,
                                 )
                             }
                         }
@@ -217,7 +217,7 @@ class RegisterScreen : Screen {
                                     imageVector = Icons.Filled.Close,
                                     contentDescription = MR.strings.register_clear.desc()
                                         .localized(),
-                                    tint = LocalContentColor.current.copy(alpha = 1f),
+                                    tint = Color.Black,
                                 )
                             }
                         }
@@ -241,7 +241,7 @@ class RegisterScreen : Screen {
                                     imageVector = Icons.Filled.Close,
                                     contentDescription = MR.strings.register_clear.desc()
                                         .localized(),
-                                    tint = LocalContentColor.current.copy(alpha = 1f),
+                                    tint = Color.Black,
                                 )
                             }
                         }
@@ -325,7 +325,10 @@ class RegisterScreen : Screen {
                                 modifier = Modifier
                                     .size(100.dp)
                                     .aspectRatio(1f),
-                                colors = ButtonDefaults.buttonColors(colorResource(MR.colors.float_button_register)),
+                                colors = ButtonDefaults.buttonColors(
+                                    backgroundColor = colorResource(MR.colors.float_button_register),
+                                    disabledBackgroundColor = colorResource(MR.colors.float_button_register_disable),
+                                ),
                             ) {
                                 Icon(
                                     imageVector = Icons.Filled.ArrowForward,
@@ -480,7 +483,7 @@ class RegisterScreen : Screen {
                             Icon(
                                 painter = icon,
                                 contentDescription = "",
-                                tint = LocalContentColor.current.copy(alpha = 1f)
+                                tint = Color.Black
                             )
                         }
                     }

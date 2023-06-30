@@ -5,6 +5,8 @@ import com.twoup.personalfinance.authentication.presentation.ui.login.LoginScree
 import com.twoup.personalfinance.authentication.presentation.ui.otp.OTPScreen
 import com.twoup.personalfinance.authentication.presentation.ui.register.RegisterScreen
 import com.twoup.personalfinance.navigation.AuthenticationSharedScreen
+import io.github.aakira.napier.DebugAntilog
+import io.github.aakira.napier.Napier
 import org.koin.dsl.module
 
 fun authenticationNavigationModule() = module {
@@ -17,4 +19,5 @@ fun authenticationNavigationModule() = module {
     ScreenRegistry.register<AuthenticationSharedScreen.OTPScreen> {
         OTPScreen()
     }
+    Napier.base(DebugAntilog())
 }
