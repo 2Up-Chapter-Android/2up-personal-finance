@@ -43,6 +43,7 @@ import com.twoup.personalfinance.authentication.presentation.theme.width_otp_ima
 import com.twoup.personalfinance.authentication.presentation.theme.width_otp_textField
 import com.twoup.personalfinance.navigation.AuthenticationSharedScreen
 import com.twoup.personalfinance.remote.util.HttpException
+import com.twoup.personalfinance.remote.util.fold
 import com.twoup.personalfinance.utils.CountDownTimer
 import dev.icerock.moko.resources.compose.localized
 import dev.icerock.moko.resources.compose.painterResource
@@ -59,7 +60,7 @@ class OTPScreen : Screen {
     fun OTPScreen() {
         val otpViewModel: OTPViewModel = rememberScreenModel { OTPViewModel() }
         val otpUIState = otpViewModel.otpUIState.collectAsState()
-        val activeUserState = otpViewModel.activeUserState.collectAsState(Result.failure(Exception("Initial Value")))
+        val activeUserState = otpViewModel.activeUserState.collectAsState()
         val sendOtpState = otpViewModel.sendOtpState.collectAsState()
         val isVisibleResendButton = remember {
             mutableStateOf(false)
@@ -211,63 +212,59 @@ class OTPScreen : Screen {
         }
 
         LaunchedEffect(activeUserState.value) {
-            if (!otpUIState.value.isLoading) {
-                activeUserState.value.fold(
-                    onSuccess = {
-                        otpViewModel.clearStateOTP()
-                        navigator.push(loginScreen)
-                    },
-                    onFailure = {
-                        if(it is HttpException && it.errorCode != null){
-                            when (it.errorCode) {
-                                "org.up.finance.exception.OtpNotFoundException" -> {
-                                    isVisibleResendButton.value = true
-                                }
+            activeUserState.value.fold(
+                onSuccess = {
+                    otpViewModel.clearStateActiveUser()
+                    navigator.push(loginScreen)
+                },
+                onFailure = {
+                    if (it is HttpException && it.errorCode != null) {
+                        when (it.errorCode) {
+                            "org.up.finance.exception.OtpNotFoundException" -> {
+                                isVisibleResendButton.value = true
+                            }
 
-                                "org.up.finance.exception.OtpBadRequestException" -> {
-                                }
+                            "org.up.finance.exception.OtpBadRequestException" -> {
+                            }
 
-                                "org.up.finance.exception.EmailNotFoundException" -> {
-                                }
+                            "org.up.finance.exception.EmailNotFoundException" -> {
+                            }
 
-                                "org.up.finance.exception.UserActivatedException" -> {
-                                    otpViewModel.clearStateOTP()
-                                    navigator.push(loginScreen)
-                                }
+                            "org.up.finance.exception.UserActivatedException" -> {
+                                otpViewModel.clearStateActiveUser()
+                                navigator.push(loginScreen)
+                            }
 
-                                "org.up.finance.exception.xxx.MethodArgumentNotValidException" -> {
-                                }
+                            "org.up.finance.exception.xxx.MethodArgumentNotValidException" -> {
                             }
                         }
                     }
-                )
-            }
+                }
+            )
         }
 
-        LaunchedEffect(sendOtpState.value){
-            if (!otpUIState.value.isLoading){
-                sendOtpState.value.fold(
-                    onSuccess = {
-                        otpViewModel.clearStateOTP()
-                    },
-                    onFailure = {
-                        if (it is HttpException && it.errorMessage != null) {
-                            when (it.errorMessage) {
-                                "org.up.finance.exception.UserActivatedException" -> {
-                                    otpViewModel.clearStateOTP()
-                                    navigator.push(loginScreen)
-                                }
+        LaunchedEffect(sendOtpState.value) {
+            sendOtpState.value.fold(
+                onSuccess = {
+                    otpViewModel.clearStateSendOtp()
+                },
+                onFailure = {
+                    if (it is HttpException && it.errorMessage != null) {
+                        when (it.errorMessage) {
+                            "org.up.finance.exception.UserActivatedException" -> {
+                                otpViewModel.clearStateSendOtp()
+                                navigator.push(loginScreen)
+                            }
 
-                                "org.up.finance.exception.EmailNotFoundException" -> {
-                                }
+                            "org.up.finance.exception.EmailNotFoundException" -> {
+                            }
 
-                                "org.up.finance.exception.xxx.MethodArgumentNotValidException" -> {
-                                }
+                            "org.up.finance.exception.xxx.MethodArgumentNotValidException" -> {
                             }
                         }
                     }
-                )
-            }
+                }
+            )
         }
     }
 

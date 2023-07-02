@@ -54,6 +54,7 @@ import com.twoup.personalfinance.authentication.presentation.theme.textSize_regi
 import com.twoup.personalfinance.navigation.AuthenticationSharedScreen
 import com.twoup.personalfinance.remote.util.HttpException
 import com.twoup.personalfinance.remote.util.NetworkException
+import com.twoup.personalfinance.remote.util.fold
 import dev.icerock.moko.resources.compose.colorResource
 import dev.icerock.moko.resources.compose.localized
 import dev.icerock.moko.resources.compose.painterResource
@@ -81,38 +82,38 @@ class RegisterScreen : Screen {
         val otpScreen = rememberScreen(AuthenticationSharedScreen.OTPScreen)
 
         LaunchedEffect(registerState.value) {
-            if (!registerUiState.value.isLoading) {
-                registerState.value.fold(
-                    onSuccess = {
-                        val data = it.data
-                        val id = data.id
-                        val email = data.email
-                        val username = data.username
-                        val fullName = data.fullName
-                        val activated = data.activated
-                        Napier.d(
-                            tag = "TestRegister",
-                            message = "Registration successful. ID: $id, Email: $email, Username: $username, Full Name: $fullName, Activated: $activated"
-                        )
-                        navigator.push(otpScreen)
-                    },
-                    onFailure = {
-                        when (it) {
-                            is HttpException -> {
-                                val errorMessage = it.errorMessage.toString()
-                                Napier.d(tag = "TestRegister", message = errorMessage)
-                            }
-                            is NetworkException -> {
-                                Napier.d(tag = "TestRegister", message = "Mat mang roi")
-                            }
-                            else -> {
-                                val errorMessage = it.message.toString()
-                                Napier.d(tag = "TestRegister", message = errorMessage)
-                            }
+            registerState.value.fold(
+                onSuccess = {
+                    val data = it.data
+                    val id = data.id
+                    val email = data.email
+                    val username = data.username
+                    val fullName = data.fullName
+                    val activated = data.activated
+                    Napier.d(
+                        tag = "TestRegister",
+                        message = "Registration successful. ID: $id, Email: $email, Username: $username, Full Name: $fullName, Activated: $activated"
+                    )
+                    navigator.push(otpScreen)
+                },
+                onFailure = {
+                    when (it) {
+                        is HttpException -> {
+                            val errorMessage = it.errorMessage.toString()
+                            Napier.d(tag = "TestRegister", message = errorMessage)
+                        }
+
+                        is NetworkException -> {
+                            Napier.d(tag = "TestRegister", message = "Mat mang roi")
+                        }
+
+                        else -> {
+                            val errorMessage = it.message.toString()
+                            Napier.d(tag = "TestRegister", message = errorMessage)
                         }
                     }
-                )
-            }
+                }
+            )
         }
 
         Box(

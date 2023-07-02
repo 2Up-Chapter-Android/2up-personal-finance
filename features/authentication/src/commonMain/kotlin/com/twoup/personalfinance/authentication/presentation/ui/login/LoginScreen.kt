@@ -27,6 +27,7 @@ import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -79,10 +80,12 @@ import com.twoup.personalfinance.authentication.presentation.theme.width_login_w
 import com.twoup.personalfinance.navigation.AuthenticationSharedScreen
 import com.twoup.personalfinance.remote.util.HttpException
 import com.twoup.personalfinance.remote.util.NetworkException
+import com.twoup.personalfinance.remote.util.fold
 import dev.icerock.moko.resources.compose.colorResource
 import dev.icerock.moko.resources.compose.localized
 import dev.icerock.moko.resources.compose.painterResource
 import dev.icerock.moko.resources.desc.desc
+import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
 
 class LoginScreen : Screen {
@@ -104,28 +107,26 @@ class LoginScreen : Screen {
         val registerScreen = rememberScreen(AuthenticationSharedScreen.RegisterScreen)
 
         LaunchedEffect(key1 = loginState.value) {
-            if (loginState.value.isSuccess || loginState.value.isFailure) {
-                loginState.value.fold(
-                    onSuccess = {
-                        Napier.d(tag = "TestLogin", message = it.data.accessToken)
-                    },
-                    onFailure = {
-                        when (it) {
-                            is HttpException -> Napier.d(
-                                tag = "TestLogin", message = it.errorMessage.toString()
-                            )
+            loginState.value.fold(
+                onSuccess = {
+                    Napier.d(tag = "TestLogin", message = it.data.accessToken)
+                },
+                onFailure = {
+                    when (it) {
+                        is HttpException -> Napier.d(
+                            tag = "TestLogin", message = it.errorMessage.toString()
+                        )
 
-                            is NetworkException -> Napier.d(
-                                tag = "TestLogin", message = "Mat mang roi"
-                            )
+                        is NetworkException -> Napier.d(
+                            tag = "TestLogin", message = "Mat mang roi"
+                        )
 
-                            else -> Napier.d(
-                                tag = "TestLogin", message = it.message.toString()
-                            )
-                        }
+                        else -> Napier.d(
+                            tag = "TestLogin", message = it.message.toString()
+                        )
                     }
-                )
-            }
+                }
+            )
         }
 
         Box {
@@ -252,15 +253,17 @@ class LoginScreen : Screen {
         AnimatedVisibility(
             visible = loginUIState.value.isLoading, enter = fadeIn(), exit = fadeOut()
         ) {
-            Box(
-                modifier = Modifier.fillMaxSize().background(Color.Gray.copy(0.5f)),
-                contentAlignment = Alignment.Center
-            ) {
-                CircularProgressIndicator(
-                    modifier = Modifier.size(size_login_progressBar),
-                    color = colorResource(MR.colors.login_progressBar),
-                    strokeWidth = progressBarStrokeWidth_login
-                )
+            Surface(color = Color.Transparent) {
+                Box(
+                    modifier = Modifier.fillMaxSize().background(Color.Gray.copy(0.5f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(size_login_progressBar),
+                        color = colorResource(MR.colors.login_progressBar),
+                        strokeWidth = progressBarStrokeWidth_login
+                    )
+                }
             }
         }
     }

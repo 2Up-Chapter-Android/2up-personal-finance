@@ -8,6 +8,8 @@ import com.twoup.personalfinance.domain.model.authentication.otp.SendOtpRequestM
 import com.twoup.personalfinance.domain.model.authentication.otp.SendOtpResponseModel
 import com.twoup.personalfinance.domain.usecase.authentication.ActiveUserUseCase
 import com.twoup.personalfinance.domain.usecase.authentication.SendOtpUseCase
+import com.twoup.personalfinance.remote.util.Resource
+import com.twoup.personalfinance.remote.util.toResource
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -21,10 +23,10 @@ class OTPViewModel: ScreenModel, KoinComponent {
     private val sendOtpUseCase: SendOtpUseCase by inject()
     private val activeUserUseCase: ActiveUserUseCase by inject()
 
-    private val _activeUserState = MutableSharedFlow<Result<ActiveUserResponseModel>>()
-    val activeUserState = _activeUserState.asSharedFlow()
+    private val _activeUserState = MutableStateFlow<Resource<ActiveUserResponseModel>>(Resource.loading())
+    val activeUserState = _activeUserState.asStateFlow()
 
-    private val _sendOtpState = MutableStateFlow<Result<SendOtpResponseModel>>(Result.failure(Exception("Initial Value")))
+    private val _sendOtpState = MutableStateFlow<Resource<SendOtpResponseModel>>(Resource.loading())
     val sendOtpState = _sendOtpState.asStateFlow()
 
     private val _otpUIState = MutableStateFlow(OTPUIState())
@@ -62,7 +64,7 @@ class OTPViewModel: ScreenModel, KoinComponent {
                     email = "abc@gmail.com",
                     otp = otpUIState.value.firstText + otpUIState.value.secondText + otpUIState.value.thirdText + otpUIState.value.forthText
                 )
-            )
+            ).toResource()
             _otpUIState.value = otpUIState.value.copy(isLoading = false)
             _activeUserState.tryEmit(response)
         }
@@ -76,15 +78,19 @@ class OTPViewModel: ScreenModel, KoinComponent {
                 SendOtpRequestModel(
                     email = "abc@gmail.com",
                 )
-            )
+            ).toResource()
             _otpUIState.value = otpUIState.value.copy(isLoading = false)
 
             _sendOtpState.tryEmit(response)
         }
     }
 
-    fun clearStateOTP() {
-        _otpUIState.value = otpUIState.value.copy(isLoading = true)
+    fun clearStateActiveUser() {
+        _activeUserState.value = Resource.loading()
+    }
+
+    fun clearStateSendOtp() {
+        _sendOtpState.value = Resource.loading()
     }
 }
 

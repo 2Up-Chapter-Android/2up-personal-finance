@@ -5,6 +5,8 @@ import cafe.adriel.voyager.core.model.coroutineScope
 import com.twoup.personalfinance.domain.model.authentication.register.RegisterRequestModel
 import com.twoup.personalfinance.domain.model.authentication.register.RegisterResponseModel
 import com.twoup.personalfinance.domain.usecase.authentication.RegisterUseCase
+import com.twoup.personalfinance.remote.util.Resource
+import com.twoup.personalfinance.remote.util.toResource
 import com.twoup.personalfinance.utils.isValidEmail
 import com.twoup.personalfinance.utils.isValidFullName
 import com.twoup.personalfinance.utils.isValidPassword
@@ -21,7 +23,7 @@ class RegisterViewModel : ScreenModel, KoinComponent {
     private val registerUseCase: RegisterUseCase by inject()
 
 
-    private val _registerState = MutableStateFlow<Result<RegisterResponseModel>>(Result.failure(Exception("Initial Value")))
+    private val _registerState = MutableStateFlow<Resource<RegisterResponseModel>>(Resource.loading())
     val registerState = _registerState.asStateFlow()
 
     private val _registerUiState = MutableStateFlow(RegisterUiState())
@@ -43,10 +45,7 @@ class RegisterViewModel : ScreenModel, KoinComponent {
             )
         ) return
 
-        _registerUiState.value =
-            registerUiState.value.copy(
-                isLoading = true
-            )
+        _registerUiState.value = registerUiState.value.copy(isLoading = true)
 
         coroutineScope.launch {
             delay(200)
@@ -59,7 +58,7 @@ class RegisterViewModel : ScreenModel, KoinComponent {
                     password = registerUiState.value.passwordInput,
                     confirm_password = registerUiState.value.confirmPasswordInput
                 )
-            )
+            ).toResource()
             _registerUiState.value = registerUiState.value.copy(isLoading = false)
             _registerState.tryEmit(registerResponse)
 

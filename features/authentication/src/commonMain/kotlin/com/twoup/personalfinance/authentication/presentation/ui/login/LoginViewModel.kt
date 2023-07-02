@@ -5,6 +5,8 @@ import cafe.adriel.voyager.core.model.coroutineScope
 import com.twoup.personalfinance.domain.model.authentication.login.LoginRequestModel
 import com.twoup.personalfinance.domain.model.authentication.login.LoginResponseModel
 import com.twoup.personalfinance.domain.usecase.authentication.LoginUseCase
+import com.twoup.personalfinance.remote.util.Resource
+import com.twoup.personalfinance.remote.util.toResource
 import com.twoup.personalfinance.utils.isValidEmail
 import com.twoup.personalfinance.utils.isValidPassword
 import kotlinx.coroutines.delay
@@ -24,7 +26,7 @@ class LoginViewModel: ScreenModel, KoinComponent {
     private val _passwordInput = MutableStateFlow("")
     val passwordInput: StateFlow<String> get() = _passwordInput
 
-    private val _loginState = MutableStateFlow<Result<LoginResponseModel>>(Result.failure(Exception("Initial value")))
+    private val _loginState = MutableStateFlow<Resource<LoginResponseModel>>(Resource.loading())
     val loginState = _loginState.asStateFlow()
 
     private val _loginUiState = MutableStateFlow(LoginUIState())
@@ -40,7 +42,7 @@ class LoginViewModel: ScreenModel, KoinComponent {
                     email = usernameInput.value,
                     password =  passwordInput.value
                 )
-            )
+            ).toResource()
             _loginUiState.value = loginUiState.value.copy(isLoading = false)
             _loginState.tryEmit(loginResponse)
 

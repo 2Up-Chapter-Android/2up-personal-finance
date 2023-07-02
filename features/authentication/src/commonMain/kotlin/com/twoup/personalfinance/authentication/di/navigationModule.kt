@@ -19,5 +19,4 @@ fun authenticationNavigationModule() = module {
     ScreenRegistry.register<AuthenticationSharedScreen.OTPScreen> {
         OTPScreen()
     }
-    Napier.base(DebugAntilog())
 }
