@@ -12,10 +12,10 @@ import shared
 
 struct ComposeController: UIViewControllerRepresentable {
     
-    let viewModel: ApplicationViewModel
-    
     func makeUIViewController(context: Context) -> some UIViewController {
-        BackgroundCrashWorkaroundController(viewModel: viewModel)
+        let controller = BackgroundCrashWorkaroundController()
+        controller.view.backgroundColor = UIColor.clear
+        return controller
     }
 
     func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {

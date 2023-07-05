@@ -16,13 +16,8 @@ buildscript {
         mavenLocal()
         mavenCentral()
     }
-    val sqlDelightVersion = "1.5.5"
     dependencies {
-//        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.0")
-//        classpath("com.android.tools.build:gradle:7.3.1")
-        classpath("org.jetbrains.kotlin:kotlin-serialization:1.8.0")
-        classpath("com.squareup.sqldelight:gradle-plugin:$sqlDelightVersion")
-        classpath("dev.icerock.moko:resources-generator:0.21.2")
+        classpath(libs.bundles.plugins)
     }
 }
 
@@ -32,6 +27,24 @@ allprojects {
         mavenCentral()
         maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
         mavenLocal()
+    }
+
+    // ./gradlew dependencyUpdates
+    // Report: build/dependencyUpdates/report.txt
+    apply(plugin = "com.github.ben-manes.versions")
+}
+
+//https://github.com/ben-manes/gradle-versions-plugin#rejectversionsif-and-componentselection
+fun isNonStable(version: String): Boolean {
+    val stableKeyword = listOf("RELEASE", "FINAL", "GA").any { version.uppercase().contains(it) }
+    val regex = "^[0-9,.v-]+(-r)?$".toRegex()
+    val isStable = stableKeyword || regex.matches(version)
+    return isStable.not()
+}
+
+tasks.withType<com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask> {
+    rejectVersionIf {
+        isNonStable(candidate.version) && !isNonStable(currentVersion)
     }
 }
 

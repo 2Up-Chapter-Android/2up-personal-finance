@@ -13,7 +13,7 @@ import shared
 struct SwitchingRootView: View {
     
 //    @ObservedObject
-    var viewModel: ApplicationViewModel
+//    var viewModel: ApplicationViewModel
     
     private let userDefaultsPublisher = NotificationCenter.default.publisher(for: UserDefaults.didChangeNotification)
     
@@ -26,7 +26,7 @@ struct SwitchingRootView: View {
                     Color("NavBar_Background")
                         .ignoresSafeArea()
                     
-                    ComposeController(viewModel: viewModel)
+                    ComposeController()
                 }
 //            } else {
 //                MainView(viewModel: viewModel)
@@ -47,8 +47,8 @@ struct SwitchingRootView: View {
     }
 }
 
-struct SwitchingRootView_Previews: PreviewProvider {
-    static var previews: some View {
-        EmptyView()
-    }
-}
+//struct SwitchingRootView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        EmptyView()
+//    }
+//}

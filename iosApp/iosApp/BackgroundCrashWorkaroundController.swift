@@ -12,13 +12,10 @@ import shared
 
 class BackgroundCrashWorkaroundController: UIViewController {
     
-    let viewModel: ApplicationViewModel
     let composeController: UIViewController
     
-    init(viewModel: ApplicationViewModel) {
-        self.viewModel = viewModel
-        
-        composeController = ComposeRootControllerKt.getRootController(viewModel: viewModel)
+    init() {
+        composeController = ComposeRootControllerKt.getRootController()
         
         super.init(nibName: nil, bundle: nil)
     }
@@ -32,8 +29,20 @@ class BackgroundCrashWorkaroundController: UIViewController {
         
         if composeController.parent == nil {
             addChild(composeController)
-            composeController.view.frame = view.bounds
+//            composeController.view.frame = view.bounds
+            composeController.view.backgroundColor = UIColor.clear
+            
             view.addSubview(composeController.view)
+            
+            view.backgroundColor = UIColor.clear
+            
+            composeController.view.translatesAutoresizingMaskIntoConstraints = false
+            composeController.view.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+            composeController.view.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+            composeController.view.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+            composeController.view.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+                    
+            
             composeController.didMove(toParent: self)
         }
     }

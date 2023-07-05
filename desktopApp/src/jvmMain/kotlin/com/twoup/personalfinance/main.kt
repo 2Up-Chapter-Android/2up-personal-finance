@@ -8,7 +8,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.WindowState
 import androidx.compose.ui.window.singleWindowApplication
 import com.twoup.personalfinance.di.initKoin
-import com.twoup.personalfinance.viewmodel.ApplicationViewModel
 //import MainView
 
 import org.koin.core.Koin
@@ -25,6 +24,5 @@ fun main() = singleWindowApplication(
         initKoin(enableNetworkLogs = true) { }
     }
     val koin = KoinContextHandler.get()
-    val viewModel: ApplicationViewModel = koin.get()
-    MainView(viewModel)
+    MainView()
 }
