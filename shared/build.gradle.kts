@@ -54,6 +54,7 @@ kotlin {
                 implementation(project(":domain"))
                 implementation(project(":data"))
                 implementation(project(":features:authentication"))
+                implementation(project(":features:transaction"))
                 api(project(":common:resources"))
 
                 implementation(compose.runtime)

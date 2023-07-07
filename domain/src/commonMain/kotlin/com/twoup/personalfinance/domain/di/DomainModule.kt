@@ -8,13 +8,18 @@ import org.koin.dsl.module
 
 fun domainModule() = module {
     includes(
-        authenticationDomainModel(),
+        authenticationDomainModule(),
+        transactionDomainModule()
     )
 }
 
-private fun authenticationDomainModel() = module {
+private fun authenticationDomainModule() = module {
     factory { LoginUseCase(get()) }
     factory { RegisterUseCase(get()) }
     factory { SendOtpUseCase(get()) }
     factory { ActiveUserUseCase(get()) }
+}
+
+private fun transactionDomainModule() = module {
+
 }
