@@ -8,7 +8,7 @@ fun String.isValidUsername(): Boolean {
 }
 
 fun String.isValidFullName(): Boolean {
-    val usernamePattern = "^[A-Za-z][a-z]*( [A-Za-z][a-z]*){2}\$"
+    val usernamePattern = "^[A-Za-z\\s]+$"
     val pattern = Regex(usernamePattern)
     return this.isNotEmpty() && pattern.matches(this)
 }

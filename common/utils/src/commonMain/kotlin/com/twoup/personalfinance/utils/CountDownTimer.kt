@@ -1,6 +1,7 @@
 package com.twoup.personalfinance.utils
 
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -12,11 +13,11 @@ abstract class CountDownTimer(
     abstract fun onFinish()
     abstract fun onTick(millisUntilFinished: Long)
 
-    private val scope = GlobalScope
+    private var scope: Job? = null
     fun start() {
         var remainingMillis = durationMillis
 
-        scope.launch {
+        scope = GlobalScope.launch {
             while (remainingMillis > 0) {
                 delay(tickIntervalMillis)
                 remainingMillis -= tickIntervalMillis
@@ -24,12 +25,12 @@ abstract class CountDownTimer(
             }
 
             onFinish()
-            scope.cancel()
+            scope?.cancel()
         }
     }
 
     fun cancel() {
-        scope.cancel()
+        scope?.cancel()
     }
 
 }

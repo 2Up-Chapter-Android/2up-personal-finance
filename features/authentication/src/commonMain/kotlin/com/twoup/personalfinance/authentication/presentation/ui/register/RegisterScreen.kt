@@ -78,23 +78,23 @@ class RegisterScreen : Screen {
         val registerState = viewModel.registerState.collectAsState()
         val registerUiState = viewModel.registerUiState.collectAsState()
         val navigator = LocalNavigator.currentOrThrow
-        val loginScreen = rememberScreen(AuthenticationSharedScreen.LoginScreen)
-        val otpScreen = rememberScreen(AuthenticationSharedScreen.OTPScreen)
+        val userEmail = remember { mutableStateOf("") }
+        val otpScreen = rememberScreen(AuthenticationSharedScreen.OTPScreen(userEmail.value))
 
         LaunchedEffect(registerState.value) {
             registerState.value.fold(
                 onSuccess = {
                     val data = it.data
                     val id = data.id
-                    val email = data.email
+                    userEmail.value = data.email
                     val username = data.username
                     val fullName = data.fullName
                     val activated = data.activated
                     Napier.d(
                         tag = "TestRegister",
-                        message = "Registration successful. ID: $id, Email: $email, Username: $username, Full Name: $fullName, Activated: $activated"
+                        message = "Registration successful. ID: $id, Email: ${userEmail.value}, Username: $username, Full Name: $fullName, Activated: $activated"
                     )
-                    navigator.push(otpScreen)
+                    navigator.replace(otpScreen)
                 },
                 onFailure = {
                     when (it) {
@@ -298,17 +298,11 @@ class RegisterScreen : Screen {
 
                             Spacer(modifier = Modifier.padding(margin_bottom_register_button))
 
-                            val invalidUsernameErrorMsg =
-                                MR.strings.register_error_invalid_username.desc().localized()
-                            val invalidFullNameErrorMsg =
-                                MR.strings.register_error_invalid_full_name.desc().localized()
-                            val invalidEmailErrorMsg =
-                                MR.strings.register_error_invalid_email.desc().localized()
-                            val invalidPasswordErrorMsg =
-                                MR.strings.register_error_invalid_password.desc().localized()
-                            val invalidConfirmPasswordErrorMsg =
-                                MR.strings.register_error_invalid_confirm_password.desc()
-                                    .localized()
+                            val invalidUsernameErrorMsg = MR.strings.register_error_invalid_username.desc().localized()
+                            val invalidFullNameErrorMsg = MR.strings.register_error_invalid_full_name.desc().localized()
+                            val invalidEmailErrorMsg = MR.strings.invalid_email_error.desc().localized()
+                            val invalidPasswordErrorMsg = MR.strings.register_error_invalid_password.desc().localized()
+                            val invalidConfirmPasswordErrorMsg = MR.strings.register_error_invalid_confirm_password.desc().localized()
                             Button(
                                 onClick = {
                                     viewModel.registerRequest(

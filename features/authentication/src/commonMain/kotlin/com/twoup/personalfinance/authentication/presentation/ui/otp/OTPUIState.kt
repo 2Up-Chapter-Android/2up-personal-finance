@@ -2,11 +2,8 @@ package com.twoup.personalfinance.authentication.presentation.ui.otp
 
 data class OTPUIState(
     val isLoading: Boolean = false,
-    val firstText: String = "",
-    val secondText: String = "",
-    val thirdText: String = "",
-    val forthText: String = ""
+    val isFullFillOtp: Boolean = false
 ) {
     val enableActiveButton
-        get() = !isLoading && firstText.isNotBlank() && secondText.isNotBlank() && thirdText.isNotBlank() && forthText.isNotBlank()
+        get() = !isLoading && isFullFillOtp
 }

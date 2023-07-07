@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="login_textButton">#007AFF</color>
+    <color name="all_textButton">#007AFF</color>
     <color name="login_loginButton">#FF5B5E</color>
     <color name="login_loginButton_disable">#FFB1B2</color>
     <color name="login_progressBar">#FF0000</color>
@@ -12,4 +12,7 @@
     <color name="float_button_register">#6B3D88</color>
     <color name="float_button_register_disable">#A892B6</color>
 
+    <color name="otp_email">#007AFF</color>
+    <color name="otp_activeButton">#003CFF</color>
+    <color name="otp_activeButton_disable">#668AFF</color>
 </resources>

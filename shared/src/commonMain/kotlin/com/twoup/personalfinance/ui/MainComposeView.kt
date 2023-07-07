@@ -9,6 +9,7 @@ import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import cafe.adriel.voyager.navigator.tab.Tab
 import com.twoup.personalfinance.authentication.presentation.ui.login.LoginScreen
+import com.twoup.personalfinance.authentication.presentation.ui.otp.OTPScreen
 import com.twoup.personalfinance.resources.LightColorPalette
 
 @Composable
@@ -40,22 +41,6 @@ internal fun PersonalFinanceTheme(
 
 @Composable
 internal fun Content() {
-//    TabNavigator(WalletTab) { tabNavigator ->
-//        Scaffold(
-//            content = {
-//                CurrentTab()
-//            },
-//            bottomBar = {
-////                BottomNavigation(backgroundColor = MaterialTheme.colors.primary) {
-////                    TabNavigationItem(WalletTab)
-////                    TabNavigationItem(DAppTab)
-////                    TabNavigationItem(SwapTab)
-////                    TabNavigationItem(NftTab)
-////                    TabNavigationItem(BrowserTab)
-////                }
-//            }
-//        )
-//    }
     Scaffold {
         Navigator(LoginScreen())
     }

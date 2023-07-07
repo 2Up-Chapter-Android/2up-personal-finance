@@ -59,6 +59,7 @@ import com.twoup.personalfinance.authentication.presentation.theme.cornerRadius_
 import com.twoup.personalfinance.authentication.presentation.theme.cornerRadius_login_loginTextField
 import com.twoup.personalfinance.authentication.presentation.theme.height_login_loginButton
 import com.twoup.personalfinance.authentication.presentation.theme.height_login_welcomeImage
+import com.twoup.personalfinance.authentication.presentation.theme.marginBottom_login_parentView
 import com.twoup.personalfinance.authentication.presentation.theme.marginBottom_login_registerTextButton
 import com.twoup.personalfinance.authentication.presentation.theme.marginTop_login_forgotPassTextButton
 import com.twoup.personalfinance.authentication.presentation.theme.marginTop_login_loginButton
@@ -85,7 +86,6 @@ import dev.icerock.moko.resources.compose.colorResource
 import dev.icerock.moko.resources.compose.localized
 import dev.icerock.moko.resources.compose.painterResource
 import dev.icerock.moko.resources.desc.desc
-import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
 
 class LoginScreen : Screen {
@@ -105,6 +105,7 @@ class LoginScreen : Screen {
         val loginUIState = viewModel.loginUiState.collectAsState()
         val navigator = LocalNavigator.currentOrThrow
         val registerScreen = rememberScreen(AuthenticationSharedScreen.RegisterScreen)
+        val reActiveAccScreen = rememberScreen(AuthenticationSharedScreen.ReActiveAccountScreen)
 
         LaunchedEffect(key1 = loginState.value) {
             loginState.value.fold(
@@ -152,7 +153,9 @@ class LoginScreen : Screen {
 
                     Text(
                         text = MR.strings.login_welcomeTitle.desc().localized(),
-                        fontSize = textSize_login_welcomeTitle
+                        fontSize = textSize_login_welcomeTitle,
+                        color = Color.Black,
+                        textAlign = TextAlign.Center
                     )
 
                     Spacer(modifier = Modifier.height(marginTop_login_usernameTextField))
@@ -201,19 +204,20 @@ class LoginScreen : Screen {
                             },
                             text = MR.strings.login_forgotPassword.desc().localized(),
                             fontSize = textSize_login_forgotPasswordTextButton,
-                            color = colorResource(MR.colors.login_textButton),
+                            color = colorResource(MR.colors.all_textButton),
                             textAlign = TextAlign.End
                         )
                     }
 
                     Spacer(modifier = Modifier.height(marginTop_login_loginButton))
 
-                    val accountErrorMsg = MR.strings.register_error_invalid_email.desc().localized()
+                    val accountErrorMsg = MR.strings.invalid_email_error.desc().localized()
                     val passwordErrorMsg =
                         MR.strings.login_error_incorrectPassword.desc().localized()
                     Button(
                         onClick = {
                             viewModel.login(accountErrorMsg, passwordErrorMsg)
+                            focusManager.clearFocus()
                         },
                         modifier = Modifier.fillMaxWidth().height(height_login_loginButton),
                         shape = RoundedCornerShape(cornerRadius_login_loginButton),
@@ -236,7 +240,7 @@ class LoginScreen : Screen {
                     Text(text = buildAnnotatedString {
                         append(MR.strings.login_dontHaveAccount.desc().localized())
                         append(" ")
-                        withStyle(SpanStyle(color = colorResource(MR.colors.login_textButton))) {
+                        withStyle(SpanStyle(color = colorResource(MR.colors.all_textButton))) {
                             append(MR.strings.all_signup.desc().localized())
                         }
                     },
@@ -246,7 +250,22 @@ class LoginScreen : Screen {
                         ) {
                             navigator.push(registerScreen)
                         })
+
                     Spacer(modifier = Modifier.height(marginBottom_login_registerTextButton))
+                    Text(text = buildAnnotatedString {
+                        append(MR.strings.login_haveNotActivated.desc().localized())
+                        append(" ")
+                        withStyle(SpanStyle(color = colorResource(MR.colors.all_textButton))) {
+                            append(MR.strings.login_textButtonActive.desc().localized())
+                        }
+                    },
+                        fontSize = textSize_login_registerTextButton,
+                        modifier = Modifier.clickable(
+                            interactionSource = interactionSource, indication = null
+                        ) {
+                            navigator.push(reActiveAccScreen)
+                        })
+                    Spacer(modifier = Modifier.height(marginBottom_login_parentView))
                 }
             }
         }
@@ -266,45 +285,6 @@ class LoginScreen : Screen {
                 }
             }
         }
-    }
-
-    @Composable
-    fun LoginEditText(
-        text: String,
-        onTextChange: (String) -> Unit,
-        keyboardOption: KeyboardOptions,
-        trailingIcon: @Composable () -> Unit,
-        hint: String
-    ) {
-        OutlinedTextField(
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(
-                topEnd = cornerRadius_login_loginTextField,
-                bottomStart = cornerRadius_login_loginTextField
-            ),
-            value = text,
-            onValueChange = { onTextChange(it) },
-            label = {
-                Text(
-                    modifier = Modifier.alpha(ContentAlpha.medium),
-                    text = hint,
-                    color = Color.Black,
-                    fontSize = textSize_login_loginTextField
-                )
-            },
-            textStyle = TextStyle(fontSize = textSize_login_loginTextField),
-            singleLine = true,
-            trailingIcon = {
-                if (text.isNotBlank()) trailingIcon()
-            },
-            keyboardOptions = keyboardOption,
-            colors = TextFieldDefaults.textFieldColors(
-                backgroundColor = Color.Transparent,
-                cursorColor = Color.Black,
-                focusedIndicatorColor = Color.Black,
-                unfocusedIndicatorColor = Color.Black
-            )
-        )
     }
 
     @Composable
@@ -361,19 +341,59 @@ class LoginScreen : Screen {
         )
 
     }
+}
 
-    @Composable
-    fun LoginErrorText(text: String) {
-        Column(
-            modifier = Modifier.fillMaxWidth().padding(start = paddingStart_login_loginErrorText)
-        ) {
-            Spacer(modifier = Modifier.height(marginTop_login_loginErrorText))
+@Composable
+fun LoginEditText(
+    text: String,
+    onTextChange: (String) -> Unit,
+    keyboardOption: KeyboardOptions,
+    trailingIcon: @Composable () -> Unit,
+    hint: String
+) {
+    OutlinedTextField(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(
+            topEnd = cornerRadius_login_loginTextField,
+            bottomStart = cornerRadius_login_loginTextField
+        ),
+        value = text,
+        onValueChange = { onTextChange(it) },
+        label = {
             Text(
-                text = text,
-                fontWeight = FontWeight.Bold,
-                fontSize = textSize_login_loginErrorText,
-                color = colorResource(MR.colors.login_errorText)
+                modifier = Modifier.alpha(ContentAlpha.medium),
+                text = hint,
+                color = Color.Black,
+                fontSize = textSize_login_loginTextField
             )
-        }
+        },
+        textStyle = TextStyle(fontSize = textSize_login_loginTextField),
+        singleLine = true,
+        trailingIcon = {
+            if (text.isNotBlank()) trailingIcon()
+        },
+        keyboardOptions = keyboardOption,
+        colors = TextFieldDefaults.textFieldColors(
+            backgroundColor = Color.Transparent,
+            cursorColor = Color.Black,
+            focusedIndicatorColor = Color.Black,
+            unfocusedIndicatorColor = Color.Black
+        )
+    )
+}
+
+
+@Composable
+fun LoginErrorText(text: String) {
+    Column(
+        modifier = Modifier.fillMaxWidth().padding(start = paddingStart_login_loginErrorText)
+    ) {
+        Spacer(modifier = Modifier.height(marginTop_login_loginErrorText))
+        Text(
+            text = text,
+            fontWeight = FontWeight.Bold,
+            fontSize = textSize_login_loginErrorText,
+            color = colorResource(MR.colors.login_errorText)
+        )
     }
 }

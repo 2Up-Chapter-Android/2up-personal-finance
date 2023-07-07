@@ -21,7 +21,8 @@ val marginTop_login_usernameTextField = 25.dp
 val marginTop_login_passwordTextField = 15.dp
 val marginTop_login_forgotPassTextButton = 7.dp
 val marginTop_login_loginButton = 38.dp
-val marginBottom_login_registerTextButton = 37.dp
+val marginBottom_login_parentView = 37.dp
+val marginBottom_login_registerTextButton = 5.dp
 val marginTop_login_loginErrorText = 6.dp
 
 val paddingVertical_login_welcomeImage = 18.dp
@@ -55,36 +56,39 @@ val textSize_register_button = 30.sp
 
 
 //OTP
-val padding_otp_parentView = 28.dp
-
-val textSize_otp_title = 30.sp
-val textSize_otp_timeout = 15.sp
-
-val textSize_otp_checkEmail = 20.sp
+val textSize_otp_title = 22.sp
 val textSize_otp_resendOTP = 15.sp
+val textSize_otp_checkEmail = 13.sp
+val textSize_otp_otpInput = 18.sp
+val textSize_otp_textButton = 18.sp
 
-val paddingTop_otp_checkEmail = 15.dp
-val paddingTop_otp_resendOTP = 15.dp
-
-val paddingTop_otp_imageOTP = 28.dp
 val width_otp_imageOTP = 200.dp
 val height_otp_imageOTP = 200.dp
-
-val textSize_otp_email = 15.sp
-
-val paddingTop_otp_textField = 8.dp
-val paddingTop_otp_email = 28.dp
-val paddingStart_otp_textField = 16.dp
 val width_otp_textField = 50.dp
 val height_otp_textField = 50.dp
-val textSize_otp_textField = 13.sp
-val textSize_otp_time = 20.sp
-val cornerRadius_otp_textField = 16.dp
+val height_otp_otpInputIndicator = 2.dp
 
-val paddingTop_otp_errorText = 8.dp
 val marginTop_otp_errorText = 8.dp
-val textSize_otp_errorText = 18.sp
+val marginTop_otp_otpInput = 8.dp
+val marginTop_otp_titleImage = 13.dp
+val marginTop_otp_activeButton = 28.dp
 
-val paddingTop_otp_button = 28.dp
-val paddingVertical_otp_textButton = 8.dp
-val textSize_otp_textButton = 18.sp
+val padding_otp_parentView = 24.dp
+val paddingTop_otp_resendOTP = 15.dp
+val paddingTop_otp_errorText = 8.dp
+val padding_otp_otpInputIndicator = 6.dp
+
+//Re-Active Account
+val textSize_reActiveAccount_title = 22.sp
+val textSize_reActiveAccount_subtitle = 13.sp
+
+val height_reActiveAccount_button = 48.dp
+
+val marginTop_reActiveAccount_title = 30.dp
+val marginTop_reActiveAccount_subtitle = 13.dp
+val marginTop_reActiveAccount_emailInput = 15.dp
+val marginTop_reActiveAccount_button = 15.dp
+
+val paddingHorizontal_reActiveAccount_parentView = 22.dp
+
+val cornerRadius_reActiveAccount_button = 24.dp
