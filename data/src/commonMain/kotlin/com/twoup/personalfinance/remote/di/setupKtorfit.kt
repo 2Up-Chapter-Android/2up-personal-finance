@@ -18,9 +18,9 @@ import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import org.koin.dsl.module
 
-fun remoteModule(baseUrl: String, enableNetworkLogs: Boolean) = module {
+fun setupKtorfit(baseUrl: String, enableNetworkLogs: Boolean) = module {
     single { provideKtorfit(get(), baseUrl) }
-    single{ provideOkhttpClient(get(), enableNetworkLogs) }
+    single{ provideHttpClient(get(), enableNetworkLogs) }
 }
 
 private inline fun provideKtorfit(httpClient: HttpClient, baseUrl: String): Ktorfit {
@@ -30,7 +30,7 @@ private inline fun provideKtorfit(httpClient: HttpClient, baseUrl: String): Ktor
         .converterFactories(ResultResponseConverterFactory()).build()
 }
 
-private inline fun provideOkhttpClient(secureStorageWrapper: SecureStorageWrapper, enableNetworkLogs: Boolean): HttpClient {
+private inline fun provideHttpClient(secureStorageWrapper: SecureStorageWrapper, enableNetworkLogs: Boolean): HttpClient {
     return HttpClient {
         install(ContentNegotiation) {
             json(Json { isLenient = true; ignoreUnknownKeys = true; prettyPrint = true })

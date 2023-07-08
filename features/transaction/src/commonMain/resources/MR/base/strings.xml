@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<resources>
+    <!--    Create Transaction-->
+    <string name="createTrans_tab_income">Income</string>
+    <string name="createTrans_tab_expense">Expense</string>
+    <string name="createTrans_tab_transfer">Transfer</string>
+    <string name="createTrans_inputLabel_date">Date</string>
+    <string name="createTrans_inputLabel_amount">Amount</string>
+    <string name="createTrans_inputLabel_category">Category</string>
+    <string name="createTrans_inputLabel_account">Account</string>
+    <string name="createTrans_inputLabel_note">Note</string>
+    <string name="createTrans_button_createTrans">Create</string>
+    <string name="createTrans_button_saveAndCreateAnother">Continue</string>
+</resources>

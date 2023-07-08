@@ -1,4 +1,4 @@
-package com.twoup.personalfinance.remote.service.authentication
+package com.twoup.personalfinance.remote.services.authentication
 
 import com.twoup.personalfinance.domain.model.authentication.login.LoginRequestModel
 import com.twoup.personalfinance.domain.model.authentication.otp.ActiveUserRequestModel

@@ -8,6 +8,8 @@
     <string name="all_email">Email</string>
     <string name="all_password">Password</string>
     <string name="all_confirm_password">Confirm password</string>
+    <string name="all_continue">Continue</string>
+    <string name="invalid_email_error">Please enter a valid email</string>
 
     <!--    Login-->
     <string name="login_welcomeTitle">Welcome to 2upFinance</string>
@@ -17,6 +19,8 @@
     <string name="login_error_incorrectPassword">Incorrect password</string>
     <string name="login_forgotPassword">Forgot Password?</string>
     <string name="login_dontHaveAccount">Don\'t have account?</string>
+    <string name="login_haveNotActivated">Haven\'t activated account?</string>
+    <string name="login_textButtonActive">Active</string>
 
     <!--    Register-->
     <string name="register_title_two">An Account </string>
@@ -33,14 +37,14 @@
 
     <string name="register_error_invalid_username">Please enter a valid username</string>
     <string name="register_error_invalid_full_name">Please enter a valid full name</string>
-    <string name="register_error_invalid_email">Please enter a valid email</string>
     <string name="register_error_invalid_password">Please enter a valid password</string>
     <string name="register_error_invalid_confirm_password">Passwords do not match</string>
 
     <!--    OTP-->
     <string name="otp_title">OTP Verification</string>
-    <string name="otp_enterInput">Please check OTP in email</string>
-    <string name="otp_resendOTP">Resend OTP</string>
+    <string name="otp_remindCheckMail">We\'ve just sent an OTP to your email address. Please check the inbox of email </string>
+    <string name="otp_resendOtp_message">Haven\'t received OTP code? </string>
+    <string name="otp_resendOTP_resendButton">Resend</string>
     <string name="otp_error_expired">OTP is expired. Please resend OTP</string>
     <string name="otp_error_activated">User activated</string>
     <string name="otp_error_format">Email and OTP has wrong format. Please check again</string>
@@ -49,4 +53,8 @@
     <string name="otp_error_email_existed">Email is not existed. Please enter email again</string>
     <string name="otp_error_fillEmail">Please enter a valid email</string>
     <string name="otp_hint_email">Email</string>
+
+    <!--    Re-Active Account-->
+    <string name="reActiveAccount_title">Active Account</string>
+    <string name="reActiveAccount_subTitle">Enter your email address to activate your account</string>
 </resources>

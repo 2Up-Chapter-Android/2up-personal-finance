@@ -12,7 +12,7 @@ import com.twoup.personalfinance.domain.repository.authentication.Authentication
 import com.twoup.personalfinance.local.SecureStorageKey
 import com.twoup.personalfinance.local.SecureStorageWrapper
 import com.twoup.personalfinance.mapping.mapToDomain
-import com.twoup.personalfinance.remote.service.authentication.AuthenticationDataSource
+import com.twoup.personalfinance.remote.services.authentication.AuthenticationDataSource
 import com.twoup.personalfinance.remote.util.safeApiCall
 
 class AuthenticationRepositoryImpl(

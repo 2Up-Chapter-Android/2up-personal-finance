@@ -32,37 +32,23 @@ class OTPViewModel: ScreenModel, KoinComponent {
     private val _otpUIState = MutableStateFlow(OTPUIState())
     val otpUIState: StateFlow<OTPUIState> get() = _otpUIState
 
-    fun changeOTPFirstTextValue(text: String) {
-        _otpUIState.value = otpUIState.value.copy(
-            firstText = text
-        )
+    private val _otpInput = MutableStateFlow("")
+    val otpInput: StateFlow<String> get() = _otpInput
+
+    fun onOtpInputChange(otp: String, codeLength: Int) {
+        if (otp.length > codeLength) return
+        if (otp.any{ !it.isDigit() }) return
+        _otpInput.value = otp
+        _otpUIState.value = otpUIState.value.copy(isFullFillOtp = otp.length == codeLength)
     }
 
-    fun changeOTPSecondTextValue(text: String) {
-        _otpUIState.value = otpUIState.value.copy(
-            secondText = text
-        )
-    }
-
-    fun changeOTPThirdTextValue(text: String) {
-        _otpUIState.value = otpUIState.value.copy(
-            thirdText = text
-        )
-    }
-
-    fun changeOTPForthTextValue(text: String) {
-        _otpUIState.value = otpUIState.value.copy(
-            forthText = text
-        )
-    }
-
-    fun activeUser() {
+    fun activeUser(email: String) {
         _otpUIState.value = otpUIState.value.copy(isLoading = true)
         coroutineScope.launch {
             val response = activeUserUseCase(
                 ActiveUserRequestModel(
-                    email = "abc@gmail.com",
-                    otp = otpUIState.value.firstText + otpUIState.value.secondText + otpUIState.value.thirdText + otpUIState.value.forthText
+                    email = email,
+                    otp = otpInput.value
                 )
             ).toResource()
             _otpUIState.value = otpUIState.value.copy(isLoading = false)
@@ -70,13 +56,13 @@ class OTPViewModel: ScreenModel, KoinComponent {
         }
     }
 
-    fun resendOtp() {
+    fun resendOtp(email: String) {
         _otpUIState.value = otpUIState.value.copy(isLoading = true)
 
         coroutineScope.launch{
             val response = sendOtpUseCase(
                 SendOtpRequestModel(
-                    email = "abc@gmail.com",
+                    email = email,
                 )
             ).toResource()
             _otpUIState.value = otpUIState.value.copy(isLoading = false)
