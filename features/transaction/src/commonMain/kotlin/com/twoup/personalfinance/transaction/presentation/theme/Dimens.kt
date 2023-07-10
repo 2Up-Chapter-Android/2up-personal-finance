@@ -16,3 +16,5 @@ val thickness_transaction_borderStroke = 1.dp
 val buttonHeight_transaction_buttonNextAction = 48.dp
 
 val textSize_transaction_textField = 13.sp
+
+val marginStart_createTrans_actionBar_tabName = 13.dp
