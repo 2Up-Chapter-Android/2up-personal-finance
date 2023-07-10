@@ -11,6 +11,7 @@ import cafe.adriel.voyager.navigator.tab.Tab
 import com.twoup.personalfinance.authentication.presentation.ui.login.LoginScreen
 import com.twoup.personalfinance.authentication.presentation.ui.otp.OTPScreen
 import com.twoup.personalfinance.resources.LightColorPalette
+import com.twoup.personalfinance.transaction.presentation.dashboard.TransactionDashboardScreen
 
 @Composable
 internal fun MainComposeView(modifier: Modifier = Modifier) {
@@ -42,7 +43,8 @@ internal fun PersonalFinanceTheme(
 @Composable
 internal fun Content() {
     Scaffold {
-        Navigator(LoginScreen())
+//        Navigator(LoginScreen())
+        Navigator(TransactionDashboardScreen())
     }
 }
 

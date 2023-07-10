@@ -6,20 +6,26 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Tab
 import androidx.compose.material.TabRow
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
@@ -35,12 +41,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.currentOrThrow
 import com.twoup.personalfinance.transaction.presentation.theme.buttonHeight_transaction_buttonNextAction
 import com.twoup.personalfinance.transaction.presentation.theme.create_transaction_padding_horizontal
 import com.twoup.personalfinance.transaction.presentation.theme.create_transaction_padding_row
 import com.twoup.personalfinance.transaction.presentation.theme.create_transaction_padding_start_text
 import com.twoup.personalfinance.transaction.presentation.theme.create_transaction_spacer_padding_bottom
 import com.twoup.personalfinance.transaction.presentation.theme.create_transaction_spacer_padding_top
+import com.twoup.personalfinance.transaction.presentation.theme.marginStart_createTrans_actionBar_tabName
 import com.twoup.personalfinance.transaction.presentation.theme.textSize_transaction_textField
 import com.twoup.personalfinance.transaction.presentation.theme.thickness_transaction_borderStroke
 import dev.icerock.moko.resources.compose.colorResource
@@ -57,21 +66,31 @@ class CreateTransactionScreen : Screen{
 
     @Composable
     fun CreateTransactionScreen() {
-
+        val navigator = LocalNavigator.currentOrThrow
         val viewModel = rememberScreenModel { CreateTransViewModel() }
         val createTransUiState = viewModel.createTransUiState.collectAsState()
+        val selectedTabIndex = remember { mutableStateOf(0) }
+        val tabList = listOf(
+            MR.strings.createTrans_tab_income.desc().localized(),
+            MR.strings.createTrans_tab_expense.desc().localized(),
+            MR.strings.createTrans_tab_transfer.desc().localized()
+        )
 
         Column(
             modifier = Modifier
                 .fillMaxSize()
         ) {
-            val selectedTabIndex = remember { mutableStateOf(0) }
-            val tabList = listOf(
-                MR.strings.createTrans_tab_income.desc().localized(),
-                MR.strings.createTrans_tab_expense.desc().localized(),
-                MR.strings.createTrans_tab_transfer.desc().localized()
-            )
-
+            Row(modifier = Modifier.fillMaxWidth()) {
+                IconButton(onClick = {navigator.pop()}){
+                    Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "", tint = Color.Black)
+                }
+                Spacer(modifier = Modifier.width(marginStart_createTrans_actionBar_tabName))
+                Text(
+                    text = tabList[selectedTabIndex.value],
+                    color = Color.Black,
+                    modifier = Modifier.align(Alignment.CenterVertically),
+                )
+            }
             TabRow(
                 selectedTabIndex = selectedTabIndex.value,
                 contentColor = Color.Transparent,

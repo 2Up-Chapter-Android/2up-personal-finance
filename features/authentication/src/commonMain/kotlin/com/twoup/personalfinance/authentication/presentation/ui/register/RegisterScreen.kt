@@ -46,6 +46,7 @@ import com.twoup.personalfinance.authentication.presentation.theme.margin_top_re
 import com.twoup.personalfinance.authentication.presentation.theme.padding_register_error_text
 import com.twoup.personalfinance.authentication.presentation.theme.radius_register_button
 import com.twoup.personalfinance.authentication.presentation.theme.radius_register_outlineTextField
+import com.twoup.personalfinance.authentication.presentation.theme.size_register_button
 import com.twoup.personalfinance.authentication.presentation.theme.size_register_progress
 import com.twoup.personalfinance.authentication.presentation.theme.strokeWidth_register_progressBar
 import com.twoup.personalfinance.authentication.presentation.theme.textSize_login_registerTextButton
@@ -318,7 +319,7 @@ class RegisterScreen : Screen {
                                     size = radius_register_button
                                 ),
                                 modifier = Modifier
-                                    .size(100.dp)
+                                    .size(size_register_button)
                                     .aspectRatio(1f),
                                 colors = ButtonDefaults.buttonColors(
                                     backgroundColor = colorResource(MR.colors.float_button_register),
