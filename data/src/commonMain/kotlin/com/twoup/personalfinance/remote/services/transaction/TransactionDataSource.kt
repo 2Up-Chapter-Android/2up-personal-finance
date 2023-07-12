@@ -5,4 +5,6 @@ import com.twoup.personalfinance.domain.model.transaction.createTrans.CreateTran
 
 class TransactionDataSource(private val service: TransactionService) {
     suspend fun createTransaction(createTransactionRequest: CreateTransactionRequestModel) = service.createTransaction(createTransactionRequest)
+
+    suspend fun getListWallets() = service.getListWallets()
 }

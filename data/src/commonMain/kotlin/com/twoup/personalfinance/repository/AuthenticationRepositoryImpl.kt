@@ -21,7 +21,7 @@ class AuthenticationRepositoryImpl(
 ) : AuthenticationRepository {
 
     override suspend fun login(loginRequest: LoginRequestModel): Result<LoginResponseModel> {
-        val loginResponse = safeApiCall {
+        return safeApiCall {
             dataSource.login(loginRequest)
         }.map { it.mapToDomain() }.onSuccess {
             secureStorageWrapperImpl.saveValue(
@@ -31,7 +31,6 @@ class AuthenticationRepositoryImpl(
                 SecureStorageKey.REFRESH_TOKEN, it.data.refreshToken
             )
         }
-        return loginResponse
     }
 
     override suspend fun register(registerRequest: RegisterRequestModel): Result<RegisterResponseModel> =

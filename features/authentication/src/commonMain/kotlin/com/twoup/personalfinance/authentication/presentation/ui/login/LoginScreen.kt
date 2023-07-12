@@ -79,6 +79,7 @@ import com.twoup.personalfinance.authentication.presentation.theme.textSize_logi
 import com.twoup.personalfinance.authentication.presentation.theme.textSize_login_welcomeTitle
 import com.twoup.personalfinance.authentication.presentation.theme.width_login_welcomeImage
 import com.twoup.personalfinance.navigation.AuthenticationSharedScreen
+import com.twoup.personalfinance.navigation.TransactionSharedScreen
 import com.twoup.personalfinance.remote.util.HttpException
 import com.twoup.personalfinance.remote.util.NetworkException
 import com.twoup.personalfinance.remote.util.fold
@@ -106,11 +107,13 @@ class LoginScreen : Screen {
         val navigator = LocalNavigator.currentOrThrow
         val registerScreen = rememberScreen(AuthenticationSharedScreen.RegisterScreen)
         val reActiveAccScreen = rememberScreen(AuthenticationSharedScreen.ReActiveAccountScreen)
+        val dashBoardScreen = rememberScreen(TransactionSharedScreen.TransactionDashboardScreen)
 
         LaunchedEffect(key1 = loginState.value) {
             loginState.value.fold(
                 onSuccess = {
                     Napier.d(tag = "TestLogin", message = it.data.accessToken)
+                    navigator.replaceAll(dashBoardScreen)
                 },
                 onFailure = {
                     when (it) {
