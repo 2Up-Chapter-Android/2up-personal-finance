@@ -17,7 +17,7 @@ lateinit var koin: Koin
 
 fun main() = singleWindowApplication(
     title = "2UP Personal Finance",
-    state = WindowState(width = 1280.dp, height = 768.dp),
+    state = WindowState(width = 540.dp, height = 960.dp),
     icon = BitmapPainter(useResource("ic_launcher.png", ::loadImageBitmap)),
 ) {
     if (KoinContextHandler.getOrNull() == null) {

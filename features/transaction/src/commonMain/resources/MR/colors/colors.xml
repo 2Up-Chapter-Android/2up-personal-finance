@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="color_tab_expense">#EA7250</color>
+    <color name="color_tab_expense">#ff603b</color>
     <color name="color_tab_unselected">#f3f6f4</color>
+    <color name="color_border_line_break">#c6c6c8</color>
+    <color name="color_line_break">#dedee1</color>
 </resources>
