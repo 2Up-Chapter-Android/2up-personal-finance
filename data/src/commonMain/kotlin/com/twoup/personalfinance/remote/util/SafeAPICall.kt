@@ -1,5 +1,6 @@
 package com.twoup.personalfinance.remote.util
 
+import com.twoup.personalfinance.remote.dto.category.CategoryResponse
 import io.ktor.utils.io.errors.IOException
 import kotlinx.serialization.SerializationException
 

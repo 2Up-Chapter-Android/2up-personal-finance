@@ -6,6 +6,7 @@ import com.twoup.personalfinance.authentication.presentation.ui.otp.OTPScreen
 import com.twoup.personalfinance.authentication.presentation.ui.otp.ReActiveAccountScreen
 import com.twoup.personalfinance.authentication.presentation.ui.register.RegisterScreen
 import com.twoup.personalfinance.navigation.AuthenticationSharedScreen
+import com.twoup.personalfinance.navigation.SharedScreenCategory
 import org.koin.dsl.module
 
 fun authenticationNavigationModule() = module {

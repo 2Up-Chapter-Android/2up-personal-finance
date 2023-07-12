@@ -21,7 +21,9 @@ import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.registry.rememberScreen
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import com.twoup.personalfinance.navigation.SharedScreenCategory
 import com.twoup.personalfinance.navigation.TransactionSharedScreen
 
 class TransactionDashboardScreen: Screen {
@@ -34,6 +36,7 @@ class TransactionDashboardScreen: Screen {
     fun TransactionDashboardScreen() {
         val navigator = LocalNavigator.currentOrThrow
         val createTransScreen = rememberScreen(TransactionSharedScreen.CreateTransactionScreen)
+//        val categoryScreen = rememberScreen(SharedScreenCategory.CategoryScreen)
         Box(modifier = Modifier.fillMaxSize().padding(10.dp)) {
             Column {
                 Text(text = "Hello Transaction Dashboard Screen", color = Color.Black, fontSize = 50.sp)
@@ -41,6 +44,7 @@ class TransactionDashboardScreen: Screen {
             Button(
                 onClick = {
                     navigator.push(createTransScreen)
+//                    navigator.push(categoryScreen)
                 },
                 shape = CircleShape,
                 modifier = Modifier.size(50.dp).align(Alignment.BottomEnd),
