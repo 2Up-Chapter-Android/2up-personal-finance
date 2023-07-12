@@ -43,8 +43,8 @@ internal fun PersonalFinanceTheme(
 @Composable
 internal fun Content() {
     Scaffold {
-        Navigator(LoginScreen())
-//        Navigator(TransactionDashboardScreen())
+//        Navigator(LoginScreen())
+        Navigator(TransactionDashboardScreen())
     }
 }
 

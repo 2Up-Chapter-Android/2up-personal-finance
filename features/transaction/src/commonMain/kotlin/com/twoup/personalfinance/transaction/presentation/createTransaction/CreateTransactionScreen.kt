@@ -3,6 +3,7 @@ package com.twoup.personalfinance.transaction.presentation.createTransaction
 import PersonalFinance.features.transaction.MR
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -44,10 +45,13 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.twoup.personalfinance.transaction.presentation.theme.buttonHeight_transaction_buttonNextAction
+import com.twoup.personalfinance.transaction.presentation.theme.create_transaction_padding_end_text
 import com.twoup.personalfinance.transaction.presentation.theme.create_transaction_padding_horizontal
 import com.twoup.personalfinance.transaction.presentation.theme.create_transaction_padding_row
 import com.twoup.personalfinance.transaction.presentation.theme.create_transaction_padding_start_text
+import com.twoup.personalfinance.transaction.presentation.theme.create_transaction_padding_vertical
 import com.twoup.personalfinance.transaction.presentation.theme.create_transaction_spacer_padding_bottom
+import com.twoup.personalfinance.transaction.presentation.theme.create_transaction_spacer_padding_horizontal
 import com.twoup.personalfinance.transaction.presentation.theme.create_transaction_spacer_padding_top
 import com.twoup.personalfinance.transaction.presentation.theme.marginStart_createTrans_actionBar_tabName
 import com.twoup.personalfinance.transaction.presentation.theme.textSize_transaction_textField
@@ -57,7 +61,7 @@ import dev.icerock.moko.resources.compose.localized
 import dev.icerock.moko.resources.compose.stringResource
 import dev.icerock.moko.resources.desc.desc
 
-class CreateTransactionScreen : Screen{
+class CreateTransactionScreen : Screen {
     @Composable
     override fun Content() {
         CreateTransactionScreen()
@@ -81,8 +85,12 @@ class CreateTransactionScreen : Screen{
                 .fillMaxSize()
         ) {
             Row(modifier = Modifier.fillMaxWidth()) {
-                IconButton(onClick = {navigator.pop()}){
-                    Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "", tint = Color.Black)
+                IconButton(onClick = { navigator.pop() }) {
+                    Icon(
+                        imageVector = Icons.Default.ArrowBack,
+                        contentDescription = "",
+                        tint = Color.Black
+                    )
                 }
                 Spacer(modifier = Modifier.width(marginStart_createTrans_actionBar_tabName))
                 Text(
@@ -95,9 +103,15 @@ class CreateTransactionScreen : Screen{
                 selectedTabIndex = selectedTabIndex.value,
                 contentColor = Color.Transparent,
                 backgroundColor = MaterialTheme.colors.surface,
+                divider = { /*remove underline*/ },
+                indicator = { /*remove indicator*/ }
             ) {
                 tabList.forEachIndexed { index, tabName ->
-                    tabLayoutTrans(index = index, value = tabName, selectedTabIndex = selectedTabIndex)
+                    tabLayoutTrans(
+                        index = index,
+                        value = tabName,
+                        selectedTabIndex = selectedTabIndex
+                    )
                 }
             }
 
@@ -145,20 +159,22 @@ class CreateTransactionScreen : Screen{
 
             Spacer(
                 modifier = Modifier
-                    .height(16.dp)
+                    .height(40.dp)
                     .padding(
+                        start = create_transaction_spacer_padding_horizontal,
+                        end = create_transaction_spacer_padding_horizontal,
                         top = create_transaction_spacer_padding_top,
                         bottom = create_transaction_spacer_padding_bottom
                     )
                     .fillMaxWidth()
-                    .background(Color.LightGray)
+                    .background(colorResource(MR.colors.color_line_break)),
             )
 
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(create_transaction_padding_horizontal)
+                    .padding(horizontal = create_transaction_padding_horizontal)
             ) {
                 //Create this transaction and back to dashboard screen
                 Button(
@@ -167,11 +183,13 @@ class CreateTransactionScreen : Screen{
                         .weight(1f)
                         .padding(end = create_transaction_padding_row)
                         .height(buttonHeight_transaction_buttonNextAction),
-                    colors = ButtonDefaults.outlinedButtonColors(backgroundColor = colorResource(MR.colors.color_tab_expense))
-
-
+                    colors = ButtonDefaults.outlinedButtonColors(backgroundColor = colorResource(MR.colors.color_tab_expense)),
+                    shape = RoundedCornerShape(20)
                 ) {
-                    Text(text = MR.strings.createTrans_button_createTrans.desc().localized(), color = Color.White)
+                    Text(
+                        text = MR.strings.createTrans_button_createTrans.desc().localized(),
+                        color = Color.White
+                    )
                 }
                 //Create this transaction and continue create another transaction
                 Button(
@@ -179,9 +197,13 @@ class CreateTransactionScreen : Screen{
                     modifier = Modifier
                         .height(buttonHeight_transaction_buttonNextAction),
                     colors = ButtonDefaults.outlinedButtonColors(backgroundColor = Color.White),
-                    border = BorderStroke(thickness_transaction_borderStroke, Color.Black)
+                    border = BorderStroke(thickness_transaction_borderStroke, Color.Black),
+                    shape = RoundedCornerShape(20)
                 ) {
-                    Text(text = MR.strings.createTrans_button_saveAndCreateAnother.desc().localized(), color = Color.Black)
+                    Text(
+                        text = MR.strings.createTrans_button_saveAndCreateAnother.desc()
+                            .localized(), color = Color.Black
+                    )
 
                 }
             }
@@ -203,7 +225,8 @@ class CreateTransactionScreen : Screen{
                     when (selectedTabIndex.value) {
                         0 -> BorderStroke(thickness_transaction_borderStroke, Color.Blue)
                         1 -> BorderStroke(
-                            thickness_transaction_borderStroke, colorResource(MR.colors.color_tab_expense)
+                            thickness_transaction_borderStroke,
+                            colorResource(MR.colors.color_tab_expense)
                         )
 
                         else -> BorderStroke(thickness_transaction_borderStroke, Color.Black)
@@ -257,16 +280,20 @@ class CreateTransactionScreen : Screen{
         ) {
             Text(
                 text = textLabel,
-                textAlign = TextAlign.Left,
+                textAlign = TextAlign.Center,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start = create_transaction_padding_start_text)
+                    .padding(
+                        start = create_transaction_padding_start_text,
+                        end = create_transaction_padding_end_text
+                    )
                     .weight(2f)
             )
 
             TextField(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .padding(end = create_transaction_padding_end_text)
                     .weight(8f),
                 value = text,
                 onValueChange = { onTextChange(it) },
