@@ -1,6 +1,6 @@
 package com.twoup.personalfinance.domain.repository.transaction
 
-import com.twoup.personalfinance.domain.model.transaction.getWallet.GetListWalletResponseModel
+import com.twoup.personalfinance.domain.model.wallet.getWallet.GetListWalletResponseModel
 
 
 interface TransactionRepository {

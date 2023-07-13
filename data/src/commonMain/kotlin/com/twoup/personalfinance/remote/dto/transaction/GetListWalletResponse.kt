@@ -2,7 +2,7 @@ package com.twoup.personalfinance.remote.dto.transaction
 
 
 import com.twoup.personalfinance.const.ConstDefaultValue
-import com.twoup.personalfinance.domain.model.transaction.WalletGroup
+import com.twoup.personalfinance.domain.model.wallet.WalletGroup
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
