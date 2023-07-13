@@ -6,7 +6,7 @@ data class CreateTransUiState(
     val category: String = "",
     val account: String = "",
     val note: String = "",
-
+    val isOpenChooseWallet: Boolean = false,
     val tabColor: Int = 0
 ) {
 }

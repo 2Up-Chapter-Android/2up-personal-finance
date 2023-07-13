@@ -60,4 +60,10 @@ class CreateTransViewModel: ScreenModel, KoinComponent {
             note = text
         )
     }
+
+    fun openCloseChooseWallet(isOpen: Boolean){
+        _createTransUiState.value = createTransUiState.value.copy(
+            isOpenChooseWallet = isOpen
+        )
+    }
 }
