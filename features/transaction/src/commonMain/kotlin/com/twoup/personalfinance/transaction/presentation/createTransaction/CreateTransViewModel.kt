@@ -11,6 +11,8 @@ class CreateTransViewModel: ScreenModel, KoinComponent {
     private val _createTransUiState = MutableStateFlow(CreateTransUiState())
     val createTransUiState = _createTransUiState.asStateFlow()
 
+//    val noteState : MutableStateFlow<List<NoteEntity>> = MutableStateFlow(listOf())
+
     fun onDateChange(text: String){
         _createTransUiState.value = createTransUiState.value.copy(
             date = text

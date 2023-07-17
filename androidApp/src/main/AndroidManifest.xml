@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:name="com.twoup.personalfinance.android.PersonalFinanceApplication"
         android:allowBackup="false"
-        android:supportsRtl="true"
+        android:enableOnBackInvokedCallback="true"
         android:label="Personal Finance"
+        android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
         <activity
