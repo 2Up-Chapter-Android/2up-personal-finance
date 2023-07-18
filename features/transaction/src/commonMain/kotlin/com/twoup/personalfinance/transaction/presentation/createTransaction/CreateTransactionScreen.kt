@@ -114,25 +114,32 @@ class CreateTransactionScreen : Screen {
                     )
                 }
             }
-
-            /**
-             * when (selectedTabIndex.value) {
-            0 -> IncomeTab()
-            1 -> ExpenseTab()
-            2 -> TransferTab()
-            }
-             * */
             LineTransInfor(
-                text = createTransUiState.value.date,
-                textLabel = MR.strings.createTrans_inputLabel_date.desc().localized(),
-                onTextChange = { viewModel.onDateChange(it) },
+                text = when (selectedTabIndex.value) {
+                    0 -> "INCOME"
+                    1 -> "EXPENSE"
+                    else -> "TRANSFER"
+                },
+                textLabel = "",
+                onTextChange = {
+                    viewModel.onTypeChange(it)
+                },
                 keyboardOption = KeyboardOptions(imeAction = ImeAction.Next),
             )
 
             LineTransInfor(
-                text = createTransUiState.value.amount,
+                text = createTransUiState.value.date.toString(),
+                textLabel = MR.strings.createTrans_inputLabel_date.desc().localized(),
+                onTextChange = {
+                    viewModel.onDateChange(it.toLong())
+                },
+                keyboardOption = KeyboardOptions(imeAction = ImeAction.Next),
+            )
+
+            LineTransInfor(
+                text = createTransUiState.value.amount.toString(),//convert int to string
                 textLabel = MR.strings.createTrans_inputLabel_amount.desc().localized(),
-                onTextChange = { viewModel.onAmountChange(it) },
+                onTextChange = { viewModel.onAmountChange(it.toInt()) },//convert string to int
                 keyboardOption = KeyboardOptions(imeAction = ImeAction.Next),
             )
 
@@ -176,9 +183,11 @@ class CreateTransactionScreen : Screen {
                     .fillMaxWidth()
                     .padding(horizontal = create_transaction_padding_horizontal)
             ) {
-                //Create this transaction and back to dashboard screen
                 Button(
-                    onClick = { /* Handle create button click */ },
+                    onClick = {
+                        viewModel.createTransaction(createTransUiState.value.typeTrans)
+                    },
+                    enabled = createTransUiState.value.enableCreateTransButton,
                     modifier = Modifier
                         .weight(1f)
                         .padding(end = create_transaction_padding_row)
