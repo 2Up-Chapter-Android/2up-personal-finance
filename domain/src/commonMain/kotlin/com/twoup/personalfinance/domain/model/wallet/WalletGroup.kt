@@ -1,4 +1,4 @@
-package com.twoup.personalfinance.domain.model.transaction
+package com.twoup.personalfinance.domain.model.wallet
 
 enum class WalletGroup {
     CASH,
