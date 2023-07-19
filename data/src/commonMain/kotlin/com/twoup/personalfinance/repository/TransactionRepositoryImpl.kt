@@ -1,6 +1,6 @@
 package com.twoup.personalfinance.repository
 
-import com.aibles.finance2upkmm.shared.cache.Database
+import com.twoup.personalfinance.local.Database
 import com.twoup.personalfinance.domain.model.wallet.getWallet.GetListWalletResponseModel
 import com.twoup.personalfinance.domain.repository.transaction.TransactionRepository
 import com.twoup.personalfinance.mapping.mapToDomain

@@ -1,12 +1,11 @@
-package com.aibles.finance2upkmm.shared.cache
+package com.twoup.personalfinance.local
 
-import com.twoup.personalfinance.database.PersonalFinanceDatabase
 import com.twoup.personalfinance.domain.model.wallet.Wallet
 import com.twoup.personalfinance.domain.model.wallet.WalletGroup
 
 
-public class Database(databaseDriverFactory: DatabaseDriverFactory) {
-    private val database = PersonalFinanceDatabase(databaseDriverFactory.createDriver())
+class Database(databaseWrapper: PersonalFinanceDatabaseWrapper) {
+    private val database = databaseWrapper.instance
     private val dbQuery = database.personalFinanceDatabaseQueries
 
     internal fun clearDatabase() {

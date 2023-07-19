@@ -1,6 +1,5 @@
 package com.twoup.personalfinance.remote.di
 
-import com.aibles.finance2upkmm.shared.cache.Database
 import com.twoup.personalfinance.remote.services.authentication.AuthenticationDataSource
 import com.twoup.personalfinance.remote.services.authentication.AuthenticationService
 import com.twoup.personalfinance.remote.services.transaction.TransactionDataSource
@@ -14,5 +13,4 @@ fun networkModule() = module {
 
     single<TransactionService> { get<Ktorfit>().create() }
     single { TransactionDataSource(get()) }
-    single { Database(get()) }
 }
