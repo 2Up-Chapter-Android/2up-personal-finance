@@ -4,17 +4,19 @@ import com.twoup.personalfinance.domain.model.wallet.Wallet
 import com.twoup.personalfinance.domain.model.wallet.WalletGroup
 
 
-class Database(databaseWrapper: PersonalFinanceDatabaseWrapper) {
+class Database(databaseWrapper: PersonalFinanceDatabaseWrapper): IDatabase {
     private val database = databaseWrapper.instance
     private val dbQuery = database.personalFinanceDatabaseQueries
 
-    internal fun clearDatabase() {
+     override fun clearDatabase() {
         dbQuery.transaction {
-
+            dbQuery.transaction {
+                dbQuery.removeAllWallet()
+            }
         }
     }
 
-    internal fun getAllLWallet(): List<Wallet> {
+    override fun getAllLWallet(): List<Wallet> {
         return dbQuery.selectAllWallet().executeAsList().map { wallet ->
             mapSelecting(
                 wallet.id,
@@ -26,7 +28,7 @@ class Database(databaseWrapper: PersonalFinanceDatabaseWrapper) {
         }
     }
 
-    fun insertWallet(
+    override fun insertWallet(
         id: String,
         amount: Int,
         description: String,
