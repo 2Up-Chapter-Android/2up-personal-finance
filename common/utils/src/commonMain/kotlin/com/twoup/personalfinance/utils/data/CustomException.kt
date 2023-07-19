@@ -1,4 +1,4 @@
-package com.twoup.personalfinance.remote.util
+package com.twoup.personalfinance.utils.data
 
 data class HttpException(val code: String? = "", val msg: String? = ""): CustomException(code, msg)
 

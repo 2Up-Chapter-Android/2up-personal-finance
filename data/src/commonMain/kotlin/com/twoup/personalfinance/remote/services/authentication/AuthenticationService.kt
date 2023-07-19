@@ -8,20 +8,21 @@ import com.twoup.personalfinance.remote.dto.authentication.login.LoginResponse
 import com.twoup.personalfinance.remote.dto.authentication.otp.ActiveUserResponse
 import com.twoup.personalfinance.remote.dto.authentication.otp.SendOtpResponse
 import com.twoup.personalfinance.remote.dto.authentication.register.RegisterResponse
+import com.twoup.personalfinance.utils.data.Resource
 import de.jensklingenberg.ktorfit.http.Body
 import de.jensklingenberg.ktorfit.http.POST
 
 interface AuthenticationService {
 
     @POST("auth/login")
-    suspend fun login(@Body loginRequest: LoginRequestModel): Result<LoginResponse>
+    suspend fun login(@Body loginRequest: LoginRequestModel): Resource<LoginResponse>
 
     @POST("auth/users/register")
-    suspend fun register(@Body registerRequest: RegisterRequestModel): Result<RegisterResponse>
+    suspend fun register(@Body registerRequest: RegisterRequestModel): Resource<RegisterResponse>
 
     @POST("auth/otp/resend")
-    suspend fun sendOtp(@Body sendOTPRequest: SendOtpRequestModel): Result<SendOtpResponse>
+    suspend fun sendOtp(@Body sendOTPRequest: SendOtpRequestModel): Resource<SendOtpResponse>
 
     @POST("auth/users/active")
-    suspend fun activeUser(@Body activeUserRequest: ActiveUserRequestModel): Result<ActiveUserResponse>
+    suspend fun activeUser(@Body activeUserRequest: ActiveUserRequestModel): Resource<ActiveUserResponse>
 }

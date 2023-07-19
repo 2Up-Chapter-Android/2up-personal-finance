@@ -29,6 +29,7 @@ kotlin {
                 implementation(libs.kotlinx.serialization.json)
                 implementation(libs.koin.core)
                 implementation(project(":common:resources"))
+                implementation(project(":common:utils"))
             }
         }
         val commonTest by getting {

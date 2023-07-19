@@ -1,4 +1,4 @@
-package com.twoup.personalfinance.remote.util
+package com.twoup.personalfinance.utils.data
 
 data class Resource<out T>(val status: Status, val data: T?, val error: CustomException?) {
     enum class Status {
@@ -48,14 +48,12 @@ fun <T> Resource<T>.fold(onSuccess: (T) -> Unit, onFailure: (CustomException) ->
     }
 }
 
-inline fun <reified T> Result<T>.toResource(): Resource<T> {
-    return when {
-        this.isSuccess -> Resource.success(getOrNull()!!)
-        this.isFailure -> {
-            val exception = exceptionOrNull()
-            if (exception is CustomException) Resource.error(exception)
-            else Resource.error(UnknownException(exception?.message ?: "Unknown error"))
-        }
-        else -> Resource.loading()
-    }
+fun <T> Resource<T>.onSuccess(onSuccess: (T) -> Unit): Resource<T> {
+    if (this.isSuccessful()) onSuccess(data!!)
+    return this
+}
+
+fun <T> Resource<T>.onFailure(onFailure: (CustomException) -> Unit): Resource<T> {
+    if (this.isError()) onFailure(error!!)
+    return this
 }

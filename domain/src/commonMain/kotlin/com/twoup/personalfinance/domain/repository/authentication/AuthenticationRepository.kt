@@ -8,13 +8,14 @@ import com.twoup.personalfinance.domain.model.authentication.otp.SendOtpRequestM
 import com.twoup.personalfinance.domain.model.authentication.otp.SendOtpResponseModel
 import com.twoup.personalfinance.domain.model.authentication.register.RegisterRequestModel
 import com.twoup.personalfinance.domain.model.authentication.register.RegisterResponseModel
+import com.twoup.personalfinance.utils.data.Resource
 
 interface AuthenticationRepository {
-    suspend fun login(loginRequest: LoginRequestModel): Result<LoginResponseModel>
+    suspend fun login(loginRequest: LoginRequestModel): Resource<LoginResponseModel>
 
-    suspend fun register(registerRequest: RegisterRequestModel): Result<RegisterResponseModel>
+    suspend fun register(registerRequest: RegisterRequestModel): Resource<RegisterResponseModel>
 
-    suspend fun sendOtp(sendOTPRequest: SendOtpRequestModel): Result<SendOtpResponseModel>
+    suspend fun sendOtp(sendOTPRequest: SendOtpRequestModel): Resource<SendOtpResponseModel>
 
-    suspend fun activeUser(activeUserRequest: ActiveUserRequestModel): Result<ActiveUserResponseModel>
+    suspend fun activeUser(activeUserRequest: ActiveUserRequestModel): Resource<ActiveUserResponseModel>
 }
