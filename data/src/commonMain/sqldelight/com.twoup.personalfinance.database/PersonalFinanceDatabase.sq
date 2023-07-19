@@ -1,17 +1,18 @@
-CREATE TABLE PersonEntity (
+CREATE TABLE Wallet (
+    id TEXT,
+    amount INTEGER,
+    description TEXT,
     name TEXT,
-    height TEXT,
-    mass TEXT,
-    url TEXT
+    walletGroup TEXT
 );
 
-insertPerson:
-INSERT INTO PersonEntity(name, height, mass, url)
-VALUES(?, ?, ?, ?);
+insertWallet:
+INSERT INTO Wallet(id, amount, description, name, walletGroup)
+VALUES(?, ?, ?, ?,?);
 
-removeAllPerson:
-DELETE FROM PersonEntity;
+removeAllWallet:
+DELETE FROM Wallet;
 
-selectAllPersonsInfo:
-SELECT PersonEntity.*
-FROM PersonEntity;
+selectAllWallet:
+SELECT *
+FROM Wallet;
