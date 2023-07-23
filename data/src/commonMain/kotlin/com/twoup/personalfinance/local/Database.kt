@@ -9,23 +9,13 @@ class Database(databaseWrapper: PersonalFinanceDatabaseWrapper): IDatabase {
     private val dbQuery = database.personalFinanceDatabaseQueries
 
      override fun clearDatabase() {
-        dbQuery.transaction {
-            dbQuery.transaction {
-                dbQuery.removeAllWallet()
-            }
-        }
-    }
+         dbQuery.transaction {
+             dbQuery.removeAllWallet()
+         }
+     }
 
     override fun getAllLWallet(): List<Wallet> {
-        return dbQuery.selectAllWallet().executeAsList().map { wallet ->
-            mapSelecting(
-                wallet.id,
-                wallet.amount?.toInt(),
-                wallet.description,
-                wallet.name,
-                wallet.walletGroup
-            )
-        }
+        return dbQuery.selectAllWallet().executeAsList().map { it.mapToDomain() }
     }
 
     override fun insertWallet(
@@ -44,17 +34,13 @@ class Database(databaseWrapper: PersonalFinanceDatabaseWrapper): IDatabase {
         )
     }
 
-    private fun mapSelecting(
-        id: String?,
-        amount: Int?,
-        description: String?,
-        name: String?,
-        walletGroup: String?,
-    ): Wallet {
+    private fun comtwouppersonalfinancedatabase.Wallet.mapToDomain(): Wallet {
         return Wallet(
-            amount!!, description!!, id!!, name!!, WalletGroup.valueOf(walletGroup!!)
+            amount =  amount!!.toInt(),
+            description = description!!,
+            id = id!!,
+            name = name!!,
+            walletGroup = WalletGroup.valueOf(walletGroup!!)
         )
     }
-
-
 }

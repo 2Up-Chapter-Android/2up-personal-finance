@@ -2,6 +2,8 @@ package com.twoup.personalfinance.remote.util
 
 import com.twoup.personalfinance.utils.data.Resource
 import com.twoup.personalfinance.utils.data.UnknownException
+import io.ktor.util.network.UnresolvedAddressException
+import io.ktor.utils.io.errors.IOException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.first
@@ -35,6 +37,12 @@ inline fun <ResultType, RequestType> networkBoundResource(
             //Now fetch data again from the database and Dispatch it to the UI
             query().map { Resource.success(it) }
 
+        } catch (e: UnresolvedAddressException) {
+
+            query().map { Resource.success(it) }
+        } catch (e: IOException) {
+
+            query().map { Resource.success(it) }
         } catch (throwable: Throwable) {
 
             //Dispatch any error emitted to the UI, plus data emmited from the Database

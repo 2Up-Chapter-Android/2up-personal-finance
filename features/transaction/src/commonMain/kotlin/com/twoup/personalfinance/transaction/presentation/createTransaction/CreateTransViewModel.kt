@@ -19,8 +19,7 @@ class CreateTransViewModel: ScreenModel, KoinComponent {
     private val _createTransUiState = MutableStateFlow(CreateTransUiState())
     val createTransUiState = _createTransUiState.asStateFlow()
 
-    private val _getListWalletState = MutableStateFlow<Resource<GetListWalletResponseModel>>(
-        Resource.loading())
+    private val _getListWalletState = MutableStateFlow<Resource<GetListWalletResponseModel>>(Resource.loading())
     val getListWalletState = _getListWalletState.asStateFlow()
 
     init {
@@ -29,7 +28,10 @@ class CreateTransViewModel: ScreenModel, KoinComponent {
 
     private fun getListWallets() {
         GlobalScope.launch {
-            _getListWalletState.tryEmit(getListWalletsUseCase())
+            getListWalletsUseCase().collect {
+                _getListWalletState.emit(it)
+            }
+//            _getListWalletState.tryEmit(getListWalletsUseCase().first())
         }
     }
 

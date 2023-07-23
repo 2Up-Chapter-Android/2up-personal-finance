@@ -111,6 +111,12 @@ class CreateTransactionScreen : Screen {
                 },
                 onFailure = {
 
+                },
+                onLoading = {
+                    it?.let {
+                        listWallet.value.clear()
+                        listWallet.value.addAll(it.data)
+                    }
                 }
             )
         }

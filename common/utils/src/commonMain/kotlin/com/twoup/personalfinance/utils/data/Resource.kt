@@ -40,11 +40,11 @@ data class Resource<out T>(val status: Status, val data: T?, val error: CustomEx
 
 inline fun <X, Y> Resource<X>.map(transform: (X?) -> Y): Resource<Y> = Resource(status, transform(data), error)
 
-fun <T> Resource<T>.fold(onSuccess: (T) -> Unit, onFailure: (CustomException) -> Unit, onLoading: () -> Unit = {}) {
+fun <T> Resource<T>.fold(onSuccess: (T) -> Unit, onFailure: (CustomException) -> Unit, onLoading: (T?) -> Unit = {}) {
     when {
         this.isSuccessful() -> onSuccess(data!!)
         this.isError() -> onFailure(error!!)
-        this.isLoading() -> onLoading()
+        this.isLoading() -> onLoading(data)
     }
 }
 
