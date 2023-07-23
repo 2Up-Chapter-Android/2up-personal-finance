@@ -5,10 +5,9 @@ import cafe.adriel.voyager.core.model.coroutineScope
 import com.twoup.personalfinance.domain.model.authentication.login.LoginRequestModel
 import com.twoup.personalfinance.domain.model.authentication.login.LoginResponseModel
 import com.twoup.personalfinance.domain.usecase.authentication.LoginUseCase
-import com.twoup.personalfinance.remote.util.Resource
-import com.twoup.personalfinance.remote.util.toResource
-import com.twoup.personalfinance.utils.isValidEmail
-import com.twoup.personalfinance.utils.isValidPassword
+import com.twoup.personalfinance.utils.data.Resource
+import com.twoup.personalfinance.utils.presentation.isValidEmail
+import com.twoup.personalfinance.utils.presentation.isValidPassword
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -42,7 +41,7 @@ class LoginViewModel: ScreenModel, KoinComponent {
                     email = usernameInput.value,
                     password =  passwordInput.value
                 )
-            ).toResource()
+            )
             _loginUiState.value = loginUiState.value.copy(isLoading = false)
             _loginState.tryEmit(loginResponse)
 

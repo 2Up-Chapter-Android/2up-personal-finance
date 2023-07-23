@@ -22,5 +22,5 @@ fun dataModule(baseUrl: String, enableNetworkLogs: Boolean) = module {
 
 private fun provideRepositories() = module {
     single<AuthenticationRepository> { AuthenticationRepositoryImpl(get(), get()) }
-    single<TransactionRepository> { TransactionRepositoryImpl(get()) }
+    single<TransactionRepository> { TransactionRepositoryImpl(get(), get()) }
 }

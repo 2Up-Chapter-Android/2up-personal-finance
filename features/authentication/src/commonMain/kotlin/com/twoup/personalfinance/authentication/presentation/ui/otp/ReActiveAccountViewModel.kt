@@ -5,9 +5,8 @@ import cafe.adriel.voyager.core.model.coroutineScope
 import com.twoup.personalfinance.domain.model.authentication.otp.SendOtpRequestModel
 import com.twoup.personalfinance.domain.model.authentication.otp.SendOtpResponseModel
 import com.twoup.personalfinance.domain.usecase.authentication.SendOtpUseCase
-import com.twoup.personalfinance.remote.util.Resource
-import com.twoup.personalfinance.remote.util.toResource
-import com.twoup.personalfinance.utils.isValidEmail
+import com.twoup.personalfinance.utils.data.Resource
+import com.twoup.personalfinance.utils.presentation.isValidEmail
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -35,7 +34,7 @@ class ReActiveAccountViewModel: ScreenModel, KoinComponent {
                 SendOtpRequestModel(
                     email = emailInput.value,
                 )
-            ).toResource()
+            )
             _reActiveAccountUIState.value = reActiveAccountUIState.value.copy(isLoading = false)
 
             _sendOtpState.tryEmit(response)

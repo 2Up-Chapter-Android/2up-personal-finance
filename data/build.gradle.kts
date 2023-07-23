@@ -37,6 +37,7 @@ kotlin {
             dependencies {
                 implementation(project(":domain"))
                 implementation(project(":common:resources"))
+                implementation(project(":common:utils"))
                 //Logging
                 implementation(libs.napier)
                 //Network

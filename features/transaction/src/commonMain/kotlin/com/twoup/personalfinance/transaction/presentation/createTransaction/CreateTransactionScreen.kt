@@ -54,13 +54,12 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.twoup.personalfinance.domain.model.wallet.Wallet
-import com.twoup.personalfinance.remote.util.fold
+import com.twoup.personalfinance.utils.data.fold
 import com.twoup.personalfinance.transaction.presentation.theme.buttonHeight_transaction_buttonNextAction
 import com.twoup.personalfinance.transaction.presentation.theme.create_transaction_padding_end_text
 import com.twoup.personalfinance.transaction.presentation.theme.create_transaction_padding_horizontal
@@ -112,6 +111,12 @@ class CreateTransactionScreen : Screen {
                 },
                 onFailure = {
 
+                },
+                onLoading = {
+                    it?.let {
+                        listWallet.value.clear()
+                        listWallet.value.addAll(it.data)
+                    }
                 }
             )
         }

@@ -8,12 +8,9 @@ import com.twoup.personalfinance.domain.model.authentication.otp.SendOtpRequestM
 import com.twoup.personalfinance.domain.model.authentication.otp.SendOtpResponseModel
 import com.twoup.personalfinance.domain.usecase.authentication.ActiveUserUseCase
 import com.twoup.personalfinance.domain.usecase.authentication.SendOtpUseCase
-import com.twoup.personalfinance.remote.util.Resource
-import com.twoup.personalfinance.remote.util.toResource
-import kotlinx.coroutines.flow.MutableSharedFlow
+import com.twoup.personalfinance.utils.data.Resource
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
@@ -50,7 +47,7 @@ class OTPViewModel: ScreenModel, KoinComponent {
                     email = email,
                     otp = otpInput.value
                 )
-            ).toResource()
+            )
             _otpUIState.value = otpUIState.value.copy(isLoading = false)
             _activeUserState.tryEmit(response)
         }
@@ -64,7 +61,7 @@ class OTPViewModel: ScreenModel, KoinComponent {
                 SendOtpRequestModel(
                     email = email,
                 )
-            ).toResource()
+            )
             _otpUIState.value = otpUIState.value.copy(isLoading = false)
 
             _sendOtpState.tryEmit(response)

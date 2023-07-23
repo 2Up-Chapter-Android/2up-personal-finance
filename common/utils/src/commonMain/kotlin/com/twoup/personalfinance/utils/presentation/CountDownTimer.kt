@@ -1,4 +1,4 @@
-package com.twoup.personalfinance.utils
+package com.twoup.personalfinance.utils.presentation
 
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job

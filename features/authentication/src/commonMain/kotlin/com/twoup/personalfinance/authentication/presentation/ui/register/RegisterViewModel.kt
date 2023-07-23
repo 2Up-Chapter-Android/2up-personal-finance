@@ -5,12 +5,11 @@ import cafe.adriel.voyager.core.model.coroutineScope
 import com.twoup.personalfinance.domain.model.authentication.register.RegisterRequestModel
 import com.twoup.personalfinance.domain.model.authentication.register.RegisterResponseModel
 import com.twoup.personalfinance.domain.usecase.authentication.RegisterUseCase
-import com.twoup.personalfinance.remote.util.Resource
-import com.twoup.personalfinance.remote.util.toResource
-import com.twoup.personalfinance.utils.isValidEmail
-import com.twoup.personalfinance.utils.isValidFullName
-import com.twoup.personalfinance.utils.isValidPassword
-import com.twoup.personalfinance.utils.isValidUsername
+import com.twoup.personalfinance.utils.data.Resource
+import com.twoup.personalfinance.utils.presentation.isValidEmail
+import com.twoup.personalfinance.utils.presentation.isValidFullName
+import com.twoup.personalfinance.utils.presentation.isValidPassword
+import com.twoup.personalfinance.utils.presentation.isValidUsername
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -58,7 +57,7 @@ class RegisterViewModel : ScreenModel, KoinComponent {
                     password = registerUiState.value.passwordInput,
                     confirm_password = registerUiState.value.confirmPasswordInput
                 )
-            ).toResource()
+            )
             _registerUiState.value = registerUiState.value.copy(isLoading = false)
             _registerState.tryEmit(registerResponse)
 

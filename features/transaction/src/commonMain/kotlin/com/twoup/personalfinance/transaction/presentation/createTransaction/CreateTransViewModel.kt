@@ -1,16 +1,12 @@
 package com.twoup.personalfinance.transaction.presentation.createTransaction
 
 import cafe.adriel.voyager.core.model.ScreenModel
-import cafe.adriel.voyager.core.model.coroutineScope
 import com.twoup.personalfinance.domain.model.wallet.Wallet
 import com.twoup.personalfinance.domain.model.wallet.getWallet.GetListWalletResponseModel
 import com.twoup.personalfinance.domain.usecase.transaction.GetListWalletsUseCase
-import com.twoup.personalfinance.remote.util.Resource
-import com.twoup.personalfinance.remote.util.toResource
-import io.github.aakira.napier.Napier
+import com.twoup.personalfinance.utils.data.Resource
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
@@ -32,7 +28,10 @@ class CreateTransViewModel: ScreenModel, KoinComponent {
 
     private fun getListWallets() {
         GlobalScope.launch {
-            _getListWalletState.tryEmit(getListWalletsUseCase().toResource())
+            getListWalletsUseCase().collect {
+                _getListWalletState.emit(it)
+            }
+//            _getListWalletState.tryEmit(getListWalletsUseCase().first())
         }
     }
 
