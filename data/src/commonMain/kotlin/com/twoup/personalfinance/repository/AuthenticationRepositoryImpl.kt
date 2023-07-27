@@ -14,13 +14,16 @@ import com.twoup.personalfinance.local.SecureStorageWrapper
 import com.twoup.personalfinance.mapping.mapToDomain
 import com.twoup.personalfinance.remote.services.authentication.AuthenticationDataSource
 import com.twoup.personalfinance.remote.util.safeApiCall
+import com.twoup.personalfinance.utils.data.Resource
+import com.twoup.personalfinance.utils.data.map
+import com.twoup.personalfinance.utils.data.onSuccess
 
 class AuthenticationRepositoryImpl(
     private val dataSource: AuthenticationDataSource,
     private val secureStorageWrapperImpl: SecureStorageWrapper
 ) : AuthenticationRepository {
 
-    override suspend fun login(loginRequest: LoginRequestModel): Result<LoginResponseModel> {
+    override suspend fun login(loginRequest: LoginRequestModel): Resource<LoginResponseModel> {
         return safeApiCall {
             dataSource.login(loginRequest)
         }.map { it.mapToDomain() }.onSuccess {
@@ -33,15 +36,15 @@ class AuthenticationRepositoryImpl(
         }
     }
 
-    override suspend fun register(registerRequest: RegisterRequestModel): Result<RegisterResponseModel> =
+    override suspend fun register(registerRequest: RegisterRequestModel): Resource<RegisterResponseModel> =
         safeApiCall { dataSource.register(registerRequest) }.map { it.mapToDomain() }
 
-    override suspend fun sendOtp(sendOTPRequest: SendOtpRequestModel): Result<SendOtpResponseModel> =
+    override suspend fun sendOtp(sendOTPRequest: SendOtpRequestModel): Resource<SendOtpResponseModel> =
         safeApiCall { dataSource.sendOtp(sendOTPRequest) }.map {
             it.mapToDomain()
         }
 
-    override suspend fun activeUser(activeUserRequest: ActiveUserRequestModel): Result<ActiveUserResponseModel> =
+    override suspend fun activeUser(activeUserRequest: ActiveUserRequestModel): Resource<ActiveUserResponseModel> =
         safeApiCall { dataSource.activeUser(activeUserRequest) }.map {
             it.mapToDomain()
         }

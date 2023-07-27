@@ -80,9 +80,9 @@ import com.twoup.personalfinance.authentication.presentation.theme.textSize_logi
 import com.twoup.personalfinance.authentication.presentation.theme.width_login_welcomeImage
 import com.twoup.personalfinance.navigation.AuthenticationSharedScreen
 import com.twoup.personalfinance.navigation.TransactionSharedScreen
-import com.twoup.personalfinance.remote.util.HttpException
-import com.twoup.personalfinance.remote.util.NetworkException
-import com.twoup.personalfinance.remote.util.fold
+import com.twoup.personalfinance.utils.data.HttpException
+import com.twoup.personalfinance.utils.data.NetworkException
+import com.twoup.personalfinance.utils.data.fold
 import dev.icerock.moko.resources.compose.colorResource
 import dev.icerock.moko.resources.compose.localized
 import dev.icerock.moko.resources.compose.painterResource

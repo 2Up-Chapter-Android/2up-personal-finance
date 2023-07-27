@@ -8,9 +8,7 @@ import com.twoup.personalfinance.domain.model.wallet.Wallet
 import com.twoup.personalfinance.domain.model.wallet.getWallet.GetListWalletResponseModel
 import com.twoup.personalfinance.domain.usecase.transaction.CreateTransactionUseCase
 import com.twoup.personalfinance.domain.usecase.transaction.GetListWalletsUseCase
-import com.twoup.personalfinance.remote.util.Resource
-import com.twoup.personalfinance.remote.util.toResource
-import io.github.aakira.napier.Napier
+import com.twoup.personalfinance.utils.data.Resource
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -31,8 +29,7 @@ class CreateTransViewModel : ScreenModel, KoinComponent {
     private val _createTransUiState = MutableStateFlow(CreateTransUiState())
     val createTransUiState = _createTransUiState.asStateFlow()
 
-    private val _getListWalletState =
-        MutableStateFlow<Resource<GetListWalletResponseModel>>(Resource.loading())
+    private val _getListWalletState = MutableStateFlow<Resource<GetListWalletResponseModel>>(Resource.loading())
     val getListWalletState = _getListWalletState.asStateFlow()
 
     init {
@@ -41,7 +38,10 @@ class CreateTransViewModel : ScreenModel, KoinComponent {
 
     private fun getListWallets() {
         GlobalScope.launch {
-            _getListWalletState.tryEmit(getListWalletsUseCase().toResource())
+            getListWalletsUseCase().collect {
+                _getListWalletState.emit(it)
+            }
+//            _getListWalletState.tryEmit(getListWalletsUseCase().first())
         }
     }
 
@@ -89,7 +89,7 @@ class CreateTransViewModel : ScreenModel, KoinComponent {
         )
     }
 
-    fun onAmountChange(text: Int) {
+    fun onAmountChange(text: String){
         _createTransUiState.value = createTransUiState.value.copy(
             amount = text
         )

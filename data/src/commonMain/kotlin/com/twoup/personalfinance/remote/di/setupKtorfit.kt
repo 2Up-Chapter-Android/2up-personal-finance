@@ -2,7 +2,7 @@ package com.twoup.personalfinance.remote.di
 
 import com.twoup.personalfinance.local.SecureStorageKey
 import com.twoup.personalfinance.local.SecureStorageWrapper
-import com.twoup.personalfinance.remote.util.ResultResponseConverterFactory
+import com.twoup.personalfinance.remote.util.ResourceResponseConverterFactory
 import de.jensklingenberg.ktorfit.Ktorfit
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
@@ -27,7 +27,7 @@ private inline fun provideKtorfit(httpClient: HttpClient, baseUrl: String): Ktor
     return Ktorfit.Builder()
         .baseUrl(baseUrl)
         .httpClient(httpClient)
-        .converterFactories(ResultResponseConverterFactory()).build()
+        .converterFactories(ResourceResponseConverterFactory()).build()
 }
 
 private inline fun provideHttpClient(secureStorageWrapper: SecureStorageWrapper, enableNetworkLogs: Boolean): HttpClient {
