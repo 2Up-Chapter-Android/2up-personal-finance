@@ -2,6 +2,8 @@ package com.twoup.personalfinance.remote.di
 
 import com.twoup.personalfinance.remote.services.authentication.AuthenticationDataSource
 import com.twoup.personalfinance.remote.services.authentication.AuthenticationService
+import com.twoup.personalfinance.remote.services.category.CategoryDatSource
+import com.twoup.personalfinance.remote.services.category.CategoryService
 import com.twoup.personalfinance.remote.services.transaction.TransactionDataSource
 import com.twoup.personalfinance.remote.services.transaction.TransactionService
 import de.jensklingenberg.ktorfit.Ktorfit
@@ -13,4 +15,7 @@ fun networkModule() = module {
 
     single<TransactionService> { get<Ktorfit>().create() }
     single { TransactionDataSource(get()) }
+
+    single<CategoryService> { get<Ktorfit>().create() }
+    single { CategoryDatSource(get()) }
 }

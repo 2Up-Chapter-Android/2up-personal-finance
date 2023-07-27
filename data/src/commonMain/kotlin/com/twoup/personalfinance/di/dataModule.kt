@@ -1,6 +1,7 @@
 package com.twoup.personalfinance.di
 
 import com.twoup.personalfinance.domain.repository.authentication.AuthenticationRepository
+import com.twoup.personalfinance.domain.repository.category.CategoryRepository
 import com.twoup.personalfinance.domain.repository.transaction.TransactionRepository
 import com.twoup.personalfinance.local.di.databaseModule
 import com.twoup.personalfinance.local.di.localModule
@@ -23,4 +24,5 @@ fun dataModule(baseUrl: String, enableNetworkLogs: Boolean) = module {
 private fun provideRepositories() = module {
     single<AuthenticationRepository> { AuthenticationRepositoryImpl(get(), get()) }
     single<TransactionRepository> { TransactionRepositoryImpl(get(), get()) }
+//    single<CategoryRepository> { CategoryRepositoryImpl(get(), get()) }
 }
