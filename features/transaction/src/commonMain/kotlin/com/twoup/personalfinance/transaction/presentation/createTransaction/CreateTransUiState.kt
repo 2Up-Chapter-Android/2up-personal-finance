@@ -16,6 +16,7 @@ data class CreateTransUiState(
     val category: String = "",
     val account: Wallet = Wallet(),
     val note: String = "",
+    val description: String = "",
     val isOpenChooseWallet: Boolean = false,
 
     val typeTrans: String = "EXPENSE"
@@ -23,8 +24,7 @@ data class CreateTransUiState(
     val enableCreateTransButton
         get() = !isLoading &&
                 date.toString().isNotBlank() &&
-                amount.toString().isNotBlank() &&
-                category.isNotBlank() &&
-                account.isNotBlank() &&
-                note.isNotBlank()
+                amount.toString().isNotBlank()
+//                category.isNotBlank()
+//                note.isNotBlank()
 }

@@ -149,32 +149,36 @@ class CreateTransactionScreen : Screen {
                         )
                     }
                 }
-            LineTransInfor(
-                text = when (selectedTabIndex.value) {
-                    0 -> "INCOME"
-                    1 -> "EXPENSE"
-                    else -> "TRANSFER"
-                },
-                textLabel = "",
-                onTextChange = {
-                    viewModel.onTypeChange(it)
-                },
-                keyboardOption = KeyboardOptions(imeAction = ImeAction.Next),
-            )
+                LineTransInfor(
+                    text = when (selectedTabIndex.value) {
+                        0 -> "INCOME"
+                        1 -> "EXPENSE"
+                        else -> "TRANSFER"
+                    },
+                    textLabel = "",
+                    onTextChange = {
+                        viewModel.onTypeChange(it)
+                    },
+                    keyboardOption = KeyboardOptions(imeAction = ImeAction.Next),
+                )
 
                 LineTransInfor(
-                text = createTransUiState.value.date.toString(),
-                textLabel = MR.strings.createTrans_inputLabel_date.desc().localized(),
-                onTextChange = {
-                    viewModel.onDateChange(it.toLong())
-                },
-                keyboardOption = KeyboardOptions(imeAction = ImeAction.Next),
-            )
+                    text = createTransUiState.value.date.toString(),
+                    textLabel = MR.strings.createTrans_inputLabel_date.desc().localized(),
+                    onTextChange = {
+                        if (it.isNotBlank())
+                            viewModel.onDateChange(it.toLong())
+                    },
+                    keyboardOption = KeyboardOptions(imeAction = ImeAction.Next),
+                )
 
                 LineTransInfor(
                     text = createTransUiState.value.amount.toString(),//convert int to string
                     textLabel = MR.strings.createTrans_inputLabel_amount.desc().localized(),
-                    onTextChange = { viewModel.onAmountChange(it.toInt()) },//convert string to int
+                    onTextChange = {
+                        if (it.isNotBlank())
+                            viewModel.onAmountChange(it.toInt())
+                    },//convert string to int
                     keyboardOption = KeyboardOptions(imeAction = ImeAction.Next),
                 )
 
@@ -221,10 +225,10 @@ class CreateTransactionScreen : Screen {
                         .padding(create_transaction_padding_horizontal)
                 ) {
                     Button(
-                    onClick = {
-                        viewModel.createTransaction(createTransUiState.value.typeTrans)
-                    },
-                    enabled = createTransUiState.value.enableCreateTransButton,
+                        onClick = {
+                            viewModel.createTransaction(createTransUiState.value.typeTrans)
+                        },
+                        enabled = createTransUiState.value.enableCreateTransButton,
                         modifier = Modifier.weight(1f).padding(end = create_transaction_padding_row)
                             .height(buttonHeight_transaction_buttonNextAction),
                         colors = ButtonDefaults.outlinedButtonColors(
@@ -281,9 +285,15 @@ class CreateTransactionScreen : Screen {
                         items(listWallet.value.size) {
                             Box(
                                 modifier = Modifier
-                                    .border(width = Dp(0.5f), color = colorResource(MR.colors.createTrans_chooseWallet_walletItem_border))
+                                    .border(
+                                        width = Dp(0.5f),
+                                        color = colorResource(MR.colors.createTrans_chooseWallet_walletItem_border)
+                                    )
                                     .background(Color.White)
-                                    .padding(horizontal = paddingHorizontal_createTrans_chooseWallet_walletItem, vertical = paddingVertical_createTrans_chooseWallet_walletItem)
+                                    .padding(
+                                        horizontal = paddingHorizontal_createTrans_chooseWallet_walletItem,
+                                        vertical = paddingVertical_createTrans_chooseWallet_walletItem
+                                    )
                                     .clickable(
                                         interactionSource = interactionSource,
                                         indication = null

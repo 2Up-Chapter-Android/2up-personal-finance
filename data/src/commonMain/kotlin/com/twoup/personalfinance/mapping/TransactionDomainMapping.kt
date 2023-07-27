@@ -2,9 +2,9 @@ package com.twoup.personalfinance.mapping
 
 import com.twoup.personalfinance.const.ConstDefaultValue
 import com.twoup.personalfinance.domain.model.wallet.Wallet
-import com.twoup.personalfinance.domain.model.transaction.WalletGroup
 import com.twoup.personalfinance.domain.model.transaction.createTrans.CreateTransactionResponseModel
-import com.twoup.personalfinance.domain.model.transaction.getWallet.GetListWalletResponseModel
+import com.twoup.personalfinance.domain.model.wallet.WalletGroup
+import com.twoup.personalfinance.domain.model.wallet.getWallet.GetListWalletResponseModel
 import com.twoup.personalfinance.remote.dto.transaction.CreateTransactionResponse
 import com.twoup.personalfinance.remote.dto.transaction.GetListWalletResponse
 
