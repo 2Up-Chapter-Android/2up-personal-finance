@@ -4,8 +4,7 @@ import com.twoup.personalfinance.domain.model.category.CategoryRequestModel
 
 class CategoryDatSource(private val service : CategoryService) {
     suspend fun category(categoryRequest: CategoryRequestModel) = service.category(categoryRequest)
-
-
+    suspend fun getListCategorys() = service.getListCategory()
 
 }
 

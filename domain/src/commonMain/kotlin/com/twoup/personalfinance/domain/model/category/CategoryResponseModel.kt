@@ -7,7 +7,7 @@ data class CategoryResponseModel(
     val status: Int? = 0,
     val statusMessage: String? = "",
     val timestamp: String? = "",
-    val data : CategoryInformation? = null
+    val data: CategoryInformation? = null
 ){
     @Serializable
     data class CategoryInformation(

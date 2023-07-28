@@ -1,27 +1,28 @@
 package com.twoup.personalfinance.mapping
 
+import com.twoup.personalfinance.const.ConstDefaultValue
 import com.twoup.personalfinance.domain.model.category.CategoryResponseModel
+import com.twoup.personalfinance.domain.model.category.GetListCategoryResponseModel
+import com.twoup.personalfinance.domain.model.wallet.Category
+import com.twoup.personalfinance.domain.model.wallet.Wallet
+import com.twoup.personalfinance.domain.model.wallet.WalletGroup
+import com.twoup.personalfinance.domain.model.wallet.getWallet.GetListWalletResponseModel
 import com.twoup.personalfinance.remote.dto.category.CategoryResponse
+import com.twoup.personalfinance.remote.dto.category.GetListCategoryResponse
+import com.twoup.personalfinance.remote.dto.transaction.GetListWalletResponse
 
 
-fun CategoryResponse?.mapToDomain(): CategoryResponseModel {
-    return this?.let {
-        CategoryResponseModel(
-            status = status,
-            statusMessage = null,
-            timestamp = timestamp,
-            data = data.mapToDomain()
-        )
-    } ?: CategoryResponseModel()
-}
+fun GetListCategoryResponse?.mapToDomain() = GetListCategoryResponseModel(
+    status = this?.status!!,
+    statusMessage = null.toString(),
+    timestamp = this.timestamp,
+    data = this.data?.map { it.mapToDomain() } ?: listOf()
+)
 
-fun CategoryResponse.Data?.mapToDomain(): CategoryResponseModel.CategoryInformation {
-    return this?.let {
-        CategoryResponseModel.CategoryInformation(
-            id = id,
-            name = name,
-            categoryId = categoryId,
-            userId = userId
-        )
-    } ?: CategoryResponseModel.CategoryInformation()
-}
+fun GetListCategoryResponse.GetListCategoryData?.mapToDomain() =
+    Category(
+        id = this?.id,
+        name = this?.name.toString(),
+        categoryId = this?.categoryId.toString(),
+        userID = this?.userId.toString()
+    )

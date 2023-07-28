@@ -7,4 +7,7 @@ class CategoryUseCase(private val repository: CategoryRepository) {
     suspend operator fun invoke(categoryRequest: CategoryRequestModel) =
         repository.category(categoryRequest)
 
+    suspend operator fun invoke() = repository.getListCategorys()
+
+
 }

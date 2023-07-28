@@ -16,3 +16,33 @@ DELETE FROM Wallet;
 selectAllWallet:
 SELECT *
 FROM Wallet;
+
+
+CREATE TABLE PersonalFinanceDatabaseCategory (
+      id TEXT NOT NULL ,
+      name TEXT NOT NULL,
+      categoryId TEXT NOT NULL,
+      userId TEXT NOT NULL
+);
+
+getAllCategory:
+SELECT *
+FROM PersonalFinanceDatabaseCategory;
+
+getCategoryById:
+SELECT *
+FROM PersonalFinanceDatabaseCategory
+WHERE id = ?;
+
+insertCategory:
+INSERT INTO PersonalFinanceDatabaseCategory(id,name,categoryId, userId)
+VALUES (?,?,?,?);
+
+updateCategory:
+UPDATE PersonalFinanceDatabaseCategory
+SET id = ?, name = ?, categoryId =?, userId =?
+WHERE id = ?;
+
+deletCategoryById:
+DELETE FROM PersonalFinanceDatabaseCategory
+WHERE id =?;

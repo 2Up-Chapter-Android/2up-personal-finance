@@ -2,7 +2,6 @@ package com.aicontent.category.presentation.ui
 
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
-import com.twoup.personalfinance.domain.model.authentication.register.RegisterResponseModel
 import com.twoup.personalfinance.domain.model.category.CategoryRequestModel
 import com.twoup.personalfinance.domain.model.category.CategoryResponseModel
 import com.twoup.personalfinance.domain.usecase.category.CategoryUseCase
