@@ -7,10 +7,8 @@ import com.twoup.personalfinance.domain.model.category.CategoryRequestModel
 import com.twoup.personalfinance.domain.model.category.GetListCategoryResponseModel
 import com.twoup.personalfinance.domain.repository.category.CategoryRepository
 import com.twoup.personalfinance.local.IDatabase
-import com.twoup.personalfinance.local.SecureStorageWrapper
 import com.twoup.personalfinance.mapping.mapToDomain
 import com.twoup.personalfinance.remote.services.category.CategoryDatSource
-import com.twoup.personalfinance.remote.services.category.CategoryService
 import com.twoup.personalfinance.remote.util.networkBoundResource
 import com.twoup.personalfinance.remote.util.safeApiCall
 import com.twoup.personalfinance.utils.data.Resource
@@ -24,18 +22,16 @@ class CategoryRepositoryImpl(
 
 ) : CategoryRepository {
 
-//    override suspend fun category(categoryRequest: CategoryRequestModel): Result<CategoryResponseModel> {
+    //    override suspend fun category(categoryRequest: CategoryRequestModel): Result<CategoryResponseModel> {
 //        return safeApiCall { dataSource.category(categoryRequest) }.map { it.mapToDomain() }
 //    }
-//
-
-    override suspend fun getListCategorys(): Flow<Resource<GetListCategoryResponseModel>> {
+    override suspend fun getListCategory(): Flow<Resource<GetListCategoryResponseModel>> {
         return networkBoundResource(
             query = {
                 flowOf(GetListCategoryResponseModel(data = database.getAllCategory()))
             },
             fetch = {
-                dataSource.getListCategorys().map { it.mapToDomain() }
+                dataSource.getListCategory().map { it.mapToDomain() }
             },
             saveFetchResult = { fetchResult ->
 //                database.deleteCategory()
@@ -51,8 +47,8 @@ class CategoryRepositoryImpl(
         )
     }
 
-    override suspend fun category(categoryRequest: CategoryRequestModel): Result<CategoryResponseModel> {
-        TODO("Not yet implemented")
+    override suspend fun category(categoryRequest: CategoryRequestModel): Resource<CategoryResponseModel> {
+        return safeApiCall { dataSource.category(categoryRequest) }.map { it.mapToDomain() }
     }
 
 }

@@ -11,7 +11,8 @@ import org.koin.dsl.module
 fun domainModule() = module {
     includes(
         authenticationDomainModule(),
-        transactionDomainModule()
+        transactionDomainModule(),
+        categoryDomainModule()
     )
 }
 
@@ -26,6 +27,7 @@ private fun transactionDomainModule() = module {
     single { GetListWalletsUseCase(get()) }
 }
 
-private fun  categoryDomainModule() = module {
+private fun categoryDomainModule() = module {
     factory { CategoryUseCase(get()) }
+//    single { CategoryUseCase(get()) }
 }

@@ -8,6 +8,7 @@ import com.twoup.personalfinance.local.di.localModule
 import com.twoup.personalfinance.remote.di.networkModule
 import com.twoup.personalfinance.remote.di.setupKtorfit
 import com.twoup.personalfinance.repository.AuthenticationRepositoryImpl
+import com.twoup.personalfinance.repository.CategoryRepositoryImpl
 import com.twoup.personalfinance.repository.TransactionRepositoryImpl
 import org.koin.dsl.module
 
@@ -24,5 +25,5 @@ fun dataModule(baseUrl: String, enableNetworkLogs: Boolean) = module {
 private fun provideRepositories() = module {
     single<AuthenticationRepository> { AuthenticationRepositoryImpl(get(), get()) }
     single<TransactionRepository> { TransactionRepositoryImpl(get(), get()) }
-//    single<CategoryRepository> { CategoryRepositoryImpl(get(), get()) }
+    single<CategoryRepository> { CategoryRepositoryImpl(get(), get()) }
 }

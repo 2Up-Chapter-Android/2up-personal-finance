@@ -4,8 +4,12 @@ import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
 import com.twoup.personalfinance.domain.model.category.CategoryRequestModel
 import com.twoup.personalfinance.domain.model.category.CategoryResponseModel
+import com.twoup.personalfinance.domain.model.category.GetListCategoryResponseModel
+import com.twoup.personalfinance.domain.model.wallet.getWallet.GetListWalletResponseModel
 import com.twoup.personalfinance.domain.usecase.category.CategoryUseCase
 import com.twoup.personalfinance.utils.data.Resource
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -20,13 +24,35 @@ class CategoryViewModel : ScreenModel, KoinComponent {
 //    private val _categoryState = MutableStateFlow<Resource<CategoryResponseModel>>(Resource.loading())
 //    val categoryState: StateFlow<Resource<CategoryResponseModel>> get() = _categoryState
 
-    private val _categoryState = MutableStateFlow<Resource<CategoryResponseModel>>(Resource.loading())
+    private val _categoryState = MutableStateFlow<Resource<GetListCategoryResponseModel>>(Resource.loading())
     val categoryState = _categoryState.asStateFlow()
 
     private val _categoryUiState = MutableStateFlow(CategoryUiState())
     val categoryUiState: StateFlow<CategoryUiState> = _categoryUiState.asStateFlow()
 
-    fun createCategory() {
+//    private val _createTransUiState = MutableStateFlow(CreateTransUiState())
+//    val createTransUiState = _createTransUiState.asStateFlow()
+//
+
+//    private val _getListWalletState = MutableStateFlow<Resource<GetListWalletResponseModel>>(Resource.loading())
+//    val getListWalletState = _getListWalletState.asStateFlow()
+
+
+    init {
+        getListCategory()
+    }
+    @OptIn(DelicateCoroutinesApi::class)
+    private fun getListCategory() {
+        GlobalScope.launch {
+            categoryUseCase.invokeCategory().collect(){
+                _categoryState.emit(it)
+            }
+//            _getListWalletState.tryEmit(getListWalletsUseCase().first())
+        }
+    }
+
+     fun createCategory() {
+
         _categoryUiState.value =
             categoryUiState.value.copy(
                 isLoading = true
@@ -44,6 +70,13 @@ class CategoryViewModel : ScreenModel, KoinComponent {
         coroutineScope.launch {
             delay(200)
 
+//            categoryUseCase.invokeCategory(
+////                CategoryRequestModel(
+////                    name = categoryUiState.value.name,
+////                    category = categoryUiState.value.categoryId
+////                )
+//            )
+
             val categoryResponse = categoryUseCase(
                 CategoryRequestModel(
                     name = categoryUiState.value.name,
@@ -51,8 +84,8 @@ class CategoryViewModel : ScreenModel, KoinComponent {
                 )
             )
 
-            if (categoryResponse.isSuccess) {
-                _categoryState.tryEmit(Resource.success(CategoryResponseModel()))
+            if (categoryResponse.isSuccessful()) {
+                _categoryState.tryEmit(Resource.success(GetListCategoryResponseModel()))
             } else {
 //                if (categoryResponse.isError()) {
 //                    _categoryState.tryEmit(Resource.error(CategoryInfo()))

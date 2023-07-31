@@ -14,8 +14,7 @@ import de.jensklingenberg.ktorfit.http.POST
 interface CategoryService {
 
     @POST("categorys")
-    suspend fun category(@Body categoryRequest: CategoryRequestModel): Result<CategoryResponse>
-
+    suspend fun category(@Body categoryRequest: CategoryRequestModel): Resource<CategoryResponse>
     @GET("categorys")
     suspend fun getListCategory(): Resource<GetListCategoryResponse>
 

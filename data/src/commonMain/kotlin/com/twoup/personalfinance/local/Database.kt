@@ -53,13 +53,9 @@ class Database(databaseWrapper: PersonalFinanceDatabaseWrapper) : IDatabase {
             dbQuery.removeAllWallet()
         }
     }
-
     override fun getAllLWallet(): List<Wallet> {
         return dbQuery.selectAllWallet().executeAsList().map { it.mapToDomain() }
     }
-
-
-
     override fun insertWallet(
         id: String,
         amount: Int,
@@ -75,7 +71,6 @@ class Database(databaseWrapper: PersonalFinanceDatabaseWrapper) : IDatabase {
             walletGroup.name
         )
     }
-
     private fun comtwouppersonalfinancedatabase.Wallet.mapToDomain(): Wallet {
         return Wallet(
             amount = amount!!.toInt(),

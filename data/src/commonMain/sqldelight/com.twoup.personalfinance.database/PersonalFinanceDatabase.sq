@@ -6,6 +6,13 @@ CREATE TABLE Wallet (
     walletGroup TEXT
 );
 
+CREATE TABLE PersonalFinanceDatabaseCategory (
+      id TEXT NOT NULL ,
+      name TEXT NOT NULL,
+      categoryId TEXT NOT NULL,
+      userId TEXT NOT NULL
+);
+
 insertWallet:
 INSERT INTO Wallet(id, amount, description, name, walletGroup)
 VALUES(?, ?, ?, ?,?);
@@ -16,14 +23,6 @@ DELETE FROM Wallet;
 selectAllWallet:
 SELECT *
 FROM Wallet;
-
-
-CREATE TABLE PersonalFinanceDatabaseCategory (
-      id TEXT NOT NULL ,
-      name TEXT NOT NULL,
-      categoryId TEXT NOT NULL,
-      userId TEXT NOT NULL
-);
 
 getAllCategory:
 SELECT *

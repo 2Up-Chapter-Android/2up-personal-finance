@@ -2,7 +2,7 @@ package com.twoup.personalfinance.remote.dto.category
 
 import kotlinx.serialization.Serializable
 
-@kotlinx.serialization.Serializable
+@Serializable
 data class CategoryResponse(
     val status: Int? = 0,
     val status_message: String? = "",
