@@ -9,3 +9,10 @@ data class Wallet(
     val name: String = "",
     val walletGroup: WalletGroup = WalletGroup.OTHER
 )
+
+data class Category(
+    val id: String? = ConstDefaultValue.DEFAULT_VALUE_STRING,
+    val name: String = "",
+    val categoryId: String = ConstDefaultValue.DEFAULT_VALUE_STRING,
+    val userID: String = ConstDefaultValue.DEFAULT_VALUE_STRING
+)
