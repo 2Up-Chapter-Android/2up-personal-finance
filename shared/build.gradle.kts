@@ -56,6 +56,7 @@ kotlin {
                 implementation(project(":features:authentication"))
                 implementation(project(":features:transaction"))
                 implementation(project(":features:category"))
+                implementation(project(":features:Main"))
                 api(project(":common:resources"))
 
                 implementation(compose.runtime)
