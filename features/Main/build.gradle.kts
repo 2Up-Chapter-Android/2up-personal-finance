@@ -77,8 +77,12 @@ kotlin {
 
 android {
     namespace = "com.aicontent.main"
-    compileSdk = 33
+    val androidMinSdk: String by project
+    val androidCompileSdk: String by project
+    val androidTargetSdk: String by project
+
+    compileSdk = androidCompileSdk.toInt()
     defaultConfig {
-        minSdk = 24
+        minSdk = androidMinSdk.toInt()
     }
 }

@@ -24,7 +24,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
+import PersonalFinance.features.Main.MR
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -32,6 +32,8 @@ import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
 import com.aicontent.main.presentation.BudgetBox
 import com.aicontent.main.presentation.TapBarViewModel
+import dev.icerock.moko.resources.compose.localized
+import dev.icerock.moko.resources.desc.desc
 import io.github.aakira.napier.Napier
 
 class DailyScreen() : Screen {
@@ -56,7 +58,7 @@ class DailyScreen() : Screen {
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center
                     ) {
-                        Text("Daily Screen")
+                        Text(MR.strings.daily_screen.desc().localized())
                     }
                 }
             },

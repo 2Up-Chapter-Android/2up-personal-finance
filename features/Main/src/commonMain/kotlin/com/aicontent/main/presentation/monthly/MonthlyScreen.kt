@@ -19,7 +19,9 @@ import androidx.compose.ui.Modifier
 import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
 import com.aicontent.main.presentation.BudgetBox
-import com.aicontent.main.presentation.TapBarViewModel
+import PersonalFinance.features.Main.MR
+import dev.icerock.moko.resources.compose.localized
+import dev.icerock.moko.resources.desc.desc
 import io.github.aakira.napier.Napier
 
 class MonthlyScreen() : Screen {
@@ -44,7 +46,7 @@ class MonthlyScreen() : Screen {
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center
                     ) {
-                        Text("Daily Screen")
+                        Text(MR.strings.monthly_screen.desc().localized())
                     }
                 }
             },

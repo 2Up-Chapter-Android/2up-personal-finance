@@ -19,6 +19,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.graphics.Color
+import com.aicontent.main.theme.font_size_text_item_budge
+import com.aicontent.main.theme.padding_budge_box
+import com.aicontent.main.theme.padding_budge_item
 
 @Composable
 fun BudgetBox() {
@@ -29,17 +32,17 @@ fun BudgetBox() {
         modifier = Modifier
             .fillMaxWidth()
             .background(MaterialTheme.colors.primary)
-            .padding(16.dp),
+            .padding(padding_budge_box),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Spacer(modifier = Modifier.padding(8.dp))
+        Spacer(modifier = Modifier.padding(padding_budge_item))
         BudgetItem("Income", income, Color.Blue)
-        Spacer(modifier = Modifier.padding(8.dp))
+        Spacer(modifier = Modifier.padding(padding_budge_item))
         BudgetItem("Expenses", expenses, Color.Red)
-        Spacer(modifier = Modifier.padding(8.dp))
+        Spacer(modifier = Modifier.padding(padding_budge_item))
         BudgetItem("Total", income - expenses, Color.Black)
-        Spacer(modifier = Modifier.padding(8.dp))
+        Spacer(modifier = Modifier.padding(padding_budge_item))
     }
 }
 
@@ -50,12 +53,12 @@ fun BudgetItem(name: String, amount: Int, textColor: Color) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
-        Text(name, fontSize = 12.sp)
+        Text(name, fontSize = font_size_text_item_budge)
         Text(
             text = "$amount",
             color = textColor,
-            fontSize = 12.sp,
-            modifier = Modifier.padding(top = 8.dp)
+            fontSize = font_size_text_item_budge,
+            modifier = Modifier.padding(top = padding_budge_item)
         )
     }
 }

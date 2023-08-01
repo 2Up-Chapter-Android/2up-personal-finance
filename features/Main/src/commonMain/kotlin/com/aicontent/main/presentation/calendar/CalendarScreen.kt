@@ -5,7 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import com.aicontent.main.presentation.TopAppBar
-
+import PersonalFinance.features.Main.MR
 import androidx.compose.material.FabPosition
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
@@ -22,6 +22,8 @@ import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
 import com.aicontent.main.presentation.BudgetBox
 import com.aicontent.main.presentation.TapBarViewModel
+import dev.icerock.moko.resources.compose.localized
+import dev.icerock.moko.resources.desc.desc
 import io.github.aakira.napier.Napier
 
 class CalendarScreen() : Screen {
@@ -46,7 +48,7 @@ class CalendarScreen() : Screen {
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center
                     ) {
-                        Text("Daily Screen")
+                        Text(MR.strings.calendar_screen.desc().localized())
                     }
                 }
             },

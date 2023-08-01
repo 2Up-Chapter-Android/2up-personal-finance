@@ -40,6 +40,15 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import com.aicontent.main.presentation.daily.DailyScreen
 import com.twoup.personalfinance.navigation.MainScreenSharedScreen
 import cafe.adriel.voyager.core.model.rememberScreenModel
+import com.aicontent.main.theme.font_size_text_tab
+import com.aicontent.main.theme.height_row_top_bar
+import com.aicontent.main.theme.padding_tab_item
+import com.aicontent.main.theme.padding_text_top_bar
+import com.aicontent.main.theme.rounded_corner_shape
+import PersonalFinance.features.Main.MR
+import dev.icerock.moko.resources.compose.localized
+import dev.icerock.moko.resources.desc.desc
+
 
 @Composable
 fun TopAppBar(
@@ -65,8 +74,11 @@ fun TopAppBar(
             Row(
                 modifier = Modifier
                     .weight(1f)
-                    .height(56.dp)
-                    .background(color = MaterialTheme.colors.surface, RoundedCornerShape(16.dp)),
+                    .height(height_row_top_bar)
+                    .background(
+                        color = MaterialTheme.colors.surface,
+                        RoundedCornerShape(rounded_corner_shape)
+                    ),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 IconButton(
@@ -74,15 +86,15 @@ fun TopAppBar(
                     content = {
                         Icon(
                             Icons.Default.KeyboardArrowLeft,
-                            contentDescription = "Back"
+                            contentDescription = null
                         )
                     }
                 )
 
                 Text(
-                    text = "Jun 2023",
+                    text = "Jun 2023",// it will be replace soon
                     color = MaterialTheme.colors.onPrimary,
-                    modifier = Modifier.padding(horizontal = 8.dp)
+                    modifier = Modifier.padding(horizontal = padding_text_top_bar)
                 )
 
                 IconButton(
@@ -90,7 +102,7 @@ fun TopAppBar(
                     content = {
                         Icon(
                             Icons.Default.KeyboardArrowRight,
-                            contentDescription = "Next"
+                            contentDescription = null
                         )
                     }
                 )
@@ -99,8 +111,12 @@ fun TopAppBar(
             // Second row
             Row(
                 modifier = Modifier
-                    .height(56.dp)
-                    .background(color = MaterialTheme.colors.surface, RoundedCornerShape(16.dp)),
+                    .height(height_row_top_bar)
+                    .background(
+                        color = MaterialTheme.colors.surface, RoundedCornerShape(
+                            rounded_corner_shape
+                        )
+                    ),
                 horizontalArrangement = Arrangement.End,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -109,7 +125,7 @@ fun TopAppBar(
                     content = {
                         Icon(
                             Icons.Default.Star,
-                            contentDescription = "Star"
+                            contentDescription = null
                         )
                     }
                 )
@@ -119,7 +135,7 @@ fun TopAppBar(
                     content = {
                         Icon(
                             Icons.Default.Search,
-                            contentDescription = "Search"
+                            contentDescription = null
                         )
                     }
                 )
@@ -129,7 +145,7 @@ fun TopAppBar(
                     content = {
                         Icon(
                             Icons.Default.MoreVert,
-                            contentDescription = "More",
+                            contentDescription = null
                         )
                     }
                 )
@@ -150,10 +166,10 @@ fun TopAppBar(
                 }, // Set the correct index for the first tab
                 content = {
                     Text(
-                        text = "Daily",
+                        text = MR.strings.daily.desc().localized(),
                         color = if (selectedTabIndex == 0) Color.Black else Color.Gray,
-                        modifier = Modifier.padding(16.dp),
-                        fontSize = 12.sp
+                        modifier = Modifier.padding(padding_tab_item),
+                        fontSize = font_size_text_tab
                     )
                 }
             )
@@ -165,10 +181,10 @@ fun TopAppBar(
                 }, // Set the correct index for the second tab
                 content = {
                     Text(
-                        text = "Calendar",
+                        text = MR.strings.calendar.desc().localized(),
                         color = if (selectedTabIndex == 1) Color.Black else Color.Gray,
-                        modifier = Modifier.padding(16.dp),
-                        fontSize = 12.sp
+                        modifier = Modifier.padding(padding_tab_item),
+                        fontSize = font_size_text_tab
                     )
                 }
             )
@@ -180,10 +196,10 @@ fun TopAppBar(
                 }, // Set the correct index for the third tab
                 content = {
                     Text(
-                        text = "Monthly",
+                        text = MR.strings.monthly.desc().localized(),
                         color = if (selectedTabIndex == 2) Color.Black else Color.Gray,
-                        modifier = Modifier.padding(16.dp),
-                        fontSize = 12.sp
+                        modifier = Modifier.padding(padding_tab_item),
+                        fontSize = font_size_text_tab
                     )
                 }
             )
@@ -195,10 +211,10 @@ fun TopAppBar(
                 }, // Set the correct index for the fourth tab
                 content = {
                     Text(
-                        text = "Total",
+                        text = MR.strings.total.desc().localized(),
                         color = if (selectedTabIndex == 3) Color.Black else Color.Gray,
-                        modifier = Modifier.padding(16.dp),
-                        fontSize = 12.sp
+                        modifier = Modifier.padding(padding_tab_item),
+                        fontSize = font_size_text_tab
                     )
                 }
             )
@@ -210,10 +226,10 @@ fun TopAppBar(
                 }, // Set the correct index for the fifth tab
                 content = {
                     Text(
-                        text = "Note",
+                        text = MR.strings.note.desc().localized(),
                         color = if (selectedTabIndex == 4) Color.Black else Color.Gray,
-                        modifier = Modifier.padding(16.dp),
-                        fontSize = 12.sp
+                        modifier = Modifier.padding(padding_tab_item),
+                        fontSize = font_size_text_tab
                     )
                 }
             )

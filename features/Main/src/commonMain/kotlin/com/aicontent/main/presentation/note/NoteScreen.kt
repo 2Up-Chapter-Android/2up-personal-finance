@@ -21,7 +21,9 @@ import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
 import com.aicontent.main.presentation.BudgetBox
 import com.aicontent.main.presentation.TapBarViewModel
-import io.github.aakira.napier.Napier
+import PersonalFinance.features.Main.MR
+import dev.icerock.moko.resources.compose.localized
+import dev.icerock.moko.resources.desc.desc
 
 class NoteScreen() : Screen {
     @Composable
@@ -43,7 +45,7 @@ class NoteScreen() : Screen {
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
-                    Text("Daily Screen")
+                    Text(MR.strings.note_screen.desc().localized())
                 }
             },
             floatingActionButton = {

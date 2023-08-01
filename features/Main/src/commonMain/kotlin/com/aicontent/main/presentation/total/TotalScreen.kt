@@ -21,7 +21,9 @@ import cafe.adriel.voyager.core.screen.Screen
 import com.aicontent.main.presentation.BudgetBox
 import com.aicontent.main.presentation.TapBarViewModel
 import com.aicontent.main.presentation.TopAppBar
-import io.github.aakira.napier.Napier
+import PersonalFinance.features.Main.MR
+import dev.icerock.moko.resources.compose.localized
+import dev.icerock.moko.resources.desc.desc
 
 class TotalScreen() : Screen {
     @Composable
@@ -44,7 +46,7 @@ class TotalScreen() : Screen {
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center
                     ) {
-                        Text("Daily Screen")
+                        Text(MR.strings.total_screen.desc().localized())
                     }
                 }
             },
@@ -56,7 +58,7 @@ class TotalScreen() : Screen {
                 ) {
                     Icon(
                         imageVector = Icons.Default.Add,
-                        contentDescription = "Add",
+                        contentDescription = null,
                         tint = MaterialTheme.colors.onPrimary
                     )
                 }
