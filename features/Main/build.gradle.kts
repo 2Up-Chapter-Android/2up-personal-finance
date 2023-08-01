@@ -13,6 +13,8 @@ kotlin {
             }
         }
     }
+
+    jvm("desktop")
     
     listOf(
         iosX64(),
@@ -71,6 +73,13 @@ kotlin {
             iosX64Test.dependsOn(this)
             iosArm64Test.dependsOn(this)
             iosSimulatorArm64Test.dependsOn(this)
+        }
+
+        val desktopMain by getting {
+            kotlin.srcDirs("src/jvmMain/kotlin")
+            dependsOn(commonMain)
+            dependencies {
+            }
         }
     }
 }
