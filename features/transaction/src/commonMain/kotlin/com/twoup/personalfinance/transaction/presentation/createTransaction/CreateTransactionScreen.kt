@@ -41,6 +41,7 @@ import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -60,6 +61,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
@@ -144,21 +146,41 @@ class CreateTransactionScreen : Screen {
             },
             content = {
                 Column(modifier = Modifier.fillMaxSize()) {
-                    Row(modifier = Modifier.fillMaxWidth()) {
-                        IconButton(onClick = { navigator.pop() }) {
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Row(
+                            modifier = Modifier.weight(1f),
+                            horizontalArrangement = Arrangement.spacedBy(marginStart_createTrans_actionBar_tabName),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            IconButton(
+                                onClick = { navigator.pop() },
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.ArrowBack,
+                                    contentDescription = "",
+                                    tint = Color.Black
+                                )
+                            }
+                            Text(
+                                text = tabList[selectedTabIndex.value],
+                                color = Color.Black,
+                                modifier = Modifier.align(Alignment.CenterVertically),
+                            )
+                        }
+                        IconButton(onClick = { /* Handle Star click */ }) {
                             Icon(
-                                imageVector = Icons.Default.ArrowBack,
-                                contentDescription = "",
+                                imageVector = Icons.Default.Star,
+                                contentDescription = null,
                                 tint = Color.Black
                             )
                         }
-                        Spacer(modifier = Modifier.width(marginStart_createTrans_actionBar_tabName))
-                        Text(
-                            text = tabList[selectedTabIndex.value],
-                            color = Color.Black,
-                            modifier = Modifier.align(Alignment.CenterVertically),
-                        )
                     }
+
                     Column(
                         modifier = Modifier.verticalScroll(rememberScrollState())
                             .weight(weight = 1f, fill = false)
@@ -189,7 +211,7 @@ class CreateTransactionScreen : Screen {
                         )
 
                         LineTransInfor(
-                            text = createTransUiState.value.amount,
+                            text = createTransUiState.value.account.name,
                             textLabel = MR.strings.createTrans_inputLabel_amount.desc().localized(),
                             onTextChange = { viewModel.onAmountChange(it) },
                             keyboardOption = KeyboardOptions(imeAction = ImeAction.Next),
@@ -208,7 +230,7 @@ class CreateTransactionScreen : Screen {
                         )
 
                         LineTransInfor(
-                            text = createTransUiState.value.account.name,
+                            text = createTransUiState.value.amount,
                             textLabel = MR.strings.createTrans_inputLabel_account.desc()
                                 .localized(),
                             keyboardOption = KeyboardOptions(imeAction = ImeAction.Next),
@@ -353,7 +375,10 @@ class CreateTransactionScreen : Screen {
         ) {
             Button(
                 onClick = { selectedTabIndex.value = index },
-                modifier = Modifier.padding(vertical = create_transaction_padding_row),
+                modifier = Modifier
+//                    .padding(vertical = create_transaction_padding_row)
+                    .height(36.dp)
+                    .width(111.dp), // Set the height of the tab
                 shape = RoundedCornerShape(20),
                 border = if (selectedTabIndex.value == index) {
                     when (selectedTabIndex.value) {
@@ -393,11 +418,14 @@ class CreateTransactionScreen : Screen {
                 Text(
                     text = value,
                     style = MaterialTheme.typography.button,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 12.sp,
+                    textAlign = TextAlign.Center // Align the text horizontally at the center
                 )
             }
         }
     }
+
 
     @OptIn(ExperimentalMaterialApi::class)
     @Composable
@@ -413,7 +441,8 @@ class CreateTransactionScreen : Screen {
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(
-                create_transaction_padding_row
+                start =
+                create_transaction_padding_row, end = create_transaction_padding_row
             ).clickable(onClick = {
                 coroutineScope.launch {
                     bottomSheetState.show()
@@ -426,7 +455,8 @@ class CreateTransactionScreen : Screen {
                 modifier = Modifier.fillMaxWidth().padding(
                     start = create_transaction_padding_start_text,
                     end = create_transaction_padding_end_text
-                ).weight(2f)
+                ).weight(2f),
+                fontSize = 12.sp
             )
 
             TextField(

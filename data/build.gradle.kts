@@ -38,6 +38,7 @@ kotlin {
                 implementation(project(":domain"))
                 implementation(project(":common:resources"))
                 implementation(project(":common:utils"))
+                implementation(libs.datetime)
                 //Logging
                 implementation(libs.napier)
                 //Network
