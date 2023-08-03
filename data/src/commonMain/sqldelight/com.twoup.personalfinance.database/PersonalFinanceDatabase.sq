@@ -45,3 +45,143 @@ WHERE id = ?;
 deletCategoryById:
 DELETE FROM PersonalFinanceDatabaseCategory
 WHERE id =?;
+
+-- transaction_income.sq
+-- This file defines the schema for recording transaction income using SQLDelight.
+
+-- Define the schema version
+
+-- Table for storing accounts
+-- Table for storing accounts
+CREATE TABLE accounts (
+    account_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    account_name TEXT NOT NULL,
+    account_type TEXT,
+    description TEXT,
+    balance REAL DEFAULT 0
+);
+
+-- Table for storing income categories
+CREATE TABLE categories (
+    category_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    subCategoryId INTEGER NOT NULL,
+    category_name TEXT NOT NULL,
+    FOREIGN KEY (subCategoryId) REFERENCES subCategories(subCategory_id)
+);
+
+-- Table for storing income subcategories
+CREATE TABLE subCategories (
+    subCategory_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    subCategory_name TEXT NOT NULL
+);
+
+-- Table for recording income transactions
+CREATE TABLE transactions (
+    transaction_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    account_id INTEGER NOT NULL,
+    category_id INTEGER NOT NULL,
+    amount REAL NOT NULL,
+    description TEXT,
+    note TEXT,
+    created INTEGER NOT NULL,
+    FOREIGN KEY (account_id) REFERENCES accounts(account_id),
+    FOREIGN KEY (category_id) REFERENCES categories(category_id)
+);
+
+-- Table for additional notes for transactions
+CREATE TABLE notes (
+    note_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    note_text TEXT,
+    created INTEGER NOT NULL
+);
+
+insertAccount:
+INSERT INTO accounts (account_name, account_type, description, balance)
+VALUES (?, ?, ?, ?);
+
+insertCategory:
+INSERT INTO categories (category_name,subCategoryId)
+VALUES (?,?);
+
+insertTransaction:
+INSERT INTO transactions (account_id, category_id, amount, description, note, created)
+VALUES (?, ?, ?, ?, ?, ?);
+
+insertNote:
+INSERT INTO notes (note_text, created)
+VALUES (?, ?);
+
+updateAccountById:
+UPDATE accounts
+SET account_name = ?, balance = ?
+WHERE account_id = ?;
+
+updagteCategoryById:
+UPDATE categories
+SET category_name = ?, subCategoryId =?
+WHERE category_id = ?;
+
+updateSubCategoryById:
+UPDATE subCategories
+SET subCategory_name = ?
+WHERE subCategory_id = ?;
+
+updateTransactionById:
+UPDATE transactions
+SET account_id = ?,category_id = ?, amount = ?, description = ?, note = ?
+WHERE transaction_id = ?;
+
+updateNoteById:
+UPDATE notes
+SET note_text = ?
+WHERE note_id = ?;
+
+deleteAccountById:
+DELETE FROM accounts
+WHERE account_id = ?;
+
+deleteCategoryById:
+DELETE FROM categories
+WHERE category_id = ?;
+
+deleteSubCategoryById:
+DELETE FROM subCategories
+WHERE subCategory_id = ?;
+
+deleteTransactionById:
+DELETE FROM transactions
+WHERE transaction_id = ?;
+
+deleteNoteById:
+DELETE FROM notes
+WHERE note_id = ?;
+
+deleteAllAccount:
+DELETE FROM accounts;
+
+deleteAllCategory:
+DELETE FROM categories;
+
+deleteAllSubCategory:
+DELETE FROM subCategories;
+
+deleteTransaction:
+DELETE FROM transactions;
+
+deleteAllNote:
+DELETE FROM notes;
+
+getAllAccount:
+SELECT * FROM accounts;
+
+getAllCategory:
+SELECT * FROM categories;
+
+getAllSubCategory:
+SELECT * FROM subCategories;
+
+getAllTransaction:
+SELECT * FROM transactions;
+
+getAllNote:
+SELECT * FROM notes;

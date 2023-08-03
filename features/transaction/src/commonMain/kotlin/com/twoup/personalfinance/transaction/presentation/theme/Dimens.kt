@@ -18,7 +18,7 @@ val paddingHorizontal_createTrans_chooseWallet_walletItem = 5.dp
 val paddingVertical_createTrans_chooseWallet_walletItem = 13.dp
 
 val thickness_transaction_borderStroke = 1.dp
-val buttonHeight_transaction_buttonNextAction = 48.dp
+val buttonHeight_transaction_buttonNextAction = 36.dp
 
 val textSize_transaction_textField = 13.sp
 val textSize_createTransaction_chooseWallet_actionBar = 15.sp
