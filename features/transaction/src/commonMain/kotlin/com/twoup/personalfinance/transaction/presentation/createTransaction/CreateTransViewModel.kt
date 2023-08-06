@@ -8,6 +8,7 @@ import com.twoup.personalfinance.utils.data.Resource
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -28,10 +29,9 @@ class CreateTransViewModel: ScreenModel, KoinComponent {
 
     private fun getListWallets() {
         GlobalScope.launch {
-            getListWalletsUseCase().collect {
+            getListWalletsUseCase().collectLatest {
                 _getListWalletState.emit(it)
             }
-//            _getListWalletState.tryEmit(getListWalletsUseCase().first())
         }
     }
 
