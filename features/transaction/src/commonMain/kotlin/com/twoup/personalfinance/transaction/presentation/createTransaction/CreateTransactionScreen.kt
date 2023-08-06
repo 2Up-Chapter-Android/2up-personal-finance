@@ -208,7 +208,7 @@ class CreateTransactionScreen : Screen {
                         )
 
                         LineTransInfor(
-                            text = createTransUiState.value.account.name,
+                            text = createTransUiState.value.account?.name ?: "",
                             textLabel = MR.strings.createTrans_inputLabel_account.desc()
                                 .localized(),
                             keyboardOption = KeyboardOptions(imeAction = ImeAction.Next),
