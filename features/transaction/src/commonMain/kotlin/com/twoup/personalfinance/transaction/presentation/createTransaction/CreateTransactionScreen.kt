@@ -79,6 +79,7 @@ import com.twoup.personalfinance.transaction.presentation.theme.thickness_transa
 import dev.icerock.moko.resources.compose.colorResource
 import dev.icerock.moko.resources.compose.localized
 import dev.icerock.moko.resources.desc.desc
+import io.github.aakira.napier.Napier
 
 class CreateTransactionScreen : Screen {
     @Composable
@@ -95,6 +96,7 @@ class CreateTransactionScreen : Screen {
         val viewModel = rememberScreenModel { CreateTransViewModel() }
         val createTransUiState = viewModel.createTransUiState.collectAsState()
         val getListWalletState = viewModel.getListWalletState.collectAsState()
+        val createTransState = viewModel.createTransState.collectAsState()
         val selectedTabIndex = remember { mutableStateOf(0) }
         val tabList = listOf(
             MR.strings.createTrans_tab_income.desc().localized(),
@@ -120,7 +122,22 @@ class CreateTransactionScreen : Screen {
                 }
             )
         }
+        LaunchedEffect(createTransState.value) {
+            createTransState.value.fold(
+                onSuccess = {
+                    Napier.d(tag = "CREATE TRANS", message = "onSuccess")
 
+                },
+                onFailure = {
+                    Napier.d(tag = "CREATE TRANS", message = it.message.toString())
+
+                },
+                onLoading = {
+                    Napier.d(tag = "CREATE TRANS", message = "onLoading")
+
+                }
+            )
+        }
         Column(modifier = Modifier.fillMaxSize()) {
             Row(modifier = Modifier.fillMaxWidth()) {
                 IconButton(onClick = { navigator.pop() }) {

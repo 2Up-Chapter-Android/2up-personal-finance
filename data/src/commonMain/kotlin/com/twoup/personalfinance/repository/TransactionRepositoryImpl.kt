@@ -24,11 +24,11 @@ class TransactionRepositoryImpl(
                 flowOf(GetListWalletResponseModel(data = database.getAllLWallet()))
             },
             fetch = {
-                dataSource.getListWallets().map { it.mapToDomain()}
+                dataSource.getListWallets().map { it.mapToDomain() }
             },
-            saveFetchResult = {fetchResult ->
+            saveFetchResult = { fetchResult ->
                 database.clearDatabase()
-                fetchResult.data?.data?.forEach{
+                fetchResult.data?.data?.forEach {
                     database.insertWallet(
                         id = it.id,
                         name = it.name,
@@ -41,7 +41,7 @@ class TransactionRepositoryImpl(
         )
     }
 
-    override suspend fun createTransaction(createTransactionRequestModel: CreateTransactionRequestModel): Result<CreateTransactionResponseModel> {
+    override suspend fun createTransaction(createTransactionRequestModel: CreateTransactionRequestModel): Resource<CreateTransactionResponseModel> {
         return safeApiCall { dataSource.createTransaction(createTransactionRequestModel) }.map { it.mapToDomain() }
     }
 }

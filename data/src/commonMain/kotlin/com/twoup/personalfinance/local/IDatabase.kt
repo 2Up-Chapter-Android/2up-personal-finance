@@ -13,4 +13,11 @@ interface IDatabase {
         name: String,
         walletGroup: WalletGroup
     )
+//    fun insertTransaction(
+//        id: String,
+//        amount: Int,
+//        description: String,
+//        name: String,
+//        walletGroup: WalletGroup
+//    )
 }

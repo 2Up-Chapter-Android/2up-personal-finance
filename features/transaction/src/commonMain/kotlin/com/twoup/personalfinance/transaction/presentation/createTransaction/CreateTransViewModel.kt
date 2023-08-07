@@ -29,7 +29,8 @@ class CreateTransViewModel : ScreenModel, KoinComponent {
     private val _createTransUiState = MutableStateFlow(CreateTransUiState())
     val createTransUiState = _createTransUiState.asStateFlow()
 
-    private val _getListWalletState = MutableStateFlow<Resource<GetListWalletResponseModel>>(Resource.loading())
+    private val _getListWalletState =
+        MutableStateFlow<Resource<GetListWalletResponseModel>>(Resource.loading())
     val getListWalletState = _getListWalletState.asStateFlow()
 
     init {
@@ -68,9 +69,9 @@ class CreateTransViewModel : ScreenModel, KoinComponent {
                     "88fbFFFF",
                     "sss",
                     "EXPENSE",
-                    1681898825686,
-                    "88fb9dbd-2b12-45b9-9647-3e680f86916a")
-            ).toResource()
+                    "12f2f261-df6c-44a7-9c29-a6ec267215b0"
+                )
+            )
             _createTransUiState.value = createTransUiState.value.copy(isLoading = false)
             _createTransState.tryEmit(createTransReponse)
 
@@ -89,7 +90,7 @@ class CreateTransViewModel : ScreenModel, KoinComponent {
         )
     }
 
-    fun onAmountChange(text: String){
+    fun onAmountChange(text: Int) {
         _createTransUiState.value = createTransUiState.value.copy(
             amount = text
         )

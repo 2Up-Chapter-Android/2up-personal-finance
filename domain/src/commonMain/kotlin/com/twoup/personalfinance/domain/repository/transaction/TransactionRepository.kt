@@ -9,6 +9,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface TransactionRepository {
     suspend fun getListWallets(): Flow<Resource<GetListWalletResponseModel>>
-    suspend fun getListWallets(): Result<GetListWalletResponseModel>
-    suspend fun createTransaction(createTransactionRequestModel: CreateTransactionRequestModel): Result<CreateTransactionResponseModel>
+    suspend fun createTransaction(createTransactionRequestModel: CreateTransactionRequestModel): Resource<CreateTransactionResponseModel>
 }
