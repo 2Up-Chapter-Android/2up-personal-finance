@@ -1,5 +1,7 @@
 package com.twoup.personalfinance.di
 
+import com.aicontent.category.di.categoryNavigationModule
+import com.aicontent.main.di.mainScreenNavigationModule
 import com.twoup.personalfinance.authentication.di.authenticationNavigationModule
 import com.twoup.personalfinance.domain.di.domainModule
 import com.twoup.personalfinance.transaction.di.transactionNavigationModule
@@ -13,8 +15,9 @@ fun initKoin(enableNetworkLogs: Boolean = true, appDeclaration: KoinAppDeclarati
             dataModule("https://2up-finance-service.site/api/v1/", enableNetworkLogs),
             domainModule(),
             authenticationNavigationModule(),
-            transactionNavigationModule()
-//            sharedModule,
+            transactionNavigationModule(),
+            categoryNavigationModule(),
+            mainScreenNavigationModule()
         )
     }
 

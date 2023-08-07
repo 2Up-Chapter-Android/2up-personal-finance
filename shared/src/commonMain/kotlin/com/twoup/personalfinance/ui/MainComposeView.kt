@@ -8,6 +8,9 @@ import androidx.compose.ui.Modifier
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import cafe.adriel.voyager.navigator.tab.Tab
+import com.aicontent.category.presentation.ui.CategoryHttpStatus
+import com.aicontent.category.presentation.ui.CategoryScreen
+import com.aicontent.main.presentation.MainScreen
 import com.twoup.personalfinance.authentication.presentation.ui.login.LoginScreen
 import com.twoup.personalfinance.authentication.presentation.ui.otp.OTPScreen
 import com.twoup.personalfinance.resources.LightColorPalette
@@ -43,8 +46,10 @@ internal fun PersonalFinanceTheme(
 @Composable
 internal fun Content() {
     Scaffold {
-        Navigator(LoginScreen())
+//        Navigator(LoginScreen())
 //        Navigator(TransactionDashboardScreen())
+//        Navigator(CategoryScreen())
+        Navigator(MainScreen())
     }
 }
 

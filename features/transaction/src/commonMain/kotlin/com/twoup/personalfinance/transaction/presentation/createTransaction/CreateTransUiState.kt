@@ -14,7 +14,7 @@ data class CreateTransUiState(
     val date: Long = 0,
     val amount: Int = 0,
     val category: String = "",
-    val account: Wallet = Wallet(),
+    val account: Wallet? = null,
     val note: String = "",
     val description: String = "",
     val isOpenChooseWallet: Boolean = false,
