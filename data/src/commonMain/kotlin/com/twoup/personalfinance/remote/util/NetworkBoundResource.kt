@@ -10,15 +10,16 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 
-inline fun <ResultType, RequestType> networkBoundResource(
-    crossinline query: () -> Flow<ResultType>,
-    crossinline fetch: suspend () -> RequestType,
-    crossinline saveFetchResult: suspend (RequestType) -> Unit,
-    crossinline shouldFetch: (ResultType) -> Boolean = { true }
+inline fun <T> networkBoundResource(
+    crossinline query: () -> Flow<T>,
+    crossinline fetch: suspend () -> Resource<T>,
+    crossinline saveFetchResult: suspend (Resource<T>) -> Unit,
+    crossinline shouldFetch: (T) -> Boolean = { true }
 ) = flow {
 
     //First step, fetch data from the local cache
-    val data = query().first()
+    val initQuery = query()
+    val data = initQuery.first()
 
     //If shouldFetch returns true,
     val resource = if (shouldFetch(data)) {
@@ -31,22 +32,38 @@ inline fun <ResultType, RequestType> networkBoundResource(
             //make a networking call
             val resultType = fetch()
 
-            //save it to the database
-            saveFetchResult(resultType)
+            when {
+                resultType.isSuccessful() -> {
+                    //save it to the database
+                    saveFetchResult(resultType)
+                    //Now fetch data again from the database and Dispatch it to the UI
+                    query().map { Resource.success(it) }
+                }
 
-            //Now fetch data again from the database and Dispatch it to the UI
-            query().map { Resource.success(it) }
+                resultType.isError() -> {
+                    //Dispatch any error emitted to the UI, plus data emitted from the Database
+                    initQuery.map { Resource.error(resultType.error!!, it) }
+                }
+
+                resultType.isLoading() -> {
+                    initQuery.map { Resource.loading(it) }
+                }
+
+                else -> {
+                    initQuery.map { Resource.error(UnknownException("UnknownException"), it) }
+                }
+            }
 
         } catch (e: UnresolvedAddressException) {
 
-            query().map { Resource.success(it) }
+            initQuery.map { Resource.success(it) }
         } catch (e: IOException) {
 
-            query().map { Resource.success(it) }
+            initQuery.map { Resource.success(it) }
         } catch (throwable: Throwable) {
 
             //Dispatch any error emitted to the UI, plus data emmited from the Database
-            query().map { Resource.error(UnknownException(throwable.message), it) }
+            initQuery.map { Resource.error(UnknownException(throwable.message), it) }
 
         }
 
