@@ -29,9 +29,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.model.rememberScreenModel
+import cafe.adriel.voyager.core.registry.rememberScreen
 import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.currentOrThrow
 import com.aicontent.main.presentation.BudgetBox
 import com.aicontent.main.presentation.TapBarViewModel
+import com.twoup.personalfinance.navigation.MainScreenSharedScreen
+import com.twoup.personalfinance.navigation.TransactionSharedScreen
 import dev.icerock.moko.resources.compose.localized
 import dev.icerock.moko.resources.desc.desc
 import io.github.aakira.napier.Napier
@@ -39,6 +44,8 @@ import io.github.aakira.napier.Napier
 class DailyScreen() : Screen {
     @Composable
     override fun Content() {
+        val navigator = LocalNavigator.currentOrThrow
+        val createTranScreen = rememberScreen(TransactionSharedScreen.CreateTransactionScreen)
         val viewModel = rememberScreenModel { DailyScreenViewModel() }
 
         Scaffold(
@@ -65,6 +72,7 @@ class DailyScreen() : Screen {
             floatingActionButton = {
                 FloatingActionButton(
                     onClick = {
+                        navigator.push(createTranScreen)
                     },
                     backgroundColor = MaterialTheme.colors.primary,
                 ) {

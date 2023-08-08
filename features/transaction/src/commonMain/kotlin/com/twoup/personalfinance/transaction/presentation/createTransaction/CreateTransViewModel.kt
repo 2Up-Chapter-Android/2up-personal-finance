@@ -64,12 +64,12 @@ class CreateTransViewModel : ScreenModel, KoinComponent {
 //                    updatedAt = createTransUiState.value.date,//
 //                    walletId = createTransUiState.value.account.id,
                     22,
-                    "735e8c8b-8685-4d96-bdf9-86781d7f6ae4",
+                    "01b8466a-fb86-4f9e-812f-a99842ec3938",
                     1681898825686,
                     "88fbFFFF",
                     "sss",
                     "EXPENSE",
-                    "12f2f261-df6c-44a7-9c29-a6ec267215b0"
+                    "028ee24e-95c7-4206-b99b-d80c51e298ed"
                 )
             )
             _createTransUiState.value = createTransUiState.value.copy(isLoading = false)

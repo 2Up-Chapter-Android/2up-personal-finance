@@ -1,4 +1,4 @@
-package com.twoup.personalfinance.transaction.presentation.theme
+package com.twoup.personalfinance.transaction.presentation.dashboard.theme
 
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
