@@ -95,7 +95,6 @@ class CreateTransactionScreen : Screen {
         CreateTransactionScreen()
     }
 
-
     @OptIn(ExperimentalMaterialApi::class)
     @Composable
     fun CreateTransactionScreen() {
