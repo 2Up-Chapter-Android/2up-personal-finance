@@ -1,5 +1,7 @@
 package com.twoup.personalfinance.repository
 
+import com.twoup.personalfinance.domain.model.transaction.createTrans.CreateTransactionRequestModel
+import com.twoup.personalfinance.domain.model.transaction.createTrans.CreateTransactionResponseModel
 import com.twoup.personalfinance.domain.model.wallet.getWallet.GetListWalletResponseModel
 import com.twoup.personalfinance.domain.repository.transaction.TransactionRepository
 import com.twoup.personalfinance.local.IDatabase
@@ -10,6 +12,7 @@ import com.twoup.personalfinance.utils.data.Resource
 import com.twoup.personalfinance.utils.data.map
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
+import com.twoup.personalfinance.remote.util.safeApiCall
 
 class TransactionRepositoryImpl(
     private val dataSource: TransactionDataSource,
@@ -21,11 +24,11 @@ class TransactionRepositoryImpl(
                 flowOf(GetListWalletResponseModel(data = database.getAllLWallet()))
             },
             fetch = {
-                dataSource.getListWallets().map { it.mapToDomain()}
+                dataSource.getListWallets().map { it.mapToDomain() }
             },
-            saveFetchResult = {fetchResult ->
+            saveFetchResult = { fetchResult ->
                 database.clearDatabase()
-                fetchResult.data?.data?.forEach{
+                fetchResult.data?.data?.forEach {
                     database.insertWallet(
                         id = it.id,
                         name = it.name,
@@ -36,5 +39,9 @@ class TransactionRepositoryImpl(
                 }
             }
         )
+    }
+
+    override suspend fun createTransaction(createTransactionRequestModel: CreateTransactionRequestModel): Resource<CreateTransactionResponseModel> {
+        return safeApiCall { dataSource.createTransaction(createTransactionRequestModel) }.map { it.mapToDomain() }
     }
 }

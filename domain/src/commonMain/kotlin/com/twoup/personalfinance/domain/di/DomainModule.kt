@@ -5,6 +5,7 @@ import com.twoup.personalfinance.domain.usecase.authentication.LoginUseCase
 import com.twoup.personalfinance.domain.usecase.authentication.RegisterUseCase
 import com.twoup.personalfinance.domain.usecase.authentication.SendOtpUseCase
 import com.twoup.personalfinance.domain.usecase.category.CategoryUseCase
+import com.twoup.personalfinance.domain.usecase.transaction.CreateTransactionUseCase
 import com.twoup.personalfinance.domain.usecase.transaction.GetListWalletsUseCase
 import org.koin.dsl.module
 
@@ -25,6 +26,7 @@ private fun authenticationDomainModule() = module {
 
 private fun transactionDomainModule() = module {
     single { GetListWalletsUseCase(get()) }
+    factory { CreateTransactionUseCase(get()) }
 }
 
 private fun categoryDomainModule() = module {

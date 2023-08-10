@@ -18,8 +18,6 @@ data class CreateTransactionRequestModel(
     val note: String,
     @SerialName("type")
     val type: String,
-    @SerialName("updated_at")
-    val updatedAt: Long,
     @SerialName("wallet_id")
     val walletId: String
 )

@@ -66,27 +66,28 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.twoup.personalfinance.domain.model.wallet.Wallet
 import com.twoup.personalfinance.utils.data.fold
-import com.twoup.personalfinance.transaction.presentation.theme.buttonHeight_transaction_buttonNextAction
-import com.twoup.personalfinance.transaction.presentation.theme.create_transaction_padding_end_text
-import com.twoup.personalfinance.transaction.presentation.theme.create_transaction_padding_horizontal
-import com.twoup.personalfinance.transaction.presentation.theme.create_transaction_padding_row
-import com.twoup.personalfinance.transaction.presentation.theme.create_transaction_padding_start_text
-import com.twoup.personalfinance.transaction.presentation.theme.create_transaction_spacer_padding_bottom
-import com.twoup.personalfinance.transaction.presentation.theme.create_transaction_spacer_padding_horizontal
-import com.twoup.personalfinance.transaction.presentation.theme.create_transaction_spacer_padding_top
-import com.twoup.personalfinance.transaction.presentation.theme.marginStart_createTrans_actionBar_tabName
-import com.twoup.personalfinance.transaction.presentation.theme.paddingHorizontal_createTrans_chooseWallet_actionBar
-import com.twoup.personalfinance.transaction.presentation.theme.paddingHorizontal_createTrans_chooseWallet_walletItem
-import com.twoup.personalfinance.transaction.presentation.theme.paddingVertical_createTrans_chooseWallet_walletItem
-import com.twoup.personalfinance.transaction.presentation.theme.textSize_createTransaction_chooseWallet_actionBar
-import com.twoup.personalfinance.transaction.presentation.theme.textSize_createTransaction_chooseWallet_walletITem_name
-import com.twoup.personalfinance.transaction.presentation.theme.textSize_transaction_textField
-import com.twoup.personalfinance.transaction.presentation.theme.thickness_transaction_borderStroke
+import com.twoup.personalfinance.transaction.presentation.dashboard.theme.buttonHeight_transaction_buttonNextAction
+import com.twoup.personalfinance.transaction.presentation.dashboard.theme.create_transaction_padding_end_text
+import com.twoup.personalfinance.transaction.presentation.dashboard.theme.create_transaction_padding_horizontal
+import com.twoup.personalfinance.transaction.presentation.dashboard.theme.create_transaction_padding_row
+import com.twoup.personalfinance.transaction.presentation.dashboard.theme.create_transaction_padding_start_text
+import com.twoup.personalfinance.transaction.presentation.dashboard.theme.create_transaction_spacer_padding_bottom
+import com.twoup.personalfinance.transaction.presentation.dashboard.theme.create_transaction_spacer_padding_horizontal
+import com.twoup.personalfinance.transaction.presentation.dashboard.theme.create_transaction_spacer_padding_top
+import com.twoup.personalfinance.transaction.presentation.dashboard.theme.marginStart_createTrans_actionBar_tabName
+import com.twoup.personalfinance.transaction.presentation.dashboard.theme.paddingHorizontal_createTrans_chooseWallet_actionBar
+import com.twoup.personalfinance.transaction.presentation.dashboard.theme.paddingHorizontal_createTrans_chooseWallet_walletItem
+import com.twoup.personalfinance.transaction.presentation.dashboard.theme.paddingVertical_createTrans_chooseWallet_walletItem
+import com.twoup.personalfinance.transaction.presentation.dashboard.theme.textSize_createTransaction_chooseWallet_actionBar
+import com.twoup.personalfinance.transaction.presentation.dashboard.theme.textSize_createTransaction_chooseWallet_walletITem_name
+import com.twoup.personalfinance.transaction.presentation.dashboard.theme.textSize_transaction_textField
+import com.twoup.personalfinance.transaction.presentation.dashboard.theme.thickness_transaction_borderStroke
 import dev.icerock.moko.resources.compose.colorResource
 import dev.icerock.moko.resources.compose.localized
 import dev.icerock.moko.resources.desc.desc
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import io.github.aakira.napier.Napier
 
 class CreateTransactionScreen : Screen {
     @Composable
@@ -103,6 +104,7 @@ class CreateTransactionScreen : Screen {
         val viewModel = rememberScreenModel { CreateTransViewModel() }
         val createTransUiState = viewModel.createTransUiState.collectAsState()
         val getListWalletState = viewModel.getListWalletState.collectAsState()
+        val createTransState = viewModel.createTransState.collectAsState()
         val selectedTabIndex = remember { mutableStateOf(0) }
         val tabList = listOf(
             MR.strings.createTrans_tab_income.desc().localized(),
@@ -129,6 +131,21 @@ class CreateTransactionScreen : Screen {
                         listWallet.value.clear()
                         listWallet.value.addAll(it.data)
                     }
+                }
+            )
+        }
+        LaunchedEffect(createTransState.value) {
+            createTransState.value.fold(
+                onSuccess = {
+                    Napier.d(tag = "CREATE TRANS", message = "onSuccess")
+
+                },
+                onFailure = {
+                    Napier.d(tag = "CREATE TRANS", message = it.message.toString())
+                },
+                onLoading = {
+                    Napier.d(tag = "CREATE TRANS", message = "onLoading")
+
                 }
             )
         }
@@ -177,23 +194,45 @@ class CreateTransactionScreen : Screen {
                                 )
                             }
                         }
-
+                        val type = when (selectedTabIndex.value) {
+                            0 -> "INCOME"
+                            1 -> "EXPENSE"
+                            else -> "TRANSFER"
+                        }
                         LineTransInfor(
-                            text = createTransUiState.value.date,
-                            textLabel = MR.strings.createTrans_inputLabel_date.desc().localized(),
-                            onTextChange = { viewModel.onDateChange(it) },
+                            text = type,
+                            textLabel = "",
+                            onTextChange = {
+                                viewModel.onTypeChange(it)
+                            },
                             keyboardOption = KeyboardOptions(imeAction = ImeAction.Next),
                             bottomSheetState = bottomSheetStateAccounts,
                             coroutineScope = coroutineScopeCategory
                         )
 
                         LineTransInfor(
-                            text = createTransUiState.value.amount,
-                            textLabel = MR.strings.createTrans_inputLabel_amount.desc().localized(),
-                            onTextChange = { viewModel.onAmountChange(it) },
-                            keyboardOption = KeyboardOptions(imeAction = ImeAction.Next),
+                            text = createTransUiState.value.date.toString(),
+                            textLabel = MR.strings.createTrans_inputLabel_date.desc().localized(),
+                            onTextChange = {
+                                if (it.isNotBlank())
+                                    viewModel.onDateChange(it.toLong())
+                            },
                             bottomSheetState = bottomSheetStateAccounts,
-                            coroutineScope = coroutineScopeCategory
+                            coroutineScope = coroutineScopeCategory,
+                            keyboardOption = KeyboardOptions(imeAction = ImeAction.Next),
+                        )
+
+                        LineTransInfor(
+                            text = createTransUiState.value.amount.toString(),//convert int to string
+                            textLabel = MR.strings.createTrans_inputLabel_amount.desc()
+                                .localized(),
+                            onTextChange = {
+                                if (it.isNotBlank())
+                                    viewModel.onAmountChange(it.toInt())
+                            },//convert string to int
+                            bottomSheetState = bottomSheetStateAccounts,
+                            coroutineScope = coroutineScopeCategory,
+                            keyboardOption = KeyboardOptions(imeAction = ImeAction.Next)
                         )
 
                         LineTransInfor(
@@ -221,7 +260,8 @@ class CreateTransactionScreen : Screen {
 
                         LineTransInfor(
                             text = createTransUiState.value.note,
-                            textLabel = MR.strings.createTrans_inputLabel_note.desc().localized(),
+                            textLabel = MR.strings.createTrans_inputLabel_note.desc()
+                                .localized(),
                             onTextChange = { viewModel.onNoteChange(it) },
                             keyboardOption = KeyboardOptions(imeAction = ImeAction.Next),
                             bottomSheetState = bottomSheetStateAccounts,
@@ -246,9 +286,11 @@ class CreateTransactionScreen : Screen {
                             modifier = Modifier.fillMaxWidth()
                                 .padding(create_transaction_padding_horizontal)
                         ) {
-                            //Create this transaction and back to dashboard screen
                             Button(
-                                onClick = { /* Handle create button click */ },
+                                onClick = {
+                                    viewModel.createTransaction(type)
+                                },
+                                enabled = createTransUiState.value.enableCreateTransButton,
                                 modifier = Modifier.weight(1f)
                                     .padding(end = create_transaction_padding_row)
                                     .height(buttonHeight_transaction_buttonNextAction),
@@ -268,7 +310,9 @@ class CreateTransactionScreen : Screen {
                             //Create this transaction and continue create another transaction
                             Button(
                                 onClick = { /* Handle image button click */ },
-                                modifier = Modifier.height(buttonHeight_transaction_buttonNextAction),
+                                modifier = Modifier.height(
+                                    buttonHeight_transaction_buttonNextAction
+                                ),
                                 colors = ButtonDefaults.outlinedButtonColors(backgroundColor = Color.White),
                                 border = BorderStroke(
                                     thickness_transaction_borderStroke,
@@ -279,69 +323,128 @@ class CreateTransactionScreen : Screen {
                                     text = MR.strings.createTrans_button_saveAndCreateAnother.desc()
                                         .localized(), color = Color.Black
                                 )
-
                             }
-                        }
-                    }
 
-                    AnimatedVisibility(visible = createTransUiState.value.isOpenChooseWallet) {
-                        Column(
-                            modifier = Modifier.fillMaxHeight(0.5f).fillMaxWidth()
-                                .background(color = colorResource(MR.colors.createTrans_chooseWallet_background))
-                        ) {
-                            Row(
-                                modifier = Modifier.background(Color.Black).fillMaxWidth()
-                                    .padding(horizontal = paddingHorizontal_createTrans_chooseWallet_actionBar),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.SpaceBetween
-                            ) {
-                                Text(
-                                    MR.strings.createTrans_inputLabel_account.desc().localized(),
-                                    color = Color.White,
-                                    fontSize = textSize_createTransaction_chooseWallet_actionBar
-                                )
-                                IconButton(onClick = { focusManager.clearFocus() }) {
-                                    Icon(imageVector = Icons.Default.Clear, "", tint = Color.White)
-                                }
-                            }
-                            LazyVerticalGrid(
-                                columns = GridCells.Fixed(3)
-                            ) {
-                                items(listWallet.value.size) {
-                                    Box(
-                                        modifier = Modifier
-                                            .border(
-                                                width = Dp(0.5f),
-                                                color = colorResource(MR.colors.createTrans_chooseWallet_walletItem_border)
-                                            )
-                                            .background(Color.White)
-                                            .padding(
-                                                horizontal = paddingHorizontal_createTrans_chooseWallet_walletItem,
-                                                vertical = paddingVertical_createTrans_chooseWallet_walletItem
-                                            )
-                                            .clickable(
-                                                interactionSource = interactionSource,
-                                                indication = null
-                                            ) {
-                                                viewModel.onAccountChange(listWallet.value[it])
-                                                focusManager.clearFocus()
-                                            },
-                                        contentAlignment = Alignment.Center
+                            AnimatedVisibility(visible = createTransUiState.value.isOpenChooseWallet) {
+                                Column(
+                                    modifier = Modifier.fillMaxHeight(0.5f).fillMaxWidth()
+                                        .background(color = colorResource(MR.colors.createTrans_chooseWallet_background))
+                                ) {
+                                    Row(
+                                        modifier = Modifier.background(Color.Black)
+                                            .fillMaxWidth()
+                                            .padding(horizontal = paddingHorizontal_createTrans_chooseWallet_actionBar),
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.SpaceBetween
                                     ) {
                                         Text(
-                                            text = listWallet.value[it].name,
-                                            color = Color.Black,
-                                            fontSize = textSize_createTransaction_chooseWallet_walletITem_name,
+                                            MR.strings.createTrans_inputLabel_account.desc()
+                                                .localized(),
+                                            color = Color.White,
+                                            fontSize = textSize_createTransaction_chooseWallet_actionBar
                                         )
+                                        IconButton(onClick = { focusManager.clearFocus() }) {
+                                            Icon(
+                                                imageVector = Icons.Default.Clear,
+                                                "",
+                                                tint = Color.White
+                                            )
+                                        }
+                                    }
+                                    LazyVerticalGrid(
+                                        columns = GridCells.Fixed(3)
+                                    ) {
+                                        items(listWallet.value.size) {
+                                            Box(
+                                                modifier = Modifier
+                                                    .border(
+                                                        width = Dp(0.5f),
+                                                        color = colorResource(MR.colors.createTrans_chooseWallet_walletItem_border)
+                                                    )
+                                                    .background(Color.White)
+                                                    .padding(
+                                                        horizontal = paddingHorizontal_createTrans_chooseWallet_walletItem,
+                                                        vertical = paddingVertical_createTrans_chooseWallet_walletItem
+                                                    )
+                                                    .clickable(
+                                                        interactionSource = interactionSource,
+                                                        indication = null
+                                                    ) {
+                                                        viewModel.onAccountChange(listWallet.value[it])
+                                                        focusManager.clearFocus()
+                                                    },
+                                                contentAlignment = Alignment.Center
+                                            ) {
+                                                Text(
+                                                    text = listWallet.value[it].name,
+                                                    color = Color.Black,
+                                                    fontSize = textSize_createTransaction_chooseWallet_walletITem_name,
+                                                )
+                                            }
+                                        }
                                     }
                                 }
                             }
                         }
                     }
                 }
-            }
-        )
+                AnimatedVisibility(visible = createTransUiState.value.isOpenChooseWallet) {
+                    Column(
+                        modifier = Modifier.fillMaxHeight(0.5f).fillMaxWidth()
+                            .background(color = colorResource(MR.colors.createTrans_chooseWallet_background))
+                    ) {
+                        Row(
+                            modifier = Modifier.background(Color.Black).fillMaxWidth()
+                                .padding(horizontal = paddingHorizontal_createTrans_chooseWallet_actionBar),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(
+                                MR.strings.createTrans_inputLabel_account.desc().localized(),
+                                color = Color.White,
+                                fontSize = textSize_createTransaction_chooseWallet_actionBar
+                            )
+                            IconButton(onClick = { focusManager.clearFocus() }) {
+                                Icon(imageVector = Icons.Default.Clear, "", tint = Color.White)
+                            }
+                        }
+                        LazyVerticalGrid(
+                            columns = GridCells.Fixed(3)
+                        ) {
+                            items(listWallet.value.size) {
+                                Box(
+                                    modifier = Modifier
+                                        .border(
+                                            width = Dp(0.5f),
+                                            color = colorResource(MR.colors.createTrans_chooseWallet_walletItem_border)
+                                        )
+                                        .background(Color.White)
+                                        .padding(
+                                            horizontal = paddingHorizontal_createTrans_chooseWallet_walletItem,
+                                            vertical = paddingVertical_createTrans_chooseWallet_walletItem
+                                        )
+                                        .clickable(
+                                            interactionSource = interactionSource,
+                                            indication = null
+                                        ) {
+                                            viewModel.onAccountChange(listWallet.value[it])
+                                            focusManager.clearFocus()
+                                        },
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Text(
+                                        text = listWallet.value[it].name,
+                                        color = Color.Black,
+                                        fontSize = textSize_createTransaction_chooseWallet_walletITem_name,
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+            })
     }
+
 
     @Composable
     fun tabLayoutTrans(index: Int, value: String, selectedTabIndex: MutableState<Int>) {
@@ -362,7 +465,10 @@ class CreateTransactionScreen : Screen {
                             colorResource(MR.colors.createTrans_tab_expense)
                         )
 
-                        else -> BorderStroke(thickness_transaction_borderStroke, Color.Black)
+                        else -> BorderStroke(
+                            thickness_transaction_borderStroke,
+                            Color.Black
+                        )
                     }
                 } else {
                     BorderStroke(thickness_transaction_borderStroke, Color.Gray)

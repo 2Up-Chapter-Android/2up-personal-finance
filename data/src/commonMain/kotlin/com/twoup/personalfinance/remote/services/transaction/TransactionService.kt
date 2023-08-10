@@ -10,7 +10,7 @@ import de.jensklingenberg.ktorfit.http.POST
 
 interface TransactionService {
     @POST("transactions")
-    suspend fun createTransaction(@Body createTransactionRequest: CreateTransactionRequestModel): Result<CreateTransactionResponse>
+    suspend fun createTransaction(@Body createTransactionRequest: CreateTransactionRequestModel): Resource<CreateTransactionResponse>
 
     @GET("wallets")
     suspend fun getListWallets(): Resource<GetListWalletResponse>
