@@ -45,6 +45,8 @@ kotlin {
                 implementation(libs.voyager.navigator)
                 //Logging
                 implementation(libs.napier)
+                implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
+
             }
         }
         val commonTest by getting {

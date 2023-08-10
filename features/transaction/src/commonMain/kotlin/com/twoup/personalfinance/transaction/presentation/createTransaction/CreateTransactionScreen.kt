@@ -195,12 +195,13 @@ class CreateTransactionScreen : Screen {
                                 )
                             }
                         }
+                        val type = when (selectedTabIndex.value) {
+                            0 -> "INCOME"
+                            1 -> "EXPENSE"
+                            else -> "TRANSFER"
+                        }
                         LineTransInfor(
-                            text = when (selectedTabIndex.value) {
-                                0 -> "INCOME"
-                                1 -> "EXPENSE"
-                                else -> "TRANSFER"
-                            },
+                            text = type,
                             textLabel = "",
                             onTextChange = {
                                 viewModel.onTypeChange(it)
@@ -224,7 +225,8 @@ class CreateTransactionScreen : Screen {
 
                         LineTransInfor(
                             text = createTransUiState.value.amount.toString(),//convert int to string
-                            textLabel = MR.strings.createTrans_inputLabel_amount.desc().localized(),
+                            textLabel = MR.strings.createTrans_inputLabel_amount.desc()
+                                .localized(),
                             onTextChange = {
                                 if (it.isNotBlank())
                                     viewModel.onAmountChange(it.toInt())
@@ -259,7 +261,8 @@ class CreateTransactionScreen : Screen {
 
                         LineTransInfor(
                             text = createTransUiState.value.note,
-                            textLabel = MR.strings.createTrans_inputLabel_note.desc().localized(),
+                            textLabel = MR.strings.createTrans_inputLabel_note.desc()
+                                .localized(),
                             onTextChange = { viewModel.onNoteChange(it) },
                             keyboardOption = KeyboardOptions(imeAction = ImeAction.Next),
                             bottomSheetState = bottomSheetStateAccounts,
@@ -286,7 +289,7 @@ class CreateTransactionScreen : Screen {
                         ) {
                             Button(
                                 onClick = {
-                                    viewModel.createTransaction(createTransUiState.value.typeTrans)
+                                    viewModel.createTransaction(type)
                                 },
                                 enabled = createTransUiState.value.enableCreateTransButton,
                                 modifier = Modifier.weight(1f)
@@ -308,7 +311,9 @@ class CreateTransactionScreen : Screen {
                             //Create this transaction and continue create another transaction
                             Button(
                                 onClick = { /* Handle image button click */ },
-                                modifier = Modifier.height(buttonHeight_transaction_buttonNextAction),
+                                modifier = Modifier.height(
+                                    buttonHeight_transaction_buttonNextAction
+                                ),
                                 colors = ButtonDefaults.outlinedButtonColors(backgroundColor = Color.White),
                                 border = BorderStroke(
                                     thickness_transaction_borderStroke,
@@ -327,7 +332,8 @@ class CreateTransactionScreen : Screen {
                                         .background(color = colorResource(MR.colors.createTrans_chooseWallet_background))
                                 ) {
                                     Row(
-                                        modifier = Modifier.background(Color.Black).fillMaxWidth()
+                                        modifier = Modifier.background(Color.Black)
+                                            .fillMaxWidth()
                                             .padding(horizontal = paddingHorizontal_createTrans_chooseWallet_actionBar),
                                         verticalAlignment = Alignment.CenterVertically,
                                         horizontalArrangement = Arrangement.SpaceBetween
@@ -460,7 +466,10 @@ class CreateTransactionScreen : Screen {
                             colorResource(MR.colors.createTrans_tab_expense)
                         )
 
-                        else -> BorderStroke(thickness_transaction_borderStroke, Color.Black)
+                        else -> BorderStroke(
+                            thickness_transaction_borderStroke,
+                            Color.Black
+                        )
                     }
                 } else {
                     BorderStroke(thickness_transaction_borderStroke, Color.Gray)

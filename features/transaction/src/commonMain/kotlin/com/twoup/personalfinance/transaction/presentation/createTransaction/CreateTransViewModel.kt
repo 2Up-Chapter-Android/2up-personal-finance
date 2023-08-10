@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import kotlinx.datetime.Clock
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -52,28 +53,25 @@ class CreateTransViewModel : ScreenModel, KoinComponent {
 
         coroutineScope.launch {
             delay(200)
-
-            val createTransReponse = createTransUseCase(
+            val now = Clock.System.now()
+            val milliseconds = now.toEpochMilliseconds()
+            val createTransReponse = createTransUiState.value.account?.id?.let {
                 CreateTransactionRequestModel(
-//                    amount = createTransUiState.value.amount,
-//                    categoryId = createTransUiState.value.category,
-//                    createdAt = createTransUiState.value.date,//
-//                    description = createTransUiState.value.description,
-//                    note = createTransUiState.value.note,
-//                    type = type,
-//                    updatedAt = createTransUiState.value.date,//
-//                    walletId = createTransUiState.value.account.id,
-                    22,
-                    "01b8466a-fb86-4f9e-812f-a99842ec3938",
-                    1681898825686,
-                    "88fbFFFF",
-                    "sss",
-                    "EXPENSE",
-                    "028ee24e-95c7-4206-b99b-d80c51e298ed"
+                    amount = createTransUiState.value.amount,
+                    categoryId = createTransUiState.value.category,
+                    createdAt = milliseconds,
+                    description = "88fbFFFF",
+                    note = createTransUiState.value.note,
+                    type = type,
+                    walletId = it,
                 )
-            )
+            }?.let {
+                createTransUseCase(
+                    it
+                )
+            }
             _createTransUiState.value = createTransUiState.value.copy(isLoading = false)
-            _createTransState.tryEmit(createTransReponse)
+            createTransReponse?.let { _createTransState.tryEmit(it) }
 
         }
     }
