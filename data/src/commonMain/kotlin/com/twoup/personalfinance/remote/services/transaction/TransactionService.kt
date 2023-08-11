@@ -2,6 +2,7 @@ package com.twoup.personalfinance.remote.services.transaction
 
 import com.twoup.personalfinance.domain.model.transaction.createTrans.CreateTransactionRequestModel
 import com.twoup.personalfinance.remote.dto.transaction.CreateTransactionResponse
+import com.twoup.personalfinance.remote.dto.transaction.GetAllTransactionsResponse
 import com.twoup.personalfinance.remote.dto.transaction.GetListWalletResponse
 import com.twoup.personalfinance.utils.data.Resource
 import de.jensklingenberg.ktorfit.http.Body
@@ -14,4 +15,8 @@ interface TransactionService {
 
     @GET("wallets")
     suspend fun getListWallets(): Resource<GetListWalletResponse>
+
+    @GET("transactions")
+    suspend fun getListTransaction(): Resource<GetAllTransactionsResponse>
+
 }

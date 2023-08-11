@@ -1,5 +1,6 @@
 package com.twoup.personalfinance.local
 
+import com.twoup.personalfinance.domain.model.transaction.TransactionEntity
 import com.twoup.personalfinance.domain.model.wallet.Category
 import com.twoup.personalfinance.domain.model.wallet.Wallet
 import com.twoup.personalfinance.domain.model.wallet.WalletGroup
@@ -8,6 +9,7 @@ class Database(databaseWrapper: PersonalFinanceDatabaseWrapper) : IDatabase {
     private val database = databaseWrapper.instance
     private val dbQuery = database.personalFinanceDatabaseQueries
 
+//    CATEGORY
     override fun insertCategory(
         id: String,
         name: String,
@@ -48,7 +50,18 @@ class Database(databaseWrapper: PersonalFinanceDatabaseWrapper) : IDatabase {
     override fun getAllCategory():List<Category>{
         return dbQuery.getAllCategory().executeAsList().map { it.mapToDomain() }
     }
-    override fun clearDatabase() {
+
+    private fun comtwouppersonalfinancedatabase.PersonalFinanceDatabaseCategory.mapToDomain(): Category {
+        return Category(
+            id = id,
+            name = name,
+            categoryId = categoryId,
+            userID = userId
+        )
+    }
+
+//    WALLET
+    override fun clearAllWallets() {
         dbQuery.transaction {
             dbQuery.removeAllWallet()
         }
@@ -80,12 +93,27 @@ class Database(databaseWrapper: PersonalFinanceDatabaseWrapper) : IDatabase {
             walletGroup = WalletGroup.valueOf(walletGroup!!)
         )
     }
-    private fun comtwouppersonalfinancedatabase.PersonalFinanceDatabaseCategory.mapToDomain(): Category {
-        return Category(
-            id = id,
-            name = name,
-            categoryId = categoryId,
-            userID = userId
-        )
+
+    //    TRANSACTION
+    override fun getAllTransaction(): List<TransactionEntity> {
+        return listOf()
+    }
+
+    override fun insertTransaction(
+        amount: Int,
+        categoryId: String,
+        createdAt: Long,
+        description: String,
+        id: String,
+        note: String,
+        type: com.twoup.personalfinance.domain.model.transaction.TransactionType,
+        updatedAt: Long,
+        walletId: String
+    ) {
+
+    }
+
+    override fun clearAllTransactions() {
+
     }
 }
