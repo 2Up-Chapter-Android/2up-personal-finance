@@ -18,21 +18,22 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.Divider
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.ModalBottomSheetLayout
-import androidx.compose.material.ModalBottomSheetState
-import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.Tab
 import androidx.compose.material.TabRow
 import androidx.compose.material.Text
@@ -41,14 +42,13 @@ import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
@@ -60,6 +60,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
@@ -85,8 +86,6 @@ import com.twoup.personalfinance.transaction.presentation.theme.thickness_transa
 import dev.icerock.moko.resources.compose.colorResource
 import dev.icerock.moko.resources.compose.localized
 import dev.icerock.moko.resources.desc.desc
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 
 class CreateTransactionScreen : Screen {
     @Composable
@@ -110,10 +109,8 @@ class CreateTransactionScreen : Screen {
             MR.strings.createTrans_tab_transfer.desc().localized()
         )
         val listWallet = remember { mutableStateOf(mutableListOf<Wallet>()) }
-        val coroutineScopeCategory = rememberCoroutineScope()
-        val bottomSheetVisible = remember { mutableStateOf(false) }
-        val bottomSheetStateAccounts =
-            rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
+        val categorys by viewModel.categorys.collectAsState(emptyList())
+        val accounts by viewModel.accounts.collectAsState(emptyList())
 
         LaunchedEffect(getListWalletState.value) {
             getListWalletState.value.fold(
@@ -133,214 +130,177 @@ class CreateTransactionScreen : Screen {
             )
         }
 
-        ModalBottomSheetLayout(
-            sheetState = bottomSheetStateAccounts.apply {
-                bottomSheetVisible.value = isVisible
-            },
-            sheetContent = {
-                AccountsModalBottomSheetLayout()
-//                CategoryModalBottomSheetLayout()
-            },
-            content = {
-                Column(modifier = Modifier.fillMaxSize()) {
-                    Row(modifier = Modifier.fillMaxWidth()) {
-                        IconButton(onClick = { navigator.pop() }) {
-                            Icon(
-                                imageVector = Icons.Default.ArrowBack,
-                                contentDescription = "",
-                                tint = Color.Black
+        Box(modifier = Modifier.fillMaxSize()) {
+            Column(modifier = Modifier.fillMaxSize()) {
+                Row(modifier = Modifier.fillMaxWidth()) {
+                    IconButton(onClick = { navigator.pop() }) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = "",
+                            tint = Color.Black
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(marginStart_createTrans_actionBar_tabName))
+                    Text(
+                        text = tabList[selectedTabIndex.value],
+                        color = Color.Black,
+                        modifier = Modifier.align(Alignment.CenterVertically),
+                    )
+                }
+
+                Column(
+                    modifier = Modifier.verticalScroll(rememberScrollState())
+                        .weight(weight = 1f, fill = false)
+                ) {
+
+                    TabRow(
+                        selectedTabIndex = selectedTabIndex.value,
+                        contentColor = Color.Transparent,
+                        backgroundColor = MaterialTheme.colors.surface,
+                        divider = { /*remove underline*/ },
+                        indicator = { /*remove indicator*/ }
+                    ) {
+                        tabList.forEachIndexed { index, tabName ->
+                            tabLayoutTrans(
+                                index = index,
+                                value = tabName,
+                                selectedTabIndex = selectedTabIndex
                             )
                         }
-                        Spacer(modifier = Modifier.width(marginStart_createTrans_actionBar_tabName))
-                        Text(
-                            text = tabList[selectedTabIndex.value],
-                            color = Color.Black,
-                            modifier = Modifier.align(Alignment.CenterVertically),
-                        )
                     }
-                    Column(
-                        modifier = Modifier.verticalScroll(rememberScrollState())
-                            .weight(weight = 1f, fill = false)
+
+                    LineTransInfor(
+                        text = createTransUiState.value.date,
+                        textLabel = MR.strings.createTrans_inputLabel_date.desc().localized(),
+                        onTextChange = { viewModel.onDateChange(it) },
+                        keyboardOption = KeyboardOptions(imeAction = ImeAction.Next),
+                    )
+
+                    LineTransInfor(
+                        text = createTransUiState.value.account,
+                        textLabel = MR.strings.createTrans_inputLabel_account.desc().localized(),
+                        keyboardOption = KeyboardOptions(imeAction = ImeAction.Next),
+                        readOnly = true,
+                        textFieldModifier = Modifier.onFocusChanged {
+                            viewModel.openCloseChooseWallet(it.hasFocus)
+                        }
+                    )
+                    LineTransInfor(
+                        text = createTransUiState.value.category,
+                        textLabel = MR.strings.createTrans_inputLabel_category.desc().localized(),
+                        keyboardOption = KeyboardOptions(imeAction = ImeAction.Next),
+                        readOnly = true,
+                        textFieldModifier = Modifier.onFocusChanged {
+                            viewModel.openCloseChooseCategory(it.hasFocus)
+                        }
+                    )
+
+                    LineTransInfor(
+                        text = createTransUiState.value.amount,
+                        textLabel = MR.strings.createTrans_inputLabel_amount.desc().localized(),
+                        keyboardOption = KeyboardOptions(imeAction = ImeAction.Next),
+                        readOnly = true,
+                        textFieldModifier = Modifier.onFocusChanged {
+                            viewModel.openCloseChooseAmount(it.hasFocus)
+                        }
+                    )
+
+                    LineTransInfor(
+                        text = createTransUiState.value.note,
+                        textLabel = MR.strings.createTrans_inputLabel_note.desc().localized(),
+                        onTextChange = { viewModel.onNoteChange(it) },
+                        keyboardOption = KeyboardOptions(imeAction = ImeAction.Next),
+                    )
+
+                    Spacer(
+                        modifier = Modifier
+                            .height(40.dp)
+                            .padding(
+                                start = create_transaction_spacer_padding_horizontal,
+                                end = create_transaction_spacer_padding_horizontal,
+                                top = create_transaction_spacer_padding_top,
+                                bottom = create_transaction_spacer_padding_bottom
+                            )
+                            .fillMaxWidth()
+                            .background(colorResource(MR.colors.createTrans_line_break)),
+                    )
+
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.fillMaxWidth()
+                            .padding(create_transaction_padding_horizontal)
                     ) {
-                        TabRow(
-                            selectedTabIndex = selectedTabIndex.value,
-                            contentColor = Color.Transparent,
-                            backgroundColor = MaterialTheme.colors.surface,
-                            divider = { /*remove underline*/ },
-                            indicator = { /*remove indicator*/ }
-                        ) {
-                            tabList.forEachIndexed { index, tabName ->
-                                tabLayoutTrans(
-                                    index = index,
-                                    value = tabName,
-                                    selectedTabIndex = selectedTabIndex
+                        //Create this transaction and back to dashboard screen
+                        Button(
+                            onClick = { /* Handle create button click */ },
+                            modifier = Modifier.weight(1f)
+                                .padding(end = create_transaction_padding_row)
+                                .height(buttonHeight_transaction_buttonNextAction),
+                            colors = ButtonDefaults.outlinedButtonColors(
+                                backgroundColor = colorResource(
+                                    MR.colors.createTrans_tab_expense
                                 )
-                            }
+                            ),
+                            shape = RoundedCornerShape(20)
+                        ) {
+                            Text(
+                                text = MR.strings.createTrans_button_createTrans.desc()
+                                    .localized(),
+                                color = Color.White
+                            )
                         }
-
-                        LineTransInfor(
-                            text = createTransUiState.value.date,
-                            textLabel = MR.strings.createTrans_inputLabel_date.desc().localized(),
-                            onTextChange = { viewModel.onDateChange(it) },
-                            keyboardOption = KeyboardOptions(imeAction = ImeAction.Next),
-                            bottomSheetState = bottomSheetStateAccounts,
-                            coroutineScope = coroutineScopeCategory
-                        )
-
-                        LineTransInfor(
-                            text = createTransUiState.value.amount,
-                            textLabel = MR.strings.createTrans_inputLabel_amount.desc().localized(),
-                            onTextChange = { viewModel.onAmountChange(it) },
-                            keyboardOption = KeyboardOptions(imeAction = ImeAction.Next),
-                            bottomSheetState = bottomSheetStateAccounts,
-                            coroutineScope = coroutineScopeCategory
-                        )
-
-                        LineTransInfor(
-                            text = createTransUiState.value.category,
-                            textLabel = MR.strings.createTrans_inputLabel_category.desc()
-                                .localized(),
-                            onTextChange = { viewModel.onCategoryChange(it) },
-                            keyboardOption = KeyboardOptions(imeAction = ImeAction.Next),
-                            bottomSheetState = bottomSheetStateAccounts,
-                            coroutineScope = coroutineScopeCategory
-                        )
-
-                        LineTransInfor(
-                            text = createTransUiState.value.account?.name ?: "",
-                            textLabel = MR.strings.createTrans_inputLabel_account.desc()
-                                .localized(),
-                            keyboardOption = KeyboardOptions(imeAction = ImeAction.Next),
-                            readOnly = true,
-                            textFieldModifier = Modifier.onFocusChanged {
-                                viewModel.openCloseChooseWallet(it.hasFocus)
-                            },
-                            bottomSheetState = bottomSheetStateAccounts,
-                            coroutineScope = coroutineScopeCategory
-                        )
-
-                        LineTransInfor(
-                            text = createTransUiState.value.note,
-                            textLabel = MR.strings.createTrans_inputLabel_note.desc().localized(),
-                            onTextChange = { viewModel.onNoteChange(it) },
-                            keyboardOption = KeyboardOptions(imeAction = ImeAction.Next),
-                            bottomSheetState = bottomSheetStateAccounts,
-                            coroutineScope = coroutineScopeCategory
-                        )
-
-                        Spacer(
-                            modifier = Modifier
-                                .height(40.dp)
-                                .padding(
-                                    start = create_transaction_spacer_padding_horizontal,
-                                    end = create_transaction_spacer_padding_horizontal,
-                                    top = create_transaction_spacer_padding_top,
-                                    bottom = create_transaction_spacer_padding_bottom
-                                )
-                                .fillMaxWidth()
-                                .background(colorResource(MR.colors.createTrans_line_break)),
-                        )
-
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.fillMaxWidth()
-                                .padding(create_transaction_padding_horizontal)
+                        //Create this transaction and continue create another transaction
+                        Button(
+                            onClick = { /* Handle image button click */ },
+                            modifier = Modifier.height(buttonHeight_transaction_buttonNextAction),
+                            colors = ButtonDefaults.outlinedButtonColors(backgroundColor = Color.White),
+                            border = BorderStroke(
+                                thickness_transaction_borderStroke,
+                                Color.Black
+                            )
                         ) {
-                            //Create this transaction and back to dashboard screen
-                            Button(
-                                onClick = { /* Handle create button click */ },
-                                modifier = Modifier.weight(1f)
-                                    .padding(end = create_transaction_padding_row)
-                                    .height(buttonHeight_transaction_buttonNextAction),
-                                colors = ButtonDefaults.outlinedButtonColors(
-                                    backgroundColor = colorResource(
-                                        MR.colors.createTrans_tab_expense
-                                    )
-                                ),
-                                shape = RoundedCornerShape(20)
-                            ) {
-                                Text(
-                                    text = MR.strings.createTrans_button_createTrans.desc()
-                                        .localized(),
-                                    color = Color.White
-                                )
-                            }
-                            //Create this transaction and continue create another transaction
-                            Button(
-                                onClick = { /* Handle image button click */ },
-                                modifier = Modifier.height(buttonHeight_transaction_buttonNextAction),
-                                colors = ButtonDefaults.outlinedButtonColors(backgroundColor = Color.White),
-                                border = BorderStroke(
-                                    thickness_transaction_borderStroke,
-                                    Color.Black
-                                )
-                            ) {
-                                Text(
-                                    text = MR.strings.createTrans_button_saveAndCreateAnother.desc()
-                                        .localized(), color = Color.Black
-                                )
+                            Text(
+                                text = MR.strings.createTrans_button_saveAndCreateAnother.desc()
+                                    .localized(), color = Color.Black
+                            )
 
-                            }
-                        }
-                    }
-
-                    AnimatedVisibility(visible = createTransUiState.value.isOpenChooseWallet) {
-                        Column(
-                            modifier = Modifier.fillMaxHeight(0.5f).fillMaxWidth()
-                                .background(color = colorResource(MR.colors.createTrans_chooseWallet_background))
-                        ) {
-                            Row(
-                                modifier = Modifier.background(Color.Black).fillMaxWidth()
-                                    .padding(horizontal = paddingHorizontal_createTrans_chooseWallet_actionBar),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.SpaceBetween
-                            ) {
-                                Text(
-                                    MR.strings.createTrans_inputLabel_account.desc().localized(),
-                                    color = Color.White,
-                                    fontSize = textSize_createTransaction_chooseWallet_actionBar
-                                )
-                                IconButton(onClick = { focusManager.clearFocus() }) {
-                                    Icon(imageVector = Icons.Default.Clear, "", tint = Color.White)
-                                }
-                            }
-                            LazyVerticalGrid(
-                                columns = GridCells.Fixed(3)
-                            ) {
-                                items(listWallet.value.size) {
-                                    Box(
-                                        modifier = Modifier
-                                            .border(
-                                                width = Dp(0.5f),
-                                                color = colorResource(MR.colors.createTrans_chooseWallet_walletItem_border)
-                                            )
-                                            .background(Color.White)
-                                            .padding(
-                                                horizontal = paddingHorizontal_createTrans_chooseWallet_walletItem,
-                                                vertical = paddingVertical_createTrans_chooseWallet_walletItem
-                                            )
-                                            .clickable(
-                                                interactionSource = interactionSource,
-                                                indication = null
-                                            ) {
-                                                viewModel.onAccountChange(listWallet.value[it])
-                                                focusManager.clearFocus()
-                                            },
-                                        contentAlignment = Alignment.Center
-                                    ) {
-                                        Text(
-                                            text = listWallet.value[it].name,
-                                            color = Color.Black,
-                                            fontSize = textSize_createTransaction_chooseWallet_walletITem_name,
-                                        )
-                                    }
-                                }
-                            }
                         }
                     }
                 }
+
+                AnimatedVisibility(visible = createTransUiState.value.isOpenChooseWallet) {
+                    AccountBottomSheet(
+                        focusManager = focusManager,
+                        accounts = accounts,
+                        viewModel = viewModel,
+                        interactionSource = interactionSource
+                    )
+                }
+                AnimatedVisibility(visible = createTransUiState.value.isOpenChooseCategory) {
+                    CategoryBottomSheet(
+                        focusManager = focusManager,
+                        categorys = categorys,
+                        viewModel = viewModel,
+                        interactionSource = interactionSource
+                    )
+                }
+                AnimatedVisibility(visible = createTransUiState.value.isOpenChooseAmount) {
+//                    AmountBottomSheet(
+//                        focusManager = focusManager,
+//                        viewModel = viewModel,
+//                        interactionSource = interactionSource,
+//                        onNumberClicked = {}
+//                    )
+                    AmountBottomSheet(
+                        focusManager = focusManager,
+                        viewModel = viewModel,
+                        interactionSource = interactionSource,
+                        onNumberClicked = {}
+                    )
+                }
+
             }
-        )
+        }
     }
 
     @Composable
@@ -398,7 +358,6 @@ class CreateTransactionScreen : Screen {
         }
     }
 
-    @OptIn(ExperimentalMaterialApi::class)
     @Composable
     fun LineTransInfor(
         textLabel: String,
@@ -407,17 +366,12 @@ class CreateTransactionScreen : Screen {
         keyboardOption: KeyboardOptions,
         readOnly: Boolean = false,
         textFieldModifier: Modifier = Modifier,
-        coroutineScope: CoroutineScope,
-        bottomSheetState: ModalBottomSheetState,
+//        viewModel: CreateTransViewModel,
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(
                 create_transaction_padding_row
-            ).clickable(onClick = {
-                coroutineScope.launch {
-                    bottomSheetState.show()
-                }
-            })
+            )
         ) {
             Text(
                 text = textLabel,
@@ -425,7 +379,8 @@ class CreateTransactionScreen : Screen {
                 modifier = Modifier.fillMaxWidth().padding(
                     start = create_transaction_padding_start_text,
                     end = create_transaction_padding_end_text
-                ).weight(2f)
+                ).weight(2f),
+                fontSize = 12.sp
             )
 
             TextField(

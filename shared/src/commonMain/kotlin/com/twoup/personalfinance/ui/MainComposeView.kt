@@ -5,16 +5,15 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import cafe.adriel.voyager.navigator.Navigator
+import cafe.adriel.voyager.navigator.tab.CurrentTab
 import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import cafe.adriel.voyager.navigator.tab.Tab
-import com.aicontent.category.presentation.ui.CategoryHttpStatus
-import com.aicontent.category.presentation.ui.CategoryScreen
-import com.aicontent.main.presentation.MainScreen
-import com.twoup.personalfinance.authentication.presentation.ui.login.LoginScreen
-import com.twoup.personalfinance.authentication.presentation.ui.otp.OTPScreen
+import cafe.adriel.voyager.navigator.tab.TabNavigator
 import com.twoup.personalfinance.resources.LightColorPalette
-import com.twoup.personalfinance.transaction.presentation.dashboard.TransactionDashboardScreen
+import com.twoup.personalfinance.ui.tab.Status
+import com.twoup.personalfinance.ui.tab.More
+import com.twoup.personalfinance.ui.tab.Account
+import com.twoup.personalfinance.ui.tab.Transaction
 
 @Composable
 internal fun MainComposeView(modifier: Modifier = Modifier) {
@@ -43,16 +42,35 @@ internal fun PersonalFinanceTheme(
     )
 }
 
+//@Composable
+//internal fun Content() {
+//    Scaffold {
+////        Navigator(LoginScreen())
+////        Navigator(TransactionDashboardScreen())
+////        Navigator(CategoryScreen())
+//        Navigator(MainScreen())
+//    }
+//}
+
 @Composable
 internal fun Content() {
-    Scaffold {
-//        Navigator(LoginScreen())
-//        Navigator(TransactionDashboardScreen())
-//        Navigator(CategoryScreen())
-        Navigator(MainScreen())
+    TabNavigator(Transaction) {
+        Scaffold(
+            content = {
+                CurrentTab()
+            },
+            bottomBar = {
+                BottomNavigation(backgroundColor = MaterialTheme.colors.primary) {
+                    TabNavigationItem(Transaction)
+                    TabNavigationItem(Status)
+                    TabNavigationItem(Account)
+                    TabNavigationItem(More)
+//                    TabNavigationItem(BrowserTab)
+                }
+            }
+        )
     }
 }
-
 @Composable
 internal fun RowScope.TabNavigationItem(tab: Tab) {
     val tabNavigator = LocalTabNavigator.current
@@ -66,3 +84,5 @@ internal fun RowScope.TabNavigationItem(tab: Tab) {
         unselectedContentColor = MaterialTheme.colors.onPrimary,
     )
 }
+
+

@@ -2,9 +2,9 @@ package com.aicontent.category.presentation.ui
 
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
-import com.twoup.personalfinance.domain.model.category.CategoryRequestModel
-import com.twoup.personalfinance.domain.model.category.CategoryResponseModel
-import com.twoup.personalfinance.domain.model.category.GetListCategoryResponseModel
+import com.twoup.personalfinance.domain.model.transaction.category.CategoryRequestModel
+import com.twoup.personalfinance.domain.model.transaction.category.CategoryResponseModel
+import com.twoup.personalfinance.domain.model.transaction.category.GetListCategoryResponseModel
 import com.twoup.personalfinance.domain.model.wallet.getWallet.GetListWalletResponseModel
 import com.twoup.personalfinance.domain.usecase.category.CategoryUseCase
 import com.twoup.personalfinance.utils.data.Resource

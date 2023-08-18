@@ -54,6 +54,7 @@ kotlin {
                 api(libs.koin.core)
                 // database
                 implementation(libs.sqldelight.runtime)
+                implementation(libs.datetime)
             }
         }
         val commonTest by getting {

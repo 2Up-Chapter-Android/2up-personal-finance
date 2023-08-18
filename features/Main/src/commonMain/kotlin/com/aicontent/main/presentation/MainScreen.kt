@@ -3,6 +3,7 @@ package com.aicontent.main.presentation
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.FabPosition
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
@@ -13,6 +14,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.registry.rememberScreen
 import cafe.adriel.voyager.core.screen.Screen
@@ -65,9 +67,9 @@ class MainScreen() : Screen {
                 FloatingActionButton(
                     onClick = {
                         navigator.push(transactionScreen)
-
                     },
                     backgroundColor = MaterialTheme.colors.primary,
+                    modifier = Modifier.padding(bottom = 50.dp)
                 ) {
                     Icon(
                         imageVector = Icons.Default.Add,

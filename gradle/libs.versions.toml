@@ -3,6 +3,7 @@ plugin-android = "8.0.2"
 plugin-kotlin = "1.8.20"
 plugin-gver = "0.47.0"
 mobile-kotlin-resource = "0.23.0"
+dateTime = "0.4.0"
 
 androidx-compose-compiler = "1.4.6"
 androidx-compose = "1.4.3"
@@ -67,6 +68,12 @@ ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktor" }
 ktorfit = { module = "de.jensklingenberg.ktorfit:ktorfit-lib", version.ref = "ktorfit" }
 ktorfit-ksp = { module = "de.jensklingenberg.ktorfit:ktorfit-ksp", version.ref = "ktorfit" }
 
+#voyager
+voyager-core = { module = "cafe.adriel.voyager:voyager-core", version.ref = "voyager" }
+voyager-bottomSheetNavigator = { module = "cafe.adriel.voyager:voyager-bottom-sheet-navigator", version.ref = "voyager" }
+voyager-tabNavigator = { module = "cafe.adriel.voyager:voyager-tab-navigator", version.ref = "voyager" }
+voyager-transitions = { module = "cafe.adriel.voyager:voyager-transitions", version.ref = "voyager" }
+
 voyager-navigator = { module = "cafe.adriel.voyager:voyager-navigator", version.ref = "voyager" }
 voyager-navigator-tab = { module = "cafe.adriel.voyager:voyager-tab-navigator", version.ref = "voyager" }
 voyager-koin = { module = "cafe.adriel.voyager:voyager-koin", version.ref = "voyager" }
@@ -86,6 +93,9 @@ sqldelight-driver-desktop = { module = "com.squareup.sqldelight:sqlite-driver", 
 hawk = { module = "com.orhanobut:hawk", version.ref = "hawk" }
 #Desktop Libraries
 credentialSecureStorage = { module = "com.microsoft:credential-secure-storage", version.ref = "credentialSecureStorage"}
+
+#date
+datetime = {module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "dateTime"}
 
 [bundles]
 plugins = ["plugin-android", "plugin-kotlin", "plugin-kotlin-serialization", "plugin-gver", "plugin-resource-generator", "plugin-sqldelight"]
