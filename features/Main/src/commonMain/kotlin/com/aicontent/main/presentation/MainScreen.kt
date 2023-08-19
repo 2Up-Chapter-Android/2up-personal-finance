@@ -11,6 +11,10 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import cafe.adriel.voyager.core.model.rememberScreenModel
@@ -23,7 +27,10 @@ import com.aicontent.main.presentation.daily.DailyScreen
 import com.aicontent.main.presentation.monthly.MonthlyScreen
 import com.aicontent.main.presentation.note.NoteScreen
 import com.aicontent.main.presentation.total.TotalScreen
+import com.twoup.personalfinance.domain.model.transaction.TransactionEntity
 import com.twoup.personalfinance.navigation.TransactionSharedScreen
+import com.twoup.personalfinance.utils.data.fold
+import io.github.aakira.napier.Napier
 
 class MainScreen() : Screen {
     @Composable
@@ -32,6 +39,28 @@ class MainScreen() : Screen {
         val viewModel = rememberScreenModel { MainScreenViewModel() }
         val navigator = LocalNavigator.currentOrThrow
         val transactionScreen = rememberScreen(TransactionSharedScreen.CreateTransactionScreen)
+        val listTransactionState = viewModel.getListTransactionState.collectAsState()
+        val listTransaction = remember { mutableStateOf(mutableListOf<TransactionEntity>()) }
+
+        LaunchedEffect(listTransactionState.value) {
+            listTransactionState.value.fold(
+                onSuccess = {
+                    Napier.d(tag = "MainScreen", message = "Get list transaction success $it")
+                    listTransaction.value.clear()
+                    listTransaction.value.addAll(it.data)
+                },
+                onFailure = {
+                    Napier.d(tag = "MainScreen", message = "Get list transaction failed $it")
+                },
+                onLoading = {
+                    Napier.d(tag = "MainScreen", message = "Get list transaction loading $it")
+                    it?.data?.let { it1 ->
+                        listTransaction.value.clear()
+                        listTransaction.value.addAll(it1)
+                    }
+                }
+            )
+        }
 
         Scaffold(
             topBar = {
@@ -52,7 +81,11 @@ class MainScreen() : Screen {
                         verticalArrangement = Arrangement.Center
                     ) {
                         when (viewModel.selectedTabIndex.value) {
-                            0 -> DailyScreen()
+
+                            0 -> {
+                                DailyScreen(listTransaction.value)
+                            }
+
                             1 -> CalenderScreen()
                             4 -> MonthlyScreen()
                             3 -> TotalScreen()
