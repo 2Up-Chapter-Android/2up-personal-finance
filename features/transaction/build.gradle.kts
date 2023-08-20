@@ -45,6 +45,8 @@ kotlin {
                 implementation(libs.voyager.navigator)
                 //Logging
                 implementation(libs.napier)
+
+                implementation(libs.datetime)
             }
         }
         val commonTest by getting {
@@ -88,4 +90,7 @@ android {
     defaultConfig {
         minSdk = androidMinSdk.toInt()
     }
+}
+dependencies {
+    implementation(project(mapOf("path" to ":features:Main")))
 }

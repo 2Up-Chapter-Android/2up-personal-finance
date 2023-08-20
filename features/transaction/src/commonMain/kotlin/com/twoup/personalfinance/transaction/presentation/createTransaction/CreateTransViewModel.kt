@@ -1,17 +1,13 @@
 package com.twoup.personalfinance.transaction.presentation.createTransaction
 
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import cafe.adriel.voyager.core.model.ScreenModel
 import com.twoup.personalfinance.domain.model.transaction.account.AccountLocalModel
 import com.twoup.personalfinance.domain.model.transaction.category.CategoryLocalModel
+import com.twoup.personalfinance.domain.model.transaction.createTrans.TransactionLocalModel
 import com.twoup.personalfinance.domain.model.wallet.getWallet.GetListWalletResponseModel
-import com.twoup.personalfinance.domain.usecase.localTransaction.UseCaseDeleteAccountById
 import com.twoup.personalfinance.domain.usecase.localTransaction.UseCaseGetAllAccount
 import com.twoup.personalfinance.domain.usecase.localTransaction.UseCaseGetAllCategory
-import com.twoup.personalfinance.domain.usecase.localTransaction.UseCaseInsertAccount
-import com.twoup.personalfinance.domain.usecase.localTransaction.UseCaseUpdateAccountById
+import com.twoup.personalfinance.domain.usecase.localTransaction.UseCaseInsertTransaction
 import com.twoup.personalfinance.domain.usecase.transaction.GetListWalletsUseCase
 import com.twoup.personalfinance.utils.data.Resource
 import kotlinx.coroutines.GlobalScope
@@ -20,6 +16,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import kotlinx.datetime.LocalDateTime
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -28,12 +25,22 @@ class CreateTransViewModel : ScreenModel, KoinComponent {
 
     private val useCaseGetAllAccount: UseCaseGetAllAccount by inject()
     private val useCaseGetAllCategory: UseCaseGetAllCategory by inject()
+    private val useCaseInsertTransaction: UseCaseInsertTransaction by inject()
+    private val useCaseGetAllTransaction: UseCaseGetAllAccount by inject()
     val accounts: StateFlow<List<AccountLocalModel>> get() = useCaseGetAllAccount.accountState.asStateFlow()
     val categorys: StateFlow<List<CategoryLocalModel>> get() = useCaseGetAllCategory.categoryState.asStateFlow()
 
     init {
+        loadTransaction()
         useCaseGetAllAccount.getAllAccount()
         useCaseGetAllCategory.getAllCategory()
+        getListWallets()
+
+    }
+
+    fun loadTransaction() {
+        useCaseGetAllTransaction.getAllAccount()
+
     }
 
     private val getListWalletsUseCase: GetListWalletsUseCase by inject()
@@ -45,55 +52,8 @@ class CreateTransViewModel : ScreenModel, KoinComponent {
         MutableStateFlow<Resource<GetListWalletResponseModel>>(Resource.loading())
     val getListWalletState = _getListWalletState.asStateFlow()
 
-    private val _showBottomSheetAccount = mutableStateOf(false)
-    val showBottomSheetAccount: State<Boolean> = _showBottomSheetAccount
-
-    private val _showBottomSheetCategory = mutableStateOf(false)
-    val showBottomSheetCategory: State<Boolean> = _showBottomSheetCategory
-
-    private val _showBottomSheetAmount = mutableStateOf(false)
-    val showBottomSheetAmount: State<Boolean> = _showBottomSheetAmount
-
-    private fun toggleBottomSheetState(
-        targetSheet: MutableState<Boolean>,
-        otherSheets: List<MutableState<Boolean>>
-    ) {
-        targetSheet.value = !targetSheet.value
-        if (targetSheet.value) {
-            otherSheets.forEach { it.value = false }
-        }
-    }
-
-    fun changeShowBottomSheetAccount() {
-        toggleBottomSheetState(
-            _showBottomSheetAccount,
-            listOf(_showBottomSheetCategory, _showBottomSheetAmount)
-        )
-    }
-
-    fun changeShowBottomSheetCategory() {
-        toggleBottomSheetState(
-            _showBottomSheetCategory,
-            listOf(_showBottomSheetAccount, _showBottomSheetAmount)
-        )
-    }
-
-    fun changeShowBottomSheetAmount() {
-        toggleBottomSheetState(
-            _showBottomSheetAmount,
-            listOf(_showBottomSheetAccount, _showBottomSheetCategory)
-        )
-    }
-
-    init {
-        getListWallets()
-    }
-
-    fun changeAccount(textButton: String) {
-        createTransUiState.value.textAccount = textButton
-    }
-    fun changeCategory(textButton: String) {
-        createTransUiState.value.category = textButton
+    fun insertTransaction(transaction: TransactionLocalModel) {
+        useCaseInsertTransaction.insertTransaction(transaction)
     }
 
     private fun getListWallets() {
@@ -104,7 +64,7 @@ class CreateTransViewModel : ScreenModel, KoinComponent {
         }
     }
 
-    fun onDateChange(text: String) {
+    fun onDateChange(text: LocalDateTime) {
         _createTransUiState.value = createTransUiState.value.copy(
             date = text
         )
@@ -112,7 +72,7 @@ class CreateTransViewModel : ScreenModel, KoinComponent {
 
     fun onAmountChange(text: String) {
         _createTransUiState.value = createTransUiState.value.copy(
-            amount = text
+            amount = text.toDouble()
         )
     }
 
@@ -127,6 +87,7 @@ class CreateTransViewModel : ScreenModel, KoinComponent {
 //            account = wallet
 //        )
 //    }
+
     fun onAccountChange(text: String) {
         _createTransUiState.value = createTransUiState.value.copy(
             account = text
@@ -145,11 +106,15 @@ class CreateTransViewModel : ScreenModel, KoinComponent {
             isOpenChooseWallet = isOpen
         )
     }
+
     fun openCloseChooseCategory(isOpen: Boolean) {
         _createTransUiState.value = createTransUiState.value.copy(
             isOpenChooseCategory = isOpen
         )
-    } fun openCloseChooseAmount(isOpen: Boolean) {
+
+    }
+
+    fun openCloseChooseAmount(isOpen: Boolean) {
         _createTransUiState.value = createTransUiState.value.copy(
             isOpenChooseAmount = isOpen
         )

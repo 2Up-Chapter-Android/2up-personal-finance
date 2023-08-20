@@ -22,6 +22,7 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.aicontent.main.presentation.calendar.CalenderScreen
 import com.aicontent.main.presentation.daily.DailyScreen
+import com.aicontent.main.presentation.daily.DailyScreenViewModel
 import com.aicontent.main.presentation.monthly.MonthlyScreen
 import com.aicontent.main.presentation.note.NoteScreen
 import com.aicontent.main.presentation.total.TotalScreen
@@ -32,6 +33,7 @@ class MainScreen() : Screen {
     override fun Content() {
 
         val viewModel = rememberScreenModel { MainScreenViewModel() }
+        val viewModelDailyScreen = rememberScreenModel { DailyScreenViewModel() }
         val navigator = LocalNavigator.currentOrThrow
         val transactionScreen = rememberScreen(TransactionSharedScreen.CreateTransactionScreen)
 
@@ -54,7 +56,7 @@ class MainScreen() : Screen {
                         verticalArrangement = Arrangement.Center
                     ) {
                         when (viewModel.selectedTabIndex.value) {
-                            0 -> DailyScreen()
+                            0 -> DailyScreen(viewModelDailyScreen)
                             1 -> CalenderScreen()
                             4 -> MonthlyScreen()
                             3 -> TotalScreen()

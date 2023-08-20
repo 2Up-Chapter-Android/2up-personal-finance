@@ -19,7 +19,9 @@ import kotlinx.coroutines.withContext
                             transaction_id = transaction.transaction_id,
                             amount = transaction.amount,
                             description = transaction.description,
-                            created = transaction.created
+                            created = transaction.created,
+                            category = transaction.category,
+                            account = transaction.account
                         )
                     )
                 }

@@ -4,32 +4,22 @@ import PersonalFinance.features.transaction.MR
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.Divider
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -41,7 +31,6 @@ import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Clear
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -58,14 +47,17 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.model.rememberScreenModel
+import cafe.adriel.voyager.core.registry.rememberScreen
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import com.twoup.personalfinance.domain.model.transaction.createTrans.TransactionLocalModel
 import com.twoup.personalfinance.domain.model.wallet.Wallet
+import com.twoup.personalfinance.navigation.MainScreenSharedScreen
+import com.twoup.personalfinance.navigation.TransactionSharedScreen
 import com.twoup.personalfinance.utils.data.fold
 import com.twoup.personalfinance.transaction.presentation.theme.buttonHeight_transaction_buttonNextAction
 import com.twoup.personalfinance.transaction.presentation.theme.create_transaction_padding_end_text
@@ -76,13 +68,9 @@ import com.twoup.personalfinance.transaction.presentation.theme.create_transacti
 import com.twoup.personalfinance.transaction.presentation.theme.create_transaction_spacer_padding_horizontal
 import com.twoup.personalfinance.transaction.presentation.theme.create_transaction_spacer_padding_top
 import com.twoup.personalfinance.transaction.presentation.theme.marginStart_createTrans_actionBar_tabName
-import com.twoup.personalfinance.transaction.presentation.theme.paddingHorizontal_createTrans_chooseWallet_actionBar
-import com.twoup.personalfinance.transaction.presentation.theme.paddingHorizontal_createTrans_chooseWallet_walletItem
-import com.twoup.personalfinance.transaction.presentation.theme.paddingVertical_createTrans_chooseWallet_walletItem
-import com.twoup.personalfinance.transaction.presentation.theme.textSize_createTransaction_chooseWallet_actionBar
-import com.twoup.personalfinance.transaction.presentation.theme.textSize_createTransaction_chooseWallet_walletITem_name
 import com.twoup.personalfinance.transaction.presentation.theme.textSize_transaction_textField
 import com.twoup.personalfinance.transaction.presentation.theme.thickness_transaction_borderStroke
+import com.twoup.personalfinance.utils.DateTimeUtil
 import dev.icerock.moko.resources.compose.colorResource
 import dev.icerock.moko.resources.compose.localized
 import dev.icerock.moko.resources.desc.desc
@@ -100,6 +88,7 @@ class CreateTransactionScreen : Screen {
         val focusManager = LocalFocusManager.current
         val interactionSource = remember { MutableInteractionSource() }
         val viewModel = rememberScreenModel { CreateTransViewModel() }
+        val addNoteScreen = rememberScreen(MainScreenSharedScreen.MainScreen)
         val createTransUiState = viewModel.createTransUiState.collectAsState()
         val getListWalletState = viewModel.getListWalletState.collectAsState()
         val selectedTabIndex = remember { mutableStateOf(0) }
@@ -111,6 +100,10 @@ class CreateTransactionScreen : Screen {
         val listWallet = remember { mutableStateOf(mutableListOf<Wallet>()) }
         val categorys by viewModel.categorys.collectAsState(emptyList())
         val accounts by viewModel.accounts.collectAsState(emptyList())
+
+        LaunchedEffect(navigator) {
+            viewModel.loadTransaction()
+        }
 
         LaunchedEffect(getListWalletState.value) {
             getListWalletState.value.fold(
@@ -170,9 +163,9 @@ class CreateTransactionScreen : Screen {
                     }
 
                     LineTransInfor(
-                        text = createTransUiState.value.date,
+                        text = createTransUiState.value.date.toString(),
                         textLabel = MR.strings.createTrans_inputLabel_date.desc().localized(),
-                        onTextChange = { viewModel.onDateChange(it) },
+                        onTextChange = { viewModel.onDateChange(createTransUiState.value.date) },
                         keyboardOption = KeyboardOptions(imeAction = ImeAction.Next),
                     )
 
@@ -196,13 +189,10 @@ class CreateTransactionScreen : Screen {
                     )
 
                     LineTransInfor(
-                        text = createTransUiState.value.amount,
+                        text = createTransUiState.value.amount.toString(),
                         textLabel = MR.strings.createTrans_inputLabel_amount.desc().localized(),
                         keyboardOption = KeyboardOptions(imeAction = ImeAction.Next),
-                        readOnly = true,
-                        textFieldModifier = Modifier.onFocusChanged {
-                            viewModel.openCloseChooseAmount(it.hasFocus)
-                        }
+                        onTextChange = { viewModel.onAmountChange(it) },
                     )
 
                     LineTransInfor(
@@ -232,7 +222,19 @@ class CreateTransactionScreen : Screen {
                     ) {
                         //Create this transaction and back to dashboard screen
                         Button(
-                            onClick = { /* Handle create button click */ },
+                            onClick = {
+                                viewModel.insertTransaction(
+                                    TransactionLocalModel(
+                                        transaction_id = createTransUiState.value.id,
+                                        amount = createTransUiState.value.amount,
+                                        description = createTransUiState.value.note,
+                                        created = createTransUiState.value.date,
+                                        category = createTransUiState.value.category,
+                                        account = createTransUiState.value.account
+                                    )
+                                )
+                                navigator.push(addNoteScreen)
+                            },
                             modifier = Modifier.weight(1f)
                                 .padding(end = create_transaction_padding_row)
                                 .height(buttonHeight_transaction_buttonNextAction),
@@ -284,20 +286,20 @@ class CreateTransactionScreen : Screen {
                         interactionSource = interactionSource
                     )
                 }
-                AnimatedVisibility(visible = createTransUiState.value.isOpenChooseAmount) {
+//                AnimatedVisibility(visible = createTransUiState.value.isOpenChooseAmount) {
+////                    AmountBottomSheet(
+////                        focusManager = focusManager,
+////                        viewModel = viewModel,
+////                        interactionSource = interactionSource,
+////                        onNumberClicked = {}
+////                    )
 //                    AmountBottomSheet(
 //                        focusManager = focusManager,
 //                        viewModel = viewModel,
 //                        interactionSource = interactionSource,
 //                        onNumberClicked = {}
 //                    )
-                    AmountBottomSheet(
-                        focusManager = focusManager,
-                        viewModel = viewModel,
-                        interactionSource = interactionSource,
-                        onNumberClicked = {}
-                    )
-                }
+//                }
 
             }
         }

@@ -6,5 +6,7 @@ data class TransactionLocalModel(
     val transaction_id: Long?,
     val amount: Double,
     val description: String,
-    val created: LocalDateTime
+    val created: LocalDateTime,
+    val category : String,
+    val account : String,
 )

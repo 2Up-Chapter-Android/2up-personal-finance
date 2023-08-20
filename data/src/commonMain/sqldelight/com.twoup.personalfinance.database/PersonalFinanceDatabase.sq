@@ -81,7 +81,9 @@ CREATE TABLE Transactions (
     transaction_id INTEGER PRIMARY KEY AUTOINCREMENT,
     amount REAL NOT NULL,
     description TEXT NOT NULL,
-    created INTEGER NOT NULL
+    created INTEGER NOT NULL,
+    category TEXT NOT NULL,
+    account TEXT NOT NULL
 );
 
 -- -- Table for additional notes for transactions
@@ -144,8 +146,8 @@ VALUES ('Other');
 INSERT INTO Categories(category_name)
 VALUES ('food');
 insertTransaction:
-INSERT INTO Transactions(amount, description, created)
-VALUES (?, ?, ?);
+INSERT INTO Transactions(amount, description, created, category, account)
+VALUES (?, ?, ?,?,?);
 
 insertNote:
 INSERT INTO notes(note_text, created)
