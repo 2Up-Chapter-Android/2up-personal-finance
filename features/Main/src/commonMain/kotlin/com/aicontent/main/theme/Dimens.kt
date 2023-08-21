@@ -14,3 +14,14 @@ val font_size_text_tab = 12.sp
 val padding_budge_box = 16.dp
 val padding_budge_item = 8.dp
 val font_size_text_item_budge = 12.sp
+
+// daily screen
+val padding_vertical_lazy_column = 8.dp
+val padding_image_daily_item = 16.dp
+val height_image_daily_item = 32.dp
+val width_image_daily_item = 32.dp
+
+val padding_end_text_daily_item = 16.dp
+val padding_vertical_text_daily_item = 4.dp
+
+val font_size_text_item_transaction_note = 14.sp

@@ -28,6 +28,7 @@ import com.aicontent.main.presentation.monthly.MonthlyScreen
 import com.aicontent.main.presentation.note.NoteScreen
 import com.aicontent.main.presentation.total.TotalScreen
 import com.twoup.personalfinance.domain.model.transaction.TransactionEntity
+import com.twoup.personalfinance.domain.model.transaction.TransactionType
 import com.twoup.personalfinance.navigation.TransactionSharedScreen
 import com.twoup.personalfinance.utils.data.fold
 import io.github.aakira.napier.Napier
@@ -78,7 +79,7 @@ class MainScreen() : Screen {
                     Column(
                         modifier = Modifier.fillMaxSize(),
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
+                        verticalArrangement = Arrangement.Top
                     ) {
                         when (viewModel.selectedTabIndex.value) {
 
