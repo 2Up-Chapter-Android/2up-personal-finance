@@ -2,9 +2,9 @@ package com.twoup.personalfinance.repository
 
 import com.twoup.personalfinance.domain.model.authentication.register.RegisterRequestModel
 import com.twoup.personalfinance.domain.model.authentication.register.RegisterResponseModel
-import com.twoup.personalfinance.domain.model.category.CategoryResponseModel
-import com.twoup.personalfinance.domain.model.category.CategoryRequestModel
-import com.twoup.personalfinance.domain.model.category.GetListCategoryResponseModel
+import com.twoup.personalfinance.domain.model.transaction.category.CategoryResponseModel
+import com.twoup.personalfinance.domain.model.transaction.category.CategoryRequestModel
+import com.twoup.personalfinance.domain.model.transaction.category.GetListCategoryResponseModel
 import com.twoup.personalfinance.domain.repository.category.CategoryRepository
 import com.twoup.personalfinance.local.IDatabase
 import com.twoup.personalfinance.mapping.mapToDomain

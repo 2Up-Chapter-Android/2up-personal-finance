@@ -1,5 +1,9 @@
 package com.twoup.personalfinance.local
 
+import com.twoup.personalfinance.domain.model.transaction.account.AccountLocalModel
+import com.twoup.personalfinance.domain.model.transaction.category.CategoryLocalModel
+import com.twoup.personalfinance.domain.model.transaction.createTrans.TransactionLocalModel
+import com.twoup.personalfinance.domain.model.transaction.note.NoteTransactionEntity
 import com.twoup.personalfinance.domain.model.wallet.Category
 import com.twoup.personalfinance.domain.model.wallet.Wallet
 import com.twoup.personalfinance.domain.model.wallet.WalletGroup
@@ -30,4 +34,5 @@ interface IDatabase {
     fun deleteCategory(id: String)
     fun getCategoryById(id : String): Category
     fun getAllCategory(): List<Category>
+
 }

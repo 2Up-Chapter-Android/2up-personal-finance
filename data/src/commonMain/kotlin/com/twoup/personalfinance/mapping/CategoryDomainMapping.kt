@@ -2,8 +2,8 @@ package com.twoup.personalfinance.mapping
 
 import com.twoup.personalfinance.const.ConstDefaultValue
 import com.twoup.personalfinance.domain.model.authentication.register.RegisterResponseModel
-import com.twoup.personalfinance.domain.model.category.CategoryResponseModel
-import com.twoup.personalfinance.domain.model.category.GetListCategoryResponseModel
+import com.twoup.personalfinance.domain.model.transaction.category.CategoryResponseModel
+import com.twoup.personalfinance.domain.model.transaction.category.GetListCategoryResponseModel
 import com.twoup.personalfinance.domain.model.wallet.Category
 import com.twoup.personalfinance.domain.model.wallet.Wallet
 import com.twoup.personalfinance.domain.model.wallet.WalletGroup
