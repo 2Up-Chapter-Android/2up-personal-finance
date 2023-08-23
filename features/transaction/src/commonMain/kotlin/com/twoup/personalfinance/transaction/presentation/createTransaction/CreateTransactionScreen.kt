@@ -233,7 +233,7 @@ class CreateTransactionScreen : Screen {
                                         account = createTransUiState.value.account
                                     )
                                 )
-                                navigator.push(addNoteScreen)
+                                navigator.pop()
                             },
                             modifier = Modifier.weight(1f)
                                 .padding(end = create_transaction_padding_row)

@@ -49,8 +49,6 @@ fun DailyScreen(viewModel: DailyScreenViewModel) {
             LazyVerticalGrid(
                 columns = GridCells.Fixed(1),
                 modifier = Modifier.fillMaxWidth(),
-//                verticalArrangement = Arrangement.spacedBy(20.dp),
-//                horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 items(listTransaction) { transaction ->
                     ItemDailyScreen(

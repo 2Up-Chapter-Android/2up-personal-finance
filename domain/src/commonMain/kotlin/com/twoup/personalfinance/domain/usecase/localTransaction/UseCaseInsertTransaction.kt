@@ -13,9 +13,7 @@ class UseCaseInsertTransaction(private val dataSource: TransactionLocalDataSourc
     @OptIn(DelicateCoroutinesApi::class)
     fun insertTransaction(transaction: TransactionLocalModel) {
         GlobalScope.launch {
-            withContext(Dispatchers.Main) {
-                dataSource.insertTransaction(transaction)
-            }
+            dataSource.insertTransaction(transaction)
         }
     }
 }
