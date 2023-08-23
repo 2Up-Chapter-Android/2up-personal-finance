@@ -51,6 +51,12 @@ class Database(databaseWrapper: PersonalFinanceDatabaseWrapper) : IDatabase {
         return dbQuery.getAllCategory().executeAsList().map { it.mapToDomain() }
     }
 
+    override fun clearAllWallets() {
+        dbQuery.transaction {
+            dbQuery.removeAllWallet()
+        }
+    }
+
     override fun clearDatabase() {
         dbQuery.transaction {
             dbQuery.removeAllWallet()
@@ -101,5 +107,17 @@ class Database(databaseWrapper: PersonalFinanceDatabaseWrapper) : IDatabase {
         amount: Int,
         categoryId: String,
         createdAt: Long,
-        de
+        description: String,
+        id: String,
+        note: String,
+        type: com.twoup.personalfinance.domain.model.transaction.TransactionType,
+        updatedAt: Long,
+        walletId: String
+    ) {
+
+    }
+
+    override fun clearAllTransactions() {
+
+    }
 }
