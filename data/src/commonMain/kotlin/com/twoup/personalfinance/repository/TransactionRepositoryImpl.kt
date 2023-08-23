@@ -1,5 +1,6 @@
 package com.twoup.personalfinance.repository
 
+import com.twoup.personalfinance.domain.model.transaction.getTransaction.GetAllTransactionsResponseModel
 import com.twoup.personalfinance.domain.model.wallet.getWallet.GetListWalletResponseModel
 import com.twoup.personalfinance.domain.repository.transaction.TransactionRepository
 import com.twoup.personalfinance.local.IDatabase
@@ -24,8 +25,9 @@ class TransactionRepositoryImpl(
                 dataSource.getListWallets().map { it.mapToDomain()}
             },
             saveFetchResult = {fetchResult ->
-                database.clearDatabase()
-                fetchResult.data?.data?.forEach{
+                fetchResult.data?.data?.apply {
+                    database.clearAllWallets()
+                    this.forEach{
                     database.insertWallet(
                         id = it.id,
                         name = it.name,
@@ -33,6 +35,37 @@ class TransactionRepositoryImpl(
                         description = it.description,
                         walletGroup = it.walletGroup,
                     )
+                }
+                }
+
+            }
+        )
+    }
+
+    override suspend fun getListTransactions(): Flow<Resource<GetAllTransactionsResponseModel>> {
+        return networkBoundResource(
+            query = {
+                flowOf(GetAllTransactionsResponseModel(data = database.getAllTransaction()))
+            },
+            fetch = {
+                dataSource.getListTransaction().map { it.mapToDomain()}
+            },
+            saveFetchResult = { fetchResult ->
+                fetchResult.data?.data?.apply {
+                    database.clearAllTransactions()
+                    this.forEach {
+                        database.insertTransaction(
+                            id = it.id,
+                            amount = it.amount,
+                            categoryId = it.categoryId,
+                            createdAt = it.createdAt,
+                            description = it.description,
+                            note = it.note,
+                            type = it.type,
+                            updatedAt = it.updatedAt,
+                            walletId = it.walletId
+                        )
+                    }
                 }
             }
         )

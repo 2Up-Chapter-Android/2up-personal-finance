@@ -9,6 +9,10 @@ import com.twoup.personalfinance.domain.usecase.localTransaction.UseCaseGetAllTr
 import com.twoup.personalfinance.domain.usecase.localTransaction.UseCaseInsertTransaction
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import com.twoup.personalfinance.domain.model.wallet.getWallet.GetListWalletResponseModel
+import com.twoup.personalfinance.utils.data.Resource
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -23,4 +27,10 @@ class DailyScreenViewModel : ScreenModel, KoinComponent {
     fun loadNotes() {
         useCaseGetAllTransaction.getAllTransaction()
     }
+    private val _createTransUiState = MutableStateFlow(TransUiState())
+    val createTransUiState = _createTransUiState.asStateFlow()
+
+    // insert get list transaction
+
+
 }
