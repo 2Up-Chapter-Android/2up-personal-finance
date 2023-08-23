@@ -1,4 +1,4 @@
-package com.twoup.personalfinance.domain.model.category
+package com.twoup.personalfinance.domain.model.transaction.category
 
 import com.twoup.personalfinance.const.ConstDefaultValue
 import com.twoup.personalfinance.domain.model.wallet.Category

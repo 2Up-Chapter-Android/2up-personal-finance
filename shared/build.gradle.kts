@@ -57,6 +57,7 @@ kotlin {
                 implementation(project(":features:transaction"))
                 implementation(project(":features:category"))
                 implementation(project(":features:Main"))
+                implementation(project(":features:Accounts"))
                 api(project(":common:resources"))
 
                 implementation(compose.runtime)
@@ -77,6 +78,11 @@ kotlin {
                 implementation(libs.voyager.navigator)
                 implementation(libs.voyager.koin)
                 implementation(libs.voyager.navigator.tab)
+                implementation(libs.voyager.core)
+                implementation(libs.voyager.androidx)
+                implementation(libs.voyager.transitions)
+                implementation(libs.voyager.tabNavigator)
+                implementation(libs.voyager.bottomSheetNavigator)
 
                 api(libs.moko.compose.resource)
             }

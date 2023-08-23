@@ -1,7 +1,7 @@
 package com.twoup.personalfinance.remote.services.category
 
 import com.twoup.personalfinance.domain.model.authentication.register.RegisterRequestModel
-import com.twoup.personalfinance.domain.model.category.CategoryRequestModel
+import com.twoup.personalfinance.domain.model.transaction.category.CategoryRequestModel
 import com.twoup.personalfinance.remote.dto.authentication.register.RegisterResponse
 import com.twoup.personalfinance.remote.dto.category.CategoryResponse
 import com.twoup.personalfinance.remote.dto.category.GetListCategoryResponse

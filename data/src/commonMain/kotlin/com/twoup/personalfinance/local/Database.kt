@@ -51,17 +51,7 @@ class Database(databaseWrapper: PersonalFinanceDatabaseWrapper) : IDatabase {
         return dbQuery.getAllCategory().executeAsList().map { it.mapToDomain() }
     }
 
-    private fun comtwouppersonalfinancedatabase.PersonalFinanceDatabaseCategory.mapToDomain(): Category {
-        return Category(
-            id = id,
-            name = name,
-            categoryId = categoryId,
-            userID = userId
-        )
-    }
-
-//    WALLET
-    override fun clearAllWallets() {
+    override fun clearDatabase() {
         dbQuery.transaction {
             dbQuery.removeAllWallet()
         }
@@ -93,6 +83,14 @@ class Database(databaseWrapper: PersonalFinanceDatabaseWrapper) : IDatabase {
             walletGroup = WalletGroup.valueOf(walletGroup!!)
         )
     }
+    private fun comtwouppersonalfinancedatabase.PersonalFinanceDatabaseCategory.mapToDomain(): Category {
+        return Category(
+            id = id,
+            name = name,
+            categoryId = categoryId,
+            userID = userId
+        )
+    }
 
     //    TRANSACTION
     override fun getAllTransaction(): List<TransactionEntity> {
@@ -103,17 +101,5 @@ class Database(databaseWrapper: PersonalFinanceDatabaseWrapper) : IDatabase {
         amount: Int,
         categoryId: String,
         createdAt: Long,
-        description: String,
-        id: String,
-        note: String,
-        type: com.twoup.personalfinance.domain.model.transaction.TransactionType,
-        updatedAt: Long,
-        walletId: String
-    ) {
-
-    }
-
-    override fun clearAllTransactions() {
-
-    }
+        de
 }

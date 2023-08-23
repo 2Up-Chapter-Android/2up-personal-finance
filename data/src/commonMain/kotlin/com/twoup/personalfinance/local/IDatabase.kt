@@ -9,6 +9,7 @@ import com.twoup.personalfinance.domain.model.wallet.WalletGroup
 interface IDatabase {
 //    WALLET
     fun clearAllWallets()
+    fun clearDatabase()
     fun getAllLWallet(): List<Wallet>
     fun insertWallet(
         id: String,

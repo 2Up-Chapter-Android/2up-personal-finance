@@ -30,6 +30,8 @@ kotlin {
                 implementation(libs.koin.core)
                 implementation(project(":common:resources"))
                 implementation(project(":common:utils"))
+//                implementation(project(":data"))
+                implementation(libs.datetime)
             }
         }
         val commonTest by getting {

@@ -3,6 +3,7 @@ package com.aicontent.main.presentation
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.FabPosition
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
@@ -17,6 +18,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.registry.rememberScreen
 import cafe.adriel.voyager.core.screen.Screen
@@ -24,6 +26,7 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.aicontent.main.presentation.calendar.CalenderScreen
 import com.aicontent.main.presentation.daily.DailyScreen
+import com.aicontent.main.presentation.daily.DailyScreenViewModel
 import com.aicontent.main.presentation.monthly.MonthlyScreen
 import com.aicontent.main.presentation.note.NoteScreen
 import com.aicontent.main.presentation.total.TotalScreen
@@ -38,6 +41,7 @@ class MainScreen() : Screen {
     override fun Content() {
 
         val viewModel = rememberScreenModel { MainScreenViewModel() }
+        val viewModelDailyScreen = rememberScreenModel { DailyScreenViewModel() }
         val navigator = LocalNavigator.currentOrThrow
         val transactionScreen = rememberScreen(TransactionSharedScreen.CreateTransactionScreen)
         val listTransactionState = viewModel.getListTransactionState.collectAsState()
@@ -82,11 +86,7 @@ class MainScreen() : Screen {
                         verticalArrangement = Arrangement.Top
                     ) {
                         when (viewModel.selectedTabIndex.value) {
-
-                            0 -> {
-                                DailyScreen(listTransaction.value)
-                            }
-
+                            0 -> DailyScreen(viewModelDailyScreen)
                             1 -> CalenderScreen()
                             4 -> MonthlyScreen()
                             3 -> TotalScreen()
@@ -99,9 +99,9 @@ class MainScreen() : Screen {
                 FloatingActionButton(
                     onClick = {
                         navigator.push(transactionScreen)
-
                     },
                     backgroundColor = MaterialTheme.colors.primary,
+                    modifier = Modifier.padding(bottom = 50.dp)
                 ) {
                     Icon(
                         imageVector = Icons.Default.Add,
