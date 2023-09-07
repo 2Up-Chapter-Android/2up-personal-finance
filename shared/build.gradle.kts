@@ -73,7 +73,6 @@ kotlin {
                 implementation(libs.koin.core)
 
                 implementation(compose.ui)
-                implementation(compose.runtime)
 
                 implementation(libs.voyager.navigator)
                 implementation(libs.voyager.koin)
