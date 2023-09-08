@@ -101,6 +101,12 @@ class CreateTransViewModel : ScreenModel, KoinComponent {
         )
     }
 
+    fun openCloseDatePicker(isOpen: Boolean) {
+        _createTransUiState.value = createTransUiState.value.copy(
+            isOpenDatePicker = isOpen
+        )
+    }
+
     fun openCloseChooseWallet(isOpen: Boolean) {
         _createTransUiState.value = createTransUiState.value.copy(
             isOpenChooseWallet = isOpen

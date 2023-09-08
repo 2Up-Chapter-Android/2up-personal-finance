@@ -17,6 +17,7 @@ data class CreateTransUiState(
     var description : String = "",
 //    val account: Wallet? = null,
     val note: String = "",
+    val isOpenDatePicker: Boolean = false,
     val isOpenChooseWallet: Boolean = false,
     val isOpenChooseCategory: Boolean = false,
     val isOpenChooseAmount: Boolean = false,
