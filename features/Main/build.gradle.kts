@@ -15,7 +15,7 @@ kotlin {
     }
 
     jvm("desktop")
-    
+
     listOf(
         iosX64(),
         iosArm64(),
@@ -27,8 +27,8 @@ kotlin {
     }
 
     sourceSets {
-        val commonMain by getting{
-            dependencies{
+        val commonMain by getting {
+            dependencies {
                 implementation(project(":data"))
                 implementation(project(":domain"))
                 implementation(project(":common:navigation"))
@@ -37,6 +37,7 @@ kotlin {
                 implementation(compose.ui)
                 implementation(compose.foundation)
                 implementation(compose.material)
+                implementation(compose.material3)
                 implementation(compose.runtime)
                 implementation(libs.moko.compose.resource)
                 //Coroutines
@@ -47,7 +48,8 @@ kotlin {
                 implementation(libs.voyager.navigator)
                 //Logging
                 implementation(libs.napier)
-//                implementation(libs.datetime)
+                //Kotlinx Date time
+                implementation(libs.datetime)
 
             }
         }
