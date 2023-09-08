@@ -167,6 +167,10 @@ class CreateTransactionScreen : Screen {
                         textLabel = MR.strings.createTrans_inputLabel_date.desc().localized(),
                         onTextChange = { viewModel.onDateChange(createTransUiState.value.date) },
                         keyboardOption = KeyboardOptions(imeAction = ImeAction.Next),
+                        readOnly = true,
+                        textFieldModifier = Modifier.onFocusChanged {
+                            viewModel.openCloseDatePicker(it.hasFocus)
+                        }
                     )
 
                     LineTransInfor(
@@ -300,6 +304,10 @@ class CreateTransactionScreen : Screen {
 //                        onNumberClicked = {}
 //                    )
 //                }
+                AnimatedVisibility(visible = createTransUiState.value.isOpenDatePicker) {
+
+
+                }
 
             }
         }

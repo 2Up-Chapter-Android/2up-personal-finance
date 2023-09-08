@@ -226,3 +226,23 @@ SELECT * FROM Transactions;
 
 getAllNote:
 SELECT * FROM notes;
+
+getAllInfoTransaction:
+SELECT
+    t.transaction_id,
+    t.amount AS transaction_amount,
+    t.description AS transaction_description,
+    t.created AS transaction_created,
+    t.category AS transaction_category,
+    c.category_name AS category_name,
+    t.account AS transaction_account,
+    a.account_name AS account_name,
+    w.id AS wallet_id,
+    w.amount AS wallet_amount,
+    w.description AS wallet_description,
+    w.name AS wallet_name,
+    w.walletGroup AS wallet_group
+FROM Transactions t
+LEFT JOIN Categories c ON t.category = c.category_id
+LEFT JOIN Accounts a ON t.account = a.account_id
+LEFT JOIN Wallet w ON t.account = w.id;

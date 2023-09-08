@@ -1,9 +1,12 @@
 package com.twoup.personalfinance.local
 
+import com.twoup.personalfinance.domain.model.transaction.Transaction
 import com.twoup.personalfinance.domain.model.transaction.TransactionEntity
+import com.twoup.personalfinance.domain.model.transaction.TransactionType
 import com.twoup.personalfinance.domain.model.wallet.Category
 import com.twoup.personalfinance.domain.model.wallet.Wallet
 import com.twoup.personalfinance.domain.model.wallet.WalletGroup
+import comtwouppersonalfinancedatabase.GetAllInfoTransaction
 
 class Database(databaseWrapper: PersonalFinanceDatabaseWrapper) : IDatabase {
     private val database = databaseWrapper.instance
@@ -120,4 +123,31 @@ class Database(databaseWrapper: PersonalFinanceDatabaseWrapper) : IDatabase {
     override fun clearAllTransactions() {
 
     }
+
+    override fun getAllListTransactionInfo(): List<GetAllInfoTransaction> {
+        return dbQuery.getAllInfoTransaction().executeAsList()
+    }
+
+    private fun GetAllInfoTransaction.mapToDomain() = Transaction(
+        amount = transaction_amount.toInt(),
+        category = Category(
+            id = transaction_category,
+            name = category_name ?: "",
+            categoryId = "",
+            userID = ""
+        ),
+        createdAt = transaction_created,
+        description = transaction_description,
+        id = transaction_id.toString(),
+        note = "",
+        type = TransactionType.DEFAULT,
+        updatedAt = 0,
+        wallet = Wallet(
+            amount = wallet_amount?.toInt() ?: 0,
+            description = wallet_description ?: "",
+            id = wallet_id ?: "",
+            name = wallet_name ?: "",
+            walletGroup = WalletGroup.valueOf(wallet_group ?: "")
+        )
+    )
 }

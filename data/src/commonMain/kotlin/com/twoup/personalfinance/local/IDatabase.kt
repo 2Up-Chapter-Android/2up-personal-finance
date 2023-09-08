@@ -5,6 +5,7 @@ import com.twoup.personalfinance.domain.model.transaction.TransactionType
 import com.twoup.personalfinance.domain.model.wallet.Category
 import com.twoup.personalfinance.domain.model.wallet.Wallet
 import com.twoup.personalfinance.domain.model.wallet.WalletGroup
+import comtwouppersonalfinancedatabase.GetAllInfoTransaction
 
 interface IDatabase {
 //    WALLET
@@ -53,4 +54,5 @@ interface IDatabase {
     )
 
     fun clearAllTransactions()
+    fun getAllListTransactionInfo(): List<GetAllInfoTransaction>
 }
