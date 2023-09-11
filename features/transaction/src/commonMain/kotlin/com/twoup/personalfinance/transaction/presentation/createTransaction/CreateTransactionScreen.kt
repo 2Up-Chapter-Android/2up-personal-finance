@@ -27,10 +27,16 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Tab
 import androidx.compose.material.TabRow
 import androidx.compose.material.Text
+import androidx.compose.material.TextButton
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.DisplayMode
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -74,6 +80,8 @@ import com.twoup.personalfinance.utils.DateTimeUtil
 import dev.icerock.moko.resources.compose.colorResource
 import dev.icerock.moko.resources.compose.localized
 import dev.icerock.moko.resources.desc.desc
+import kotlinx.datetime.Instant
+import kotlinx.datetime.toLocalDateTime
 
 class CreateTransactionScreen : Screen {
     @Composable
@@ -81,7 +89,7 @@ class CreateTransactionScreen : Screen {
         CreateTransactionScreen()
     }
 
-    @OptIn(ExperimentalMaterialApi::class)
+    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun CreateTransactionScreen() {
         val navigator = LocalNavigator.currentOrThrow
@@ -100,6 +108,12 @@ class CreateTransactionScreen : Screen {
         val listWallet = remember { mutableStateOf(mutableListOf<Wallet>()) }
         val categorys by viewModel.categorys.collectAsState(emptyList())
         val accounts by viewModel.accounts.collectAsState(emptyList())
+        val time = remember { mutableStateOf(DateTimeUtil.toEpochMillis(DateTimeUtil.now())) }
+        val state = rememberDatePickerState(
+            initialDisplayMode = DisplayMode.Picker,
+            initialSelectedDateMillis = time.value
+        )
+        val openDialog = remember { mutableStateOf(true) }
 
         LaunchedEffect(navigator) {
             viewModel.loadTransaction()
@@ -170,6 +184,7 @@ class CreateTransactionScreen : Screen {
                         readOnly = true,
                         textFieldModifier = Modifier.onFocusChanged {
                             viewModel.openCloseDatePicker(it.hasFocus)
+                            openDialog.value = it.hasFocus
                         }
                     )
 
@@ -306,6 +321,54 @@ class CreateTransactionScreen : Screen {
 //                }
                 AnimatedVisibility(visible = createTransUiState.value.isOpenDatePicker) {
 
+
+                    if (createTransUiState.value.isOpenDatePicker/*openDialog.value*/) {
+                        DatePickerDialog(
+                            onDismissRequest = { viewModel.openCloseDatePicker(false) /*openDialog.value = false*/ },
+                            confirmButton = {
+                                TextButton(onClick = {
+                                    viewModel.openCloseDatePicker(false)
+                                    openDialog.value = false
+                                    time.value =
+                                        state.selectedDateMillis ?: DateTimeUtil.toEpochMillis(
+                                            DateTimeUtil.now()
+                                        )
+                                    viewModel.onDateChange(
+                                        Instant.fromEpochMilliseconds(time.value)
+                                            .toLocalDateTime(kotlinx.datetime.TimeZone.currentSystemDefault())
+                                    )
+                                }) {
+                                    Text("OK", color = Color.Black)
+                                }
+                            },
+                            dismissButton = {
+                                TextButton(
+                                    onClick = {
+                                        viewModel.openCloseDatePicker(false)
+                                        openDialog.value = false
+                                    }
+                                ) {
+                                    Text("Cancel", color = Color.Black)
+                                }
+                            }
+                        ) {
+//            TODO: DatePicker dang bi bug, neu ranh thi tu code headline cua minh, khong dung headline mac dinh cua DatePicker
+                            DatePicker(
+                                state = state,
+                                title = {
+                                    Text(
+                                        text = "Choose Your Date",
+                                        modifier = Modifier.padding(
+                                            start = 24.dp,
+                                            end = 12.dp,
+                                            top = 16.dp
+                                        )
+                                    )
+                                },
+                                showModeToggle = false
+                            )
+                        }
+                    }
 
                 }
 
