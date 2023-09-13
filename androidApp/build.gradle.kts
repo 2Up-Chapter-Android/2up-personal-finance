@@ -15,6 +15,7 @@ android {
         targetSdk = androidTargetSdk.toInt()
         versionCode = 1
         versionName = "1.0"
+        compileSdkPreview = "UpsideDownCake"
     }
     buildFeatures {
         compose = true

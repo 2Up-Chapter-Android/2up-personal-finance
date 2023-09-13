@@ -31,10 +31,11 @@ class CreateTransViewModel : ScreenModel, KoinComponent {
     val categorys: StateFlow<List<CategoryLocalModel>> get() = useCaseGetAllCategory.categoryState.asStateFlow()
 
     init {
-        loadTransaction()
-        useCaseGetAllAccount.getAllAccount()
-        useCaseGetAllCategory.getAllCategory()
-        getListWallets()
+        // TODO: check lại call api với backend, đang bị null
+//        loadTransaction()
+//        useCaseGetAllAccount.getAllAccount()
+//        useCaseGetAllCategory.getAllCategory()
+//        getListWallets()
 
     }
 
