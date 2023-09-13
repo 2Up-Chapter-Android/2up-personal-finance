@@ -5,11 +5,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.twoup.personalfinance.domain.model.wallet.Wallet
 import com.twoup.personalfinance.utils.DateTimeUtil
+import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.toLocalDateTime
 
 data class CreateTransUiState(
     val id : Long = 0L,
-    val date: LocalDateTime = DateTimeUtil.now(),
+    val date: LocalDateTime = Instant.fromEpochMilliseconds(DateTimeUtil.toEpochMillis(DateTimeUtil.now())).toLocalDateTime(kotlinx.datetime.TimeZone.currentSystemDefault()),
     val amount: Double = 0.0,
     var category: String = "",
 //    var textAccount: String = "",

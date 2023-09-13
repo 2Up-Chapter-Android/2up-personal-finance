@@ -327,6 +327,7 @@ class CreateTransactionScreen : Screen {
                             onDismissRequest = { viewModel.openCloseDatePicker(false) /*openDialog.value = false*/ },
                             confirmButton = {
                                 TextButton(onClick = {
+                                    focusManager.clearFocus()
                                     viewModel.openCloseDatePicker(false)
                                     openDialog.value = false
                                     time.value =
@@ -344,6 +345,7 @@ class CreateTransactionScreen : Screen {
                             dismissButton = {
                                 TextButton(
                                     onClick = {
+                                        focusManager.clearFocus()
                                         viewModel.openCloseDatePicker(false)
                                         openDialog.value = false
                                     }
