@@ -22,11 +22,16 @@ import androidx.compose.ui.graphics.Color
 import com.aicontent.main.theme.font_size_text_item_budge
 import com.aicontent.main.theme.padding_budge_box
 import com.aicontent.main.theme.padding_budge_item
+import com.twoup.personalfinance.domain.model.transaction.TransactionType
 
 @Composable
-fun BudgetBox() {
-    var income by remember { mutableStateOf(0) }
-    var expenses by remember { mutableStateOf(0) }
+fun BudgetBox(viewModel: MainScreenViewModel) {
+    var totalIncome by remember { mutableStateOf(0) }
+    var totalExpenses by remember { mutableStateOf(0) }
+
+    val incomes = viewModel.transaction.value
+    totalIncome = incomes.filter { it.amount > 0 }.sumOf { it.amount.toInt() }
+    totalExpenses = incomes.filter { it.amount < 0 }.sumOf { -it.amount.toInt() }
 
     Row(
         modifier = Modifier
@@ -37,11 +42,11 @@ fun BudgetBox() {
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Spacer(modifier = Modifier.padding(padding_budge_item))
-        BudgetItem("Income", income, Color.Blue)
+        BudgetItem("Income", totalIncome, Color.Blue)
         Spacer(modifier = Modifier.padding(padding_budge_item))
-        BudgetItem("Expenses", expenses, Color.Red)
+        BudgetItem("Expenses", totalExpenses, Color.Red)
         Spacer(modifier = Modifier.padding(padding_budge_item))
-        BudgetItem("Total", income - expenses, Color.Black)
+        BudgetItem("Total", totalIncome - totalExpenses, Color.Black)
         Spacer(modifier = Modifier.padding(padding_budge_item))
     }
 }
@@ -62,4 +67,3 @@ fun BudgetItem(name: String, amount: Int, textColor: Color) {
         )
     }
 }
-

@@ -21,7 +21,8 @@ import kotlinx.coroutines.withContext
                             description = transaction.description,
                             created = transaction.created,
                             category = transaction.category,
-                            account = transaction.account
+                            account = transaction.account,
+                            selectIndex = transaction.selectIndex
                         )
                     )
                 }

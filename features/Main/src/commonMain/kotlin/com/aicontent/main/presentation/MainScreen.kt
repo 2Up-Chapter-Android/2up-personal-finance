@@ -47,6 +47,10 @@ class MainScreen() : Screen {
         val listTransactionState = viewModel.getListTransactionState.collectAsState()
         val listTransaction = remember { mutableStateOf(mutableListOf<TransactionEntity>()) }
 
+        LaunchedEffect(navigator) {
+            viewModel.loadNotes()
+        }
+
         LaunchedEffect(listTransactionState.value) {
             listTransactionState.value.fold(
                 onSuccess = {
@@ -78,7 +82,7 @@ class MainScreen() : Screen {
             },
             content = {
                 Column {
-                    BudgetBox()
+                    BudgetBox(viewModel = viewModel)
 
                     Column(
                         modifier = Modifier.fillMaxSize(),

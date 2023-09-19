@@ -31,6 +31,7 @@ kotlin {
                 implementation(compose.foundation)
                 implementation(compose.material)
                 implementation(libs.voyager.navigator)
+                implementation(project(":domain"))
             }
         }
         val commonTest by getting {

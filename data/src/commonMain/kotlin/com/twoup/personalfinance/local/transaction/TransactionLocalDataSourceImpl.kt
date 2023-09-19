@@ -47,7 +47,8 @@ class TransactionLocalDataSourceImpl(transactionDatabaseWrapper: PersonalFinance
             transaction.description,
             DateTimeUtil.toEpochMillis(transaction.created),
             transaction.category,
-            transaction.account
+            transaction.account,
+            transaction.selectIndex
         )
     }
 

@@ -1,7 +1,6 @@
-package com.twoup.personalfinance.transaction.presentation.createTransaction
+package com.aicontent.main.presentation.daily
 
-import PersonalFinance.features.transaction.MR
-import androidx.compose.foundation.BorderStroke
+import PersonalFinance.features.Main.MR
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -45,13 +44,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.aicontent.main.theme.paddingHorizontal_createTrans_chooseWallet_actionBar
+import com.aicontent.main.theme.paddingHorizontal_createTrans_chooseWallet_walletItem
+import com.aicontent.main.theme.paddingVertical_createTrans_chooseWallet_walletItem
+import com.aicontent.main.theme.textSize_createTransaction_chooseWallet_actionBar
+import com.aicontent.main.theme.textSize_createTransaction_chooseWallet_walletITem_name
 import com.twoup.personalfinance.domain.model.transaction.account.AccountLocalModel
 import com.twoup.personalfinance.domain.model.transaction.category.CategoryLocalModel
-import com.twoup.personalfinance.transaction.presentation.theme.paddingHorizontal_createTrans_chooseWallet_actionBar
-import com.twoup.personalfinance.transaction.presentation.theme.paddingHorizontal_createTrans_chooseWallet_walletItem
-import com.twoup.personalfinance.transaction.presentation.theme.paddingVertical_createTrans_chooseWallet_walletItem
-import com.twoup.personalfinance.transaction.presentation.theme.textSize_createTransaction_chooseWallet_actionBar
-import com.twoup.personalfinance.transaction.presentation.theme.textSize_createTransaction_chooseWallet_walletITem_name
 import dev.icerock.moko.resources.compose.colorResource
 import dev.icerock.moko.resources.compose.localized
 import dev.icerock.moko.resources.desc.desc
@@ -60,7 +59,7 @@ import dev.icerock.moko.resources.desc.desc
 fun AccountBottomSheet(
     focusManager: FocusManager,
     accounts: List<AccountLocalModel>,
-    viewModel: CreateTransViewModel,
+    viewModel: DailyScreenViewModel,
     interactionSource: MutableInteractionSource
 ) {
     Column(
@@ -121,7 +120,7 @@ fun AccountBottomSheet(
 fun CategoryBottomSheet(
     focusManager: FocusManager,
     categorys: List<CategoryLocalModel>,
-    viewModel: CreateTransViewModel,
+    viewModel: DailyScreenViewModel,
     interactionSource: MutableInteractionSource
 ) {
     Column(
@@ -184,7 +183,7 @@ fun CategoryBottomSheet(
 fun AmountBottomSheet(
     focusManager: FocusManager,
 //    categorys : List<CategoryLocalModel>,
-    viewModel: CreateTransViewModel,
+    viewModel: DailyScreenViewModel,
     interactionSource: MutableInteractionSource,
     onNumberClicked: (Int) -> Unit
 ) {

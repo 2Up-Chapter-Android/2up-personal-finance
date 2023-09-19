@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
@@ -36,28 +35,36 @@ class AccountListScreen() : Screen {
     @Composable
     override fun Content() {
         val viewModel = rememberScreenModel { AccountListViewModel() }
-
         val accounts by viewModel.accounts.collectAsState(emptyList())
 
-        AccountListScreen(accounts)
+        AccountListScreen(accounts, viewModel)
     }
 
 }
 
 @Composable
-fun AccountListScreen(accounts: List<AccountLocalModel>) {
+fun AccountListScreen(accounts: List<AccountLocalModel>, viewModel: AccountListViewModel) {
     Scaffold(
         topBar = {
             TopAppBar(title = { Text(text = "My Accounts") })
         },
         content = {
-            AccountList(accounts = accounts)
+            AccountList(accounts = accounts, viewModel = viewModel)
         }
     )
 }
 
 @Composable
-fun AccountList(accounts: List<AccountLocalModel>) {
+fun AccountList(accounts: List<AccountLocalModel>, viewModel: AccountListViewModel) {
+    var transactions = viewModel.transactions.value
+    var accountUiState = viewModel.accountUiState
+    var totalAsset by remember { mutableStateOf(0) }
+    var totalLiabilities by remember { mutableStateOf(0) }
+
+    val asset = viewModel.transactions.value
+    totalAsset = asset.filter { it.amount > 0 }.sumOf { it.amount.toInt() }
+    totalLiabilities = asset.filter { it.amount < 0 }.sumOf { -it.amount.toInt() }
+
     Column {
         Row(
             modifier = Modifier
@@ -74,7 +81,7 @@ fun AccountList(accounts: List<AccountLocalModel>) {
             ) {
                 Text("Asset", fontSize = 14.sp)
                 Text(
-                    text = "0",
+                    text = totalAsset.toString(),
                     color = Color.Blue,
                     fontSize = 16.sp,
                     modifier = Modifier.padding(top = 8.dp)
@@ -87,7 +94,7 @@ fun AccountList(accounts: List<AccountLocalModel>) {
             ) {
                 Text("Liabilities", fontSize = 14.sp)
                 Text(
-                    text = "0",
+                    text = totalLiabilities.toString(),
                     color = Color.Red,
                     fontSize = 16.sp,
                     modifier = Modifier.padding(top = 8.dp)
@@ -100,8 +107,8 @@ fun AccountList(accounts: List<AccountLocalModel>) {
             ) {
                 Text("Total", fontSize = 14.sp)
                 Text(
-                    text = "0",
-                    color = Color.LightGray,
+                    text = "${totalAsset - totalLiabilities}",
+                    color = Color.Black,
                     fontSize = 16.sp,
                     modifier = Modifier.padding(top = 8.dp)
                 )
@@ -111,7 +118,12 @@ fun AccountList(accounts: List<AccountLocalModel>) {
 
         LazyColumn {
             items(accounts) { account ->
-                AccountItem(account) { }
+                val selectedTransactions = transactions.filter { transaction -> transaction.account == account.account_name }
+                val totalIncome = selectedTransactions.sumOf { transaction -> transaction.amount }
+
+                val balance = totalIncome - account.expense!!
+
+                AccountItem(account, balance.toInt())
             }
         }
     }
@@ -119,15 +131,14 @@ fun AccountList(accounts: List<AccountLocalModel>) {
 
 
 @Composable
-fun AccountItem(account: AccountLocalModel, onItemClick: () -> Unit) {
-    val balance = account.income?.minus(account.expense!!) ?: 0.0
+fun AccountItem(account: AccountLocalModel, balance: Int) {
     val balanceColor = if (balance > 0) Color.Blue else Color.Red
 
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp)
-            .clickable(onClick = onItemClick),
+            .padding(16.dp),
+//            .clickable(onClick = onItemClick),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
