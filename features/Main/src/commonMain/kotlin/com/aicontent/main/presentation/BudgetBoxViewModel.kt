@@ -21,8 +21,8 @@ class BudgetBoxViewModel : ScreenModel, KoinComponent {
     private fun loadNotes() {
         useCaseGetAllTransaction.getAllTransaction()
     }
-    private val _createTransUiState = MutableStateFlow(TransUiState())
-    val createTransUiState = _createTransUiState.asStateFlow()
+//    private val _createTransUiState = MutableStateFlow(TransUiState())
+//    val createTransUiState = _createTransUiState.asStateFlow()
 
     // insert get list transaction
 

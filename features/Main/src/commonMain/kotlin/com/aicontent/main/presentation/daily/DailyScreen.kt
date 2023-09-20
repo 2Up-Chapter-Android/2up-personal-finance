@@ -55,17 +55,19 @@ fun DailyScreen(viewModel: DailyScreenViewModel) {
                 modifier = Modifier.fillMaxWidth(),
             ) {
                 items(listTransaction) { transaction ->
-                    val itemTransactionScreen = rememberScreen(
-                        MainScreenSharedScreen.ItemTransaction(
-                            transaction
-                        )
-                    )
-                    ItemDailyScreen(
-                        transaction
-                    ) { navigator.push(itemTransactionScreen) }
+                    val itemTransactionScreen = rememberScreen(MainScreenSharedScreen.ItemTransaction(transaction))
+
+                    if (transaction.transferBalance > 0) {
+                        ItemDailyTransferScreen(transaction) {
+                            navigator.push(itemTransactionScreen)
+                        }
+                    } else if (transaction.income > 0 || transaction.expenses > 0) {
+                        ItemDailyScreen(transaction) {
+                            navigator.push(itemTransactionScreen)
+                        }
+                    }
                 }
             }
         }
     }
-//    Text(MR.strings.daily_screen.desc().localized())
 }

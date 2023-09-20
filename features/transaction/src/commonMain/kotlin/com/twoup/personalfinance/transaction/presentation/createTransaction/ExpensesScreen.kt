@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.Navigator
 import com.twoup.personalfinance.domain.model.transaction.createTrans.TransactionLocalModel
@@ -39,10 +40,10 @@ import dev.icerock.moko.resources.desc.desc
 
 @Composable
 fun ExpensesScreen(
-    viewModel : CreateTransViewModel,
-    navigator : Navigator,
-    openDialog : MutableState<Boolean>,
-    selectIndex : Int
+    viewModel: CreateTransViewModel,
+    navigator: Navigator,
+    openDialog: MutableState<Boolean>,
+    selectIndex: Int
 ) {
     val createTransUiState = viewModel.createTransUiState.collectAsState()
 
@@ -79,10 +80,13 @@ fun ExpensesScreen(
     )
 
     LineTransInfor(
-        text = createTransUiState.value.amount.toString(),
+        text = createTransUiState.value.expenses.toString(),
         textLabel = MR.strings.createTrans_inputLabel_amount.desc().localized(),
-        keyboardOption = KeyboardOptions(imeAction = ImeAction.Next),
-        onTextChange = { viewModel.onAmountChange(it) },
+        keyboardOption = KeyboardOptions(
+            imeAction = ImeAction.Next,
+            keyboardType = KeyboardType.Number
+        ),
+        onTextChange = { viewModel.onExpensesChange(it) },
     )
 
     LineTransInfor(
@@ -116,12 +120,16 @@ fun ExpensesScreen(
                 viewModel.insertTransaction(
                     TransactionLocalModel(
                         transaction_id = createTransUiState.value.id,
-                        amount = createTransUiState.value.amount,
+                        income = createTransUiState.value.income,
+                        expenses = createTransUiState.value.expenses,
+                        transferBalance = createTransUiState.value.transferBalance,
                         description = createTransUiState.value.note,
                         created = createTransUiState.value.date,
                         category = createTransUiState.value.category,
                         account = createTransUiState.value.account,
-                        selectIndex = selectIndex.toString()
+                        selectIndex = selectIndex.toString(),
+                        accountFrom = createTransUiState.value.accountFrom,
+                        accountTo = createTransUiState.value.accountTo
                     )
                 )
                 navigator.pop()

@@ -98,14 +98,6 @@ class ItemTransactionScreen(private val transaction: TransactionLocalModel) : Sc
             initialSelectedDateMillis = time.value
         )
 
-//        transactionUiState.let { transUiState ->
-//            transUiState.date = transaction.created
-//            transUiState.note = transaction.description
-//            transUiState.account = transaction.account
-//            transUiState.category = transaction.category
-//            transUiState.amount = transaction.amount.toString()
-////            transUiState. = transaction.description
-//        }
         Column(modifier = Modifier.padding(16.dp)) {
 
             LineTransInfor(
@@ -119,7 +111,6 @@ class ItemTransactionScreen(private val transaction: TransactionLocalModel) : Sc
                     openDialog.value = it.hasFocus
                 }
             )
-
 
             LineTransInfor(
                 text = transaction.account,
@@ -142,7 +133,7 @@ class ItemTransactionScreen(private val transaction: TransactionLocalModel) : Sc
             )
 
             LineTransInfor(
-                text = transaction.amount.toString(),
+                text = transaction.income.toString(),
                 textLabel = MR.strings.createTrans_inputLabel_amount.desc().localized(),
                 keyboardOption = KeyboardOptions(
                     imeAction = ImeAction.Next,
@@ -280,5 +271,4 @@ fun LineTransInfor(
         )
     }
 }
-
 

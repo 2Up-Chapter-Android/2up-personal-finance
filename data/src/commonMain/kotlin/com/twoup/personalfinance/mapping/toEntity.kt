@@ -40,12 +40,16 @@ fun Categories.toCategory(): CategoryLocalModel{
 fun Transactions.toTransaction(): TransactionLocalModel{
     return TransactionLocalModel(
         transaction_id = transaction_id,
-        amount = amount,
+        income = income,
+        expenses = expenses,
+        transferBalance = transferBalance,
         description = description,
         created = Instant.fromEpochMilliseconds(created).toLocalDateTime(kotlinx.datetime.TimeZone.currentSystemDefault()),
         category = category,
         account = account,
-        selectIndex = selectIndex
+        selectIndex = selectIndex,
+        accountFrom = accountFrom,
+        accountTo = accountTo
     )
 }
 

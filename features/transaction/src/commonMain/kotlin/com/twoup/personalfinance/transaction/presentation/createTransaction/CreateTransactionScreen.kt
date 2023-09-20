@@ -3,7 +3,6 @@ package com.twoup.personalfinance.transaction.presentation.createTransaction
 import PersonalFinance.features.transaction.MR
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,7 +10,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
@@ -20,7 +18,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -46,13 +43,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusManager
-import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -60,26 +54,17 @@ import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.registry.rememberScreen
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import com.twoup.personalfinance.domain.model.transaction.createTrans.TransactionLocalModel
 import com.twoup.personalfinance.domain.model.wallet.Wallet
 import com.twoup.personalfinance.navigation.MainScreenSharedScreen
-import com.twoup.personalfinance.navigation.TransactionSharedScreen
 import com.twoup.personalfinance.utils.data.fold
-import com.twoup.personalfinance.transaction.presentation.theme.buttonHeight_transaction_buttonNextAction
 import com.twoup.personalfinance.transaction.presentation.theme.create_transaction_padding_end_text
-import com.twoup.personalfinance.transaction.presentation.theme.create_transaction_padding_horizontal
 import com.twoup.personalfinance.transaction.presentation.theme.create_transaction_padding_row
 import com.twoup.personalfinance.transaction.presentation.theme.create_transaction_padding_start_text
-import com.twoup.personalfinance.transaction.presentation.theme.create_transaction_spacer_padding_bottom
-import com.twoup.personalfinance.transaction.presentation.theme.create_transaction_spacer_padding_horizontal
-import com.twoup.personalfinance.transaction.presentation.theme.create_transaction_spacer_padding_top
 import com.twoup.personalfinance.transaction.presentation.theme.marginStart_createTrans_actionBar_tabName
 import com.twoup.personalfinance.transaction.presentation.theme.textSize_transaction_textField
 import com.twoup.personalfinance.transaction.presentation.theme.thickness_transaction_borderStroke
 import com.twoup.personalfinance.utils.DateTimeUtil
-import com.twoup.personalfinance.utils.DateTimeUtil.formatNoteDate
 import dev.icerock.moko.resources.compose.colorResource
 import dev.icerock.moko.resources.compose.localized
 import dev.icerock.moko.resources.desc.desc
@@ -113,8 +98,7 @@ class CreateTransactionScreen : Screen {
         val accounts by viewModel.accounts.collectAsState(emptyList())
         val time = remember { mutableStateOf(DateTimeUtil.toEpochMillis(DateTimeUtil.now())) }
         val state = rememberDatePickerState(
-            initialDisplayMode = DisplayMode.Picker,
-            initialSelectedDateMillis = time.value
+            initialDisplayMode = DisplayMode.Picker, initialSelectedDateMillis = time.value
         )
         val openDialog = remember { mutableStateOf(true) }
 
@@ -123,11 +107,9 @@ class CreateTransactionScreen : Screen {
 //        }
 
         LaunchedEffect(getListWalletState.value) {
-            getListWalletState.value.fold(
-                onSuccess = { listWallet.value.addAll(it.data) },
+            getListWalletState.value.fold(onSuccess = { listWallet.value.addAll(it.data) },
                 onFailure = { /* Handle failure */ },
-                onLoading = { it?.let { listWallet.value.addAll(it.data) } }
-            )
+                onLoading = { it?.let { listWallet.value.addAll(it.data) } })
         }
 
         Box(modifier = Modifier.fillMaxSize()) {
@@ -154,18 +136,14 @@ class CreateTransactionScreen : Screen {
                         .weight(weight = 1f, fill = false)
                 ) {
 
-                    TabRow(
-                        selectedTabIndex = selectedTabIndex.value,
+                    TabRow(selectedTabIndex = selectedTabIndex.value,
                         contentColor = Color.Transparent,
                         backgroundColor = MaterialTheme.colors.surface,
                         divider = { /*remove underline*/ },
-                        indicator = { /*remove indicator*/ }
-                    ) {
+                        indicator = { /*remove indicator*/ }) {
                         tabList.forEachIndexed { index, tabName ->
                             tabLayoutTrans(
-                                index = index,
-                                value = tabName,
-                                selectedTabIndex = selectedTabIndex
+                                index = index, value = tabName, selectedTabIndex = selectedTabIndex
                             )
                         }
                     }
@@ -193,7 +171,7 @@ class CreateTransactionScreen : Screen {
                     }
                 }
 
-                AnimatedVisibility(visible = createTransUiState.value.isOpenChooseWallet) {
+                AnimatedVisibility(visible = createTransUiState.value.isOpenChooseWallet || createTransUiState.value.isOpenChooseAccountTo || createTransUiState.value.isOpenChooseAccountFrom) {
                     AccountBottomSheet(
                         focusManager = focusManager,
                         accounts = accounts,
@@ -213,8 +191,7 @@ class CreateTransactionScreen : Screen {
 
                 AnimatedVisibility(visible = createTransUiState.value.isOpenDatePicker) {
                     if (createTransUiState.value.isOpenDatePicker/*openDialog.value*/) {
-                        DatePickerDialog(
-                            onDismissRequest = { viewModel.openCloseDatePicker(false) /*openDialog.value = false*/ },
+                        DatePickerDialog(onDismissRequest = { viewModel.openCloseDatePicker(false) /*openDialog.value = false*/ },
                             confirmButton = {
                                 TextButton(onClick = {
                                     focusManager.clearFocus()
@@ -233,31 +210,23 @@ class CreateTransactionScreen : Screen {
                                 }
                             },
                             dismissButton = {
-                                TextButton(
-                                    onClick = {
-                                        focusManager.clearFocus()
-                                        viewModel.openCloseDatePicker(false)
-                                        openDialog.value = false
-                                    }
-                                ) {
+                                TextButton(onClick = {
+                                    focusManager.clearFocus()
+                                    viewModel.openCloseDatePicker(false)
+                                    openDialog.value = false
+                                }) {
                                     Text("Cancel", color = Color.Black)
                                 }
-                            }
-                        ) {
+                            }) {
 //            TODO: DatePicker dang bi bug, neu ranh thi tu code headline cua minh, khong dung headline mac dinh cua DatePicker
                             DatePicker(
-                                state = state,
-                                title = {
+                                state = state, title = {
                                     Text(
-                                        text = "Choose Your Date",
-                                        modifier = Modifier.padding(
-                                            start = 24.dp,
-                                            end = 12.dp,
-                                            top = 16.dp
+                                        text = "Choose Your Date", modifier = Modifier.padding(
+                                            start = 24.dp, end = 12.dp, top = 16.dp
                                         )
                                     )
-                                },
-                                showModeToggle = false
+                                }, showModeToggle = false
                             )
                         }
                     }
@@ -316,9 +285,7 @@ fun tabLayoutTrans(index: Int, value: String, selectedTabIndex: MutableState<Int
             }
         ) {
             Text(
-                text = value,
-                style = MaterialTheme.typography.button,
-                fontWeight = FontWeight.Bold
+                text = value, style = MaterialTheme.typography.button, fontWeight = FontWeight.Bold
             )
         }
     }

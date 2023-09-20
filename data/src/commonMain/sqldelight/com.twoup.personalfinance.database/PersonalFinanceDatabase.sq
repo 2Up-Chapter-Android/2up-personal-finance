@@ -150,23 +150,27 @@ VALUES ('food');
 -- Table for recording income transactions
 CREATE TABLE Transactions (
     transaction_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    amount INTEGER NOT NULL,
+    income INTEGER NOT NULL,
+    expenses INTEGER NOT NULL,
+    transferBalance INTEGER NOT NULL,
     description TEXT NOT NULL,
     created INTEGER NOT NULL,
     category TEXT NOT NULL,
     account TEXT NOT NULL,
-    selectIndex TEXT NOT NULL
+    selectIndex TEXT NOT NULL,
+    accountFrom TEXT NOT NULL,
+    accountTo TEXT NOT NULL
 );
 
 insertTransaction:
-INSERT INTO Transactions(amount, description, created, category, account,selectIndex)
-VALUES (?, ?, ?,?,?,?);
+INSERT INTO Transactions(income, expenses,transferBalance, description, created, category, account,selectIndex, accountFrom, accountTo)
+VALUES (?, ?,? ,?,?,?,?,?,?,?);
 
-INSERT INTO Transactions(amount, description, created, category, account, selectIndex)
-VALUES (50, 'Grocery shopping', 1634567890, 'Food$Drink', 'Bank account', '2');
+INSERT INTO Transactions(income, expenses,transferBalance, description, created, category, account,selectIndex, accountFrom, accountTo)
+VALUES (50,0, 0,'Grocery shopping', 1634567890, 'Food$Drink', 'Bank account', '2',"","");
 
-INSERT INTO Transactions(amount, description, created, category, account, selectIndex)
-VALUES (50, 'Dinner with friends', 1634567930, 'Food$Drink', 'Bank account','1');
+INSERT INTO Transactions(income, expenses,transferBalance, description, created, category, account,selectIndex, accountFrom, accountTo)
+VALUES (0,50, 0,'Dinner with friends', 1634567930, 'Food$Drink', 'Bank account','1', "", "");
 
 -- -- Table for additional notes for transactions
 CREATE TABLE notes (
@@ -186,7 +190,7 @@ WHERE category_id = ?;
 
 updateTransactionById:
 UPDATE Transactions
-SET amount = ?, description = ?
+SET income = ?,expenses = ?, description = ?
 WHERE transaction_id = ?;
 
 updateNoteById:
@@ -237,7 +241,8 @@ SELECT * FROM notes;
 getAllInfoTransaction:
 SELECT
     t.transaction_id,
-    t.amount AS transaction_amount,
+    t.income AS transaction_income,
+    t.expenses AS transaction_expenses,
     t.description AS transaction_description,
     t.created AS transaction_created,
     t.category AS transaction_category,

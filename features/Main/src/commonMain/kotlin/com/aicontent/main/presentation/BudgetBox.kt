@@ -30,8 +30,8 @@ fun BudgetBox(viewModel: MainScreenViewModel) {
     var totalExpenses by remember { mutableStateOf(0) }
 
     val incomes = viewModel.transaction.value
-    totalIncome = incomes.filter { it.amount > 0 }.sumOf { it.amount.toInt() }
-    totalExpenses = incomes.filter { it.amount < 0 }.sumOf { -it.amount.toInt() }
+    totalIncome = incomes.filter { it.income > 0 }.sumOf { it.income }.toInt()
+    totalExpenses = incomes.filter { it.expenses > 0 }.sumOf { it.expenses }.toInt()
 
     Row(
         modifier = Modifier

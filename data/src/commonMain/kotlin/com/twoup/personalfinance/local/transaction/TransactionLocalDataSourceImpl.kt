@@ -43,12 +43,16 @@ class TransactionLocalDataSourceImpl(transactionDatabaseWrapper: PersonalFinance
 
     override suspend fun insertTransaction(transaction: TransactionLocalModel) {
         dbQuery.insertTransaction(
-            transaction.amount,
+            transaction.income,
+            transaction.expenses,
+            transaction.transferBalance,
             transaction.description,
             DateTimeUtil.toEpochMillis(transaction.created),
             transaction.category,
             transaction.account,
-            transaction.selectIndex
+            transaction.selectIndex,
+            transaction.accountFrom,
+            transaction.accountTo
         )
     }
 
@@ -136,7 +140,8 @@ class TransactionLocalDataSourceImpl(transactionDatabaseWrapper: PersonalFinance
     override suspend fun updateTransaction(transaction: TransactionLocalModel) {
         transaction.transaction_id?.let {
             dbQuery.updateTransactionById(
-                amount = transaction.amount,
+                income = transaction.income.toLong(),
+                expenses = transaction.expenses.toLong(),
                 description = transaction.description,
                 transaction_id = it
             )

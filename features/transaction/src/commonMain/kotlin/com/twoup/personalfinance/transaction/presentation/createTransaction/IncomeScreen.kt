@@ -83,13 +83,13 @@ fun IncomeScreen(
     )
 
     LineTransInfor(
-        text = createTransUiState.value.amount.toString(),
+        text = createTransUiState.value.income.toString(),
         textLabel = MR.strings.createTrans_inputLabel_amount.desc().localized(),
         keyboardOption = KeyboardOptions(
             imeAction = ImeAction.Next,
             keyboardType = KeyboardType.Number
         ),
-        onTextChange = { viewModel.onAmountChange(it) },
+        onTextChange = { viewModel.onIncomeChange(it) },
     )
 
     LineTransInfor(
@@ -123,12 +123,16 @@ fun IncomeScreen(
                 // Insert the transaction
                 val transaction = TransactionLocalModel(
                     transaction_id = createTransUiState.value.id,
-                    amount = createTransUiState.value.amount,
+                    income = createTransUiState.value.income,
+                    expenses = createTransUiState.value.expenses,
+                    transferBalance = createTransUiState.value.transferBalance,
                     description = createTransUiState.value.note,
                     created = createTransUiState.value.date,
                     category = createTransUiState.value.category,
                     account = createTransUiState.value.account,
-                    selectIndex = selectIndex.toString()
+                    selectIndex = selectIndex.toString(),
+                    accountFrom = createTransUiState.value.accountFrom,
+                    accountTo = createTransUiState.value.accountTo
                 )
                 viewModel.insertTransaction(transaction)
 

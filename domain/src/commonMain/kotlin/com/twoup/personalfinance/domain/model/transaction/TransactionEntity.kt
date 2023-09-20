@@ -18,7 +18,8 @@ data class TransactionEntity(
 )
 
 data class Transaction(
-    val amount: Int = 0,
+    val income: Int = 0,
+    val expenses: Int = 0,
     val category: Category = Category(),
     val createdAt: Long = 0,
     val description: String = "",

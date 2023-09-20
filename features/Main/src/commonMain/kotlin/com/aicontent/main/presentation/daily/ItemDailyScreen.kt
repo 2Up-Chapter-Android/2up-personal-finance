@@ -58,9 +58,66 @@ fun ItemDailyScreen(transaction: TransactionLocalModel, onNoteClick: () -> Unit)
                 Text(text = transaction.account, fontSize = font_size_text_item_category)
             }
 
+            val colorText = when {
+                transaction.income - transaction.expenses > 0 -> Color.Blue
+                transaction.expenses - transaction.income > 0 -> Color.Red
+                else -> Color.Black
+            }
+
             Text(
                 modifier = Modifier.padding(end = padding_end_text_daily_item),
-                text = "${transaction.amount}đ"
+                text = "${transaction.income - transaction.expenses}đ",
+                color = colorText
+            )
+        }
+        Divider(thickness = 1.dp, modifier = Modifier.fillMaxWidth(), color = Color.LightGray)
+    }
+}
+
+@Composable
+fun ItemDailyTransferScreen(transaction: TransactionLocalModel, onNoteClick: () -> Unit) {
+
+    Column {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(4.dp).clickable(onClick = onNoteClick)
+        ) {
+//        Image(
+//            contentDescription = "My Image",
+//            modifier = Modifier
+//                .padding(
+//                    top = padding_image_daily_item,
+//                    start = padding_image_daily_item,
+//                    bottom = padding_image_daily_item
+//                )
+//                .width(width_image_daily_item)
+//                .height(height_image_daily_item),
+//            painter = painterResource(MR.images.logo_otp),
+//            )
+            Text(
+                modifier = Modifier.padding(end = padding_end_text_daily_item).width(80.dp),
+                text = "Transfer",
+                fontSize = font_size_text_item_category,
+                color = Color.Gray
+            )
+
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    modifier = Modifier.padding(vertical = padding_vertical_text_daily_item),
+                    text = transaction.description,
+                    color = Color.Black,
+                    fontSize = 14.sp
+                )
+                Text(
+                    text = "${transaction.accountFrom} -> ${transaction.accountTo}",
+                    fontSize = font_size_text_item_category
+                )
+            }
+
+            Text(
+                modifier = Modifier.padding(end = padding_end_text_daily_item),
+                text = "${transaction.transferBalance}đ",
+                color = Color.Black
             )
         }
         Divider(thickness = 1.dp, modifier = Modifier.fillMaxWidth(), color = Color.LightGray)

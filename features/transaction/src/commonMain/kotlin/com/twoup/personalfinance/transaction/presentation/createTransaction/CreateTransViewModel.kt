@@ -80,10 +80,22 @@ class CreateTransViewModel : ScreenModel, KoinComponent {
         )
     }
 
-    fun onAmountChange(text: String) {
+    fun onIncomeChange(text: String) {
         _createTransUiState.value = createTransUiState.value.copy(
-            amount = text.toLong(),
+//            amount = text.toLong(),
             income = text.toLong()
+        )
+    }
+    fun onExpensesChange(text: String) {
+        _createTransUiState.value = createTransUiState.value.copy(
+//            amount = text.toLong(),
+            expenses = text.toLong()
+        )
+    }
+    fun onTransferChange(text: String) {
+        _createTransUiState.value = createTransUiState.value.copy(
+//            amount = text.toLong(),
+            transferBalance = text.toLong()
         )
     }
 
@@ -96,6 +108,17 @@ class CreateTransViewModel : ScreenModel, KoinComponent {
     fun onAccountChange(text: String) {
         _createTransUiState.value = createTransUiState.value.copy(
             account = text
+        )
+    }
+
+    fun onAccountFromChange(text: String) {
+        _createTransUiState.value = createTransUiState.value.copy(
+            accountFrom = text
+        )
+    }
+    fun onAccountToChange(text: String) {
+        _createTransUiState.value = createTransUiState.value.copy(
+            accountTo = text
         )
     }
 
@@ -124,15 +147,14 @@ class CreateTransViewModel : ScreenModel, KoinComponent {
         )
     }
 
-    fun openCloseChooseAmount(isOpen: Boolean) {
+    fun openCloseChooseCategoryAccountTo(isOpen: Boolean) {
         _createTransUiState.value = createTransUiState.value.copy(
-            isOpenChooseAmount = isOpen
+            isOpenChooseAccountTo = isOpen
         )
     }
-
-    fun updateAccountId(accountId : Long) {
+    fun openCloseChooseCategoryAccountFrom(isOpen: Boolean) {
         _createTransUiState.value = createTransUiState.value.copy(
-            account_id = accountId
+            isOpenChooseAccountFrom = isOpen
         )
     }
 }
