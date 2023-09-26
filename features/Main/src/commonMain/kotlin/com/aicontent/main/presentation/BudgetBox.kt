@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -19,6 +20,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.graphics.Color
+import com.aicontent.main.presentation.daily.calculateTotalExpenses
+import com.aicontent.main.presentation.daily.calculateTotalIncome
 import com.aicontent.main.theme.font_size_text_item_budge
 import com.aicontent.main.theme.padding_budge_box
 import com.aicontent.main.theme.padding_budge_item
@@ -26,12 +29,9 @@ import com.twoup.personalfinance.domain.model.transaction.TransactionType
 
 @Composable
 fun BudgetBox(viewModel: MainScreenViewModel) {
-    var totalIncome by remember { mutableStateOf(0) }
-    var totalExpenses by remember { mutableStateOf(0) }
-
     val incomes = viewModel.transaction.value
-    totalIncome = incomes.filter { it.income > 0 }.sumOf { it.income }.toInt()
-    totalExpenses = incomes.filter { it.expenses > 0 }.sumOf { it.expenses }.toInt()
+    val totalIncome = calculateTotalIncome(incomes)
+    val totalExpenses = calculateTotalExpenses(incomes)
 
     Row(
         modifier = Modifier
@@ -53,7 +53,6 @@ fun BudgetBox(viewModel: MainScreenViewModel) {
 
 @Composable
 fun BudgetItem(name: String, amount: Int, textColor: Color) {
-
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
@@ -62,8 +61,8 @@ fun BudgetItem(name: String, amount: Int, textColor: Color) {
         Text(
             text = "$amount",
             color = textColor,
-            fontSize = font_size_text_item_budge,
-            modifier = Modifier.padding(top = padding_budge_item)
+//            fontSize = font_size_text_item_budge,
+//            modifier = Modifier.padding(top = padding_budge_item)
         )
     }
 }

@@ -20,8 +20,8 @@ class UseCaseUpdateAccountById(private val dataSource: TransactionLocalDataSourc
                         account_name = account.account_name,
                         account_type = account.account_type,
                         description = account.description,
-                        income = account.income,
-                        expense = account.expense
+                        asset  = account.asset,
+                        liabilities = account.liabilities
                     )
                 )
             }

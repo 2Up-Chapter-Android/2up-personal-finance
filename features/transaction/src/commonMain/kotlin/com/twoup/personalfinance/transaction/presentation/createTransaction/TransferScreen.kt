@@ -25,6 +25,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.Navigator
+import com.twoup.personalfinance.domain.model.transaction.account.AccountLocalModel
 import com.twoup.personalfinance.domain.model.transaction.createTrans.TransactionLocalModel
 import com.twoup.personalfinance.transaction.presentation.theme.buttonHeight_transaction_buttonNextAction
 import com.twoup.personalfinance.transaction.presentation.theme.create_transaction_padding_horizontal
@@ -46,6 +47,7 @@ fun TransferScreen(
     selectIndex: MutableState<Int>
 ) {
     val createTransUiState = viewModel.createTransUiState.collectAsState()
+    val accounts = viewModel.accounts.value
 
     LineTransInfor(
         text = DateTimeUtil.formatNoteDate(createTransUiState.value.date),
@@ -117,11 +119,35 @@ fun TransferScreen(
         //Create this transaction and back to dashboard screen
         Button(
             onClick = {
+//                val accountFrom = accounts.find { it.account_name == createTransUiState.value.accountFrom }
+//                val accountTo = accounts.find { it.account_name == createTransUiState.value.accountTo }
+//
+//                val newBalanceFrom = accountFrom!!.liabilities?.minus(createTransUiState.value.transferBalance) ?: 0
+//                val newBalanceTo = accountTo!!.asset?.plus(createTransUiState.value.transferBalance) ?: 0
+//
+//                val updatedAccountFrom = AccountLocalModel(
+//                    account_id = accountFrom.account_id,
+//                    account_name = accountFrom.account_name,
+//                    account_type = accountFrom.account_type,
+//                    description = accountFrom.description,
+//                    asset = accountFrom.asset,
+//                    liabilities = newBalanceFrom
+//                )
+//
+//                val updatedAccountTo = AccountLocalModel(
+//                    account_id = accountTo.account_id,
+//                    account_name = accountTo.account_name,
+//                    account_type = accountTo.account_type,
+//                    description = accountTo.description,
+//                    asset = newBalanceTo,
+//                    liabilities = accountTo.liabilities
+//                )
+
                 viewModel.insertTransaction(
                     TransactionLocalModel(
                         transaction_id = createTransUiState.value.id,
-                        income = createTransUiState.value.income,
-                        expenses = createTransUiState.value.expenses,
+                        income = 0,
+                        expenses = 0,
                         transferBalance = createTransUiState.value.transferBalance,
                         description = createTransUiState.value.note,
                         created = createTransUiState.value.date,
@@ -132,6 +158,9 @@ fun TransferScreen(
                         accountTo = createTransUiState.value.accountTo
                     )
                 )
+
+//                viewModel.updateAccountFrom(updatedAccountFrom)
+//                viewModel.updateAccountTo(updatedAccountTo)
                 navigator.pop()
             },
             modifier = Modifier.weight(1f)
@@ -150,7 +179,7 @@ fun TransferScreen(
                 color = Color.White
             )
         }
-        //Create this transaction and continue create another transaction
+
         Button(
             onClick = { /* Handle image button click */ },
             modifier = Modifier.height(buttonHeight_transaction_buttonNextAction),

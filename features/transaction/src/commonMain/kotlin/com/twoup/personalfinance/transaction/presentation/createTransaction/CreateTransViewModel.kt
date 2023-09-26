@@ -34,17 +34,17 @@ class CreateTransViewModel : ScreenModel, KoinComponent {
     val categorys: StateFlow<List<CategoryLocalModel>> get() = useCaseGetAllCategory.categoryState.asStateFlow()
 
     init {
-        // TODO: check lại call api với backend, đang bị null
         loadTransaction()
         useCaseGetAllAccount.getAllAccount()
         useCaseGetAllCategory.getAllCategory()
-//        getListWallets()
 
     }
 
     fun loadTransaction() {
         useCaseGetAllTransaction.getAllTransaction()
-
+    }
+    fun loadAccount(){
+        useCaseGetAllAccount.getAllAccount()
     }
 
     private val getListWalletsUseCase: GetListWalletsUseCase by inject()
@@ -60,7 +60,13 @@ class CreateTransViewModel : ScreenModel, KoinComponent {
         useCaseInsertTransaction.insertTransaction(transaction, loadTransaction())
     }
 
-    fun updateAccount(account: AccountLocalModel) {
+    fun updateAccountFrom(account: AccountLocalModel) {
+        useCaseUpdateAccountById.updateAccount(
+            account, useCaseGetAllAccount.getAllAccount()
+        )
+    }
+
+    fun updateAccountTo(account: AccountLocalModel) {
         useCaseUpdateAccountById.updateAccount(
             account, useCaseGetAllAccount.getAllAccount()
         )

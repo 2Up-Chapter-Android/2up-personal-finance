@@ -120,16 +120,16 @@ fun ExpensesScreen(
                 viewModel.insertTransaction(
                     TransactionLocalModel(
                         transaction_id = createTransUiState.value.id,
-                        income = createTransUiState.value.income,
+                        income = 0,
                         expenses = createTransUiState.value.expenses,
-                        transferBalance = createTransUiState.value.transferBalance,
+                        transferBalance = 0,
                         description = createTransUiState.value.note,
                         created = createTransUiState.value.date,
                         category = createTransUiState.value.category,
                         account = createTransUiState.value.account,
                         selectIndex = selectIndex.toString(),
-                        accountFrom = createTransUiState.value.accountFrom,
-                        accountTo = createTransUiState.value.accountTo
+                        accountFrom = "",
+                        accountTo = ""
                     )
                 )
                 navigator.pop()

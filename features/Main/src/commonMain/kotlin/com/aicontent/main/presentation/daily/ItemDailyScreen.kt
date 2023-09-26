@@ -1,12 +1,9 @@
 package com.aicontent.main.presentation.daily
 
-import PersonalFinance.features.Main.MR
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.Divider
@@ -19,7 +16,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.aicontent.main.theme.*
 import com.twoup.personalfinance.domain.model.transaction.createTrans.TransactionLocalModel
-import dev.icerock.moko.resources.compose.painterResource
 
 @Composable
 fun ItemDailyScreen(transaction: TransactionLocalModel, onNoteClick: () -> Unit) {
@@ -29,20 +25,8 @@ fun ItemDailyScreen(transaction: TransactionLocalModel, onNoteClick: () -> Unit)
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.padding(4.dp).clickable(onClick = onNoteClick)
         ) {
-//        Image(
-//            contentDescription = "My Image",
-//            modifier = Modifier
-//                .padding(
-//                    top = padding_image_daily_item,
-//                    start = padding_image_daily_item,
-//                    bottom = padding_image_daily_item
-//                )
-//                .width(width_image_daily_item)
-//                .height(height_image_daily_item),
-//            painter = painterResource(MR.images.logo_otp),
-//            )
             Text(
-                modifier = Modifier.padding(end = padding_end_text_daily_item).width(80.dp),
+                modifier = Modifier.padding(start = padding_end_text_daily_item).width(80.dp),
                 text = transaction.category,
                 fontSize = font_size_text_item_category,
                 color = Color.Gray
@@ -59,18 +43,22 @@ fun ItemDailyScreen(transaction: TransactionLocalModel, onNoteClick: () -> Unit)
             }
 
             val colorText = when {
-                transaction.income - transaction.expenses > 0 -> Color.Blue
-                transaction.expenses - transaction.income > 0 -> Color.Red
+                transaction.income!! - transaction.expenses!! > 0 -> Color.Blue
+                transaction.expenses!! - transaction.income!! > 0 -> Color.Red
                 else -> Color.Black
             }
-
+            val incomeOrExpenses = when{
+                transaction.income!! - transaction.expenses!! > 0 ->  transaction.income
+                transaction.expenses!! - transaction.income!! > 0 ->   transaction.expenses
+                else -> 0
+            }
             Text(
                 modifier = Modifier.padding(end = padding_end_text_daily_item),
-                text = "${transaction.income - transaction.expenses}đ",
+                text = "${incomeOrExpenses}đ",
                 color = colorText
             )
         }
-        Divider(thickness = 1.dp, modifier = Modifier.fillMaxWidth(), color = Color.LightGray)
+//        Divider(thickness = 1.dp, modifier = Modifier.fillMaxWidth(), color = Color.LightGray)
     }
 }
 
@@ -82,20 +70,8 @@ fun ItemDailyTransferScreen(transaction: TransactionLocalModel, onNoteClick: () 
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.padding(4.dp).clickable(onClick = onNoteClick)
         ) {
-//        Image(
-//            contentDescription = "My Image",
-//            modifier = Modifier
-//                .padding(
-//                    top = padding_image_daily_item,
-//                    start = padding_image_daily_item,
-//                    bottom = padding_image_daily_item
-//                )
-//                .width(width_image_daily_item)
-//                .height(height_image_daily_item),
-//            painter = painterResource(MR.images.logo_otp),
-//            )
             Text(
-                modifier = Modifier.padding(end = padding_end_text_daily_item).width(80.dp),
+                modifier = Modifier.padding(start = padding_end_text_daily_item).width(80.dp),
                 text = "Transfer",
                 fontSize = font_size_text_item_category,
                 color = Color.Gray
@@ -120,6 +96,6 @@ fun ItemDailyTransferScreen(transaction: TransactionLocalModel, onNoteClick: () 
                 color = Color.Black
             )
         }
-        Divider(thickness = 1.dp, modifier = Modifier.fillMaxWidth(), color = Color.LightGray)
+//        Divider(thickness = 1.dp, modifier = Modifier.fillMaxWidth(), color = Color.LightGray)
     }
 }

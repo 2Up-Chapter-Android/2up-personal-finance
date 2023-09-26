@@ -47,7 +47,6 @@ fun IncomeScreen(
     selectIndex: MutableState<Int>
 ) {
     val createTransUiState = viewModel.createTransUiState.collectAsState()
-    val accounts = viewModel.accounts.value
 
     LineTransInfor(
         text = DateTimeUtil.formatNoteDate(createTransUiState.value.date),
@@ -124,52 +123,17 @@ fun IncomeScreen(
                 val transaction = TransactionLocalModel(
                     transaction_id = createTransUiState.value.id,
                     income = createTransUiState.value.income,
-                    expenses = createTransUiState.value.expenses,
-                    transferBalance = createTransUiState.value.transferBalance,
+                    expenses = 0,
+                    transferBalance = 0,
                     description = createTransUiState.value.note,
                     created = createTransUiState.value.date,
                     category = createTransUiState.value.category,
                     account = createTransUiState.value.account,
                     selectIndex = selectIndex.toString(),
-                    accountFrom = createTransUiState.value.accountFrom,
-                    accountTo = createTransUiState.value.accountTo
+                    accountFrom = "",
+                    accountTo = ""
                 )
                 viewModel.insertTransaction(transaction)
-
-//                // Retrieve the selected account
-//                val selectedAccount = accounts.find { account -> account.account_name == createTransUiState.value.account }
-//
-//                // Calculate the new income by accumulating the previous income with the new amount
-//                val newIncome = selectedAccount?.income?.plus(createTransUiState.value.amount) ?: createTransUiState.value.amount
-//                // Tính thu nhập mới bằng cách tích lũy thu nhập trước đó với số tiền mới val newIncome = selectedAccount?. thu nhập?.plus(createTransUiState.value.amount) ?: createTransUiState.value.amount] x
-//
-//                        // Update the createTransUiState with the account details
-//                selectedAccount?.let { account ->
-//                    createTransUiState.value.apply {
-//                        account_id = account.account_id!!
-//                        account_name = account.account_name
-//                        account_type = account.account_type
-//                        descriptionAccount = account.description
-//                        income = newIncome
-//                        expense = account.expense!!
-//                    }
-//                }
-//
-//                // Update the account information
-//                createTransUiState.value.apply {
-//                    val updatedAccount = AccountLocalModel(
-//                        account_id = account_id,
-//                        account_name = account_name,
-//                        account_type = account_type,
-//                        description = descriptionAccount,
-//                        income = income,
-//                        expense = expense
-//                    )
-//                    viewModel.updateAccount(updatedAccount)
-//                }
-
-                // Log and navigate
-//                Napier.d("test account id ${createTransUiState.value.account_id} and selectedAccount $selectedAccount", tag = "test account")
                 navigator.pop()
             },
             modifier = Modifier.weight(1f)

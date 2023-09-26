@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -38,6 +39,7 @@ import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
 import com.twoup.personalfinance.domain.model.transaction.account.AccountLocalModel
+import com.twoup.personalfinance.domain.model.transaction.createTrans.TransactionLocalModel
 
 class AccountListScreen() : Screen {
 
@@ -74,83 +76,85 @@ fun AccountListScreen(accounts: List<AccountLocalModel>, viewModel: AccountListV
         }
     )
 }
-
 @Composable
 fun AccountList(accounts: List<AccountLocalModel>, viewModel: AccountListViewModel) {
-    var transactions = viewModel.transactions.value
-    var accountUiState = viewModel.accountUiState
-    var totalAsset by remember { mutableStateOf(0) }
-    var totalLiabilities by remember { mutableStateOf(0) }
+    val transactions = viewModel.transactions.value
+    val totalAsset = transactions.filter { it.income > 0 }.sumOf { it.income }.toInt()
+    val totalLiabilities = transactions.filter { it.expenses > 0 }.sumOf { it.expenses }.toInt()
+    val totalBalance = totalAsset - totalLiabilities
 
-    val asset = viewModel.transactions.value
-    totalAsset = asset.filter { it.income > 0 }.sumOf { it.income }.toInt()
-    totalLiabilities = asset.filter { it.expenses > 0 }.sumOf { it.expenses }.toInt()
+    Column(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        TotalRow(totalAsset, totalLiabilities, totalBalance)
 
-    Column {
-        Row(
+        Divider(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(MaterialTheme.colors.primary)
-                .padding(8.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Spacer(modifier = Modifier.padding(8.dp))
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center,
-            ) {
-                Text("Asset", fontSize = 14.sp)
-                Text(
-                    text = totalAsset.toString(),
-                    color = Color.Blue,
-                    fontSize = 16.sp,
-                    modifier = Modifier.padding(top = 8.dp)
-                )
-            }
-            Spacer(modifier = Modifier.padding(8.dp))
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center,
-            ) {
-                Text("Liabilities", fontSize = 14.sp)
-                Text(
-                    text = totalLiabilities.toString(),
-                    color = Color.Red,
-                    fontSize = 16.sp,
-                    modifier = Modifier.padding(top = 8.dp)
-                )
-            }
-            Spacer(modifier = Modifier.padding(8.dp))
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center,
-            ) {
-                Text("Total", fontSize = 14.sp)
-                Text(
-                    text = "${totalAsset - totalLiabilities}",
-                    color = Color.Black,
-                    fontSize = 16.sp,
-                    modifier = Modifier.padding(top = 8.dp)
-                )
-            }
-            Spacer(modifier = Modifier.padding(8.dp))
-        }
-        Divider(thickness = 1.dp, modifier = Modifier.fillMaxWidth(), color = Color.LightGray)
+                .height(1.dp),
+            color = Color.LightGray
+        )
 
-        LazyColumn {
+        LazyColumn(
+            modifier = Modifier.fillMaxSize()
+        ) {
             items(accounts) { account ->
                 val selectedTransactions =
                     transactions.filter { transaction -> transaction.account == account.account_name }
-                val totalIncome = selectedTransactions.sumOf { transaction -> transaction.income }
-                val totalExpense = selectedTransactions.sumOf { transactions -> transactions.expenses }
-
-                val balance = totalIncome - totalExpense
-
+                val balance = calculateBalance(selectedTransactions, transactions)
                 AccountItem(account, balance.toInt(), {})
             }
         }
     }
+}
+
+@Composable
+fun TotalRow(asset: Int, liabilities: Int, totalBalance: Int) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(MaterialTheme.colors.primary)
+            .padding(8.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Spacer(modifier = Modifier.padding(8.dp))
+
+        TotalColumn("Asset", asset, Color.Blue)
+        Spacer(modifier = Modifier.padding(8.dp))
+
+        TotalColumn("Liabilities", liabilities, Color.Red)
+        Spacer(modifier = Modifier.padding(8.dp))
+
+        TotalColumn("Total", totalBalance, Color.Black)
+        Spacer(modifier = Modifier.padding(8.dp))
+    }
+}
+
+@Composable
+fun TotalColumn(title: String, value: Int, color: Color) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+    ) {
+        Text(title, fontSize = 14.sp)
+        Text(
+            text = value.toString(),
+            color = color,
+            fontSize = 16.sp,
+            modifier = Modifier.padding(top = 8.dp)
+        )
+    }
+}
+
+@Composable
+fun calculateBalance(selectedTransactions: List<TransactionLocalModel>, allTransactions: List<TransactionLocalModel>): Long {
+    val totalIncome = selectedTransactions.sumOf { transaction -> transaction.income }
+    val totalExpense = selectedTransactions.sumOf { transaction -> transaction.expenses }
+    val totalTransferFrom = allTransactions.filter { it.account == it.accountFrom }.sumOf { transaction -> transaction.transferBalance }
+    val totalTransferTo = allTransactions.filter { it.account == it.accountTo }.sumOf { transaction -> transaction.transferBalance }
+
+    return totalIncome - totalExpense - totalTransferFrom + totalTransferTo
 }
 
 @Composable

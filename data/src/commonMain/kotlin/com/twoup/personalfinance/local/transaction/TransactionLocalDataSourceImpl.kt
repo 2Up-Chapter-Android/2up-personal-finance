@@ -36,23 +36,23 @@ class TransactionLocalDataSourceImpl(transactionDatabaseWrapper: PersonalFinance
             account.account_name,
             account.account_type,
             account.description,
-            account.income,
-            account.expense
+            account.asset,
+            account.liabilities
         )
     }
 
     override suspend fun insertTransaction(transaction: TransactionLocalModel) {
         dbQuery.insertTransaction(
-            transaction.income,
-            transaction.expenses,
-            transaction.transferBalance,
+            transaction.income!!,
+            transaction.expenses!!,
+            transaction.transferBalance!!,
             transaction.description,
             DateTimeUtil.toEpochMillis(transaction.created),
             transaction.category,
             transaction.account,
             transaction.selectIndex,
-            transaction.accountFrom,
-            transaction.accountTo
+            transaction.accountFrom!!,
+            transaction.accountTo!!
         )
     }
 
@@ -131,8 +131,8 @@ class TransactionLocalDataSourceImpl(transactionDatabaseWrapper: PersonalFinance
             dbQuery.updateAccountById(
                 account_id = it,
                 account_name = account.account_name,
-                income = account.income,
-                expense = account.expense
+                income = account.asset,
+                expense = account.liabilities
             )
         }
     }
@@ -140,8 +140,8 @@ class TransactionLocalDataSourceImpl(transactionDatabaseWrapper: PersonalFinance
     override suspend fun updateTransaction(transaction: TransactionLocalModel) {
         transaction.transaction_id?.let {
             dbQuery.updateTransactionById(
-                income = transaction.income.toLong(),
-                expenses = transaction.expenses.toLong(),
+                income = transaction.income!!.toLong(),
+                expenses = transaction.expenses!!.toLong(),
                 description = transaction.description,
                 transaction_id = it
             )

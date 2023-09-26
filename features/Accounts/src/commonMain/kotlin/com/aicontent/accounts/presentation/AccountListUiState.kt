@@ -7,4 +7,7 @@ data class AccountListUiState(
     var description: String = "",
     var income: Long = 0,
     var expense: Long = 0,
+    var transfer : Long = 0,
+    var account_to : String = "",
+    var account_from : String = ""
 )
