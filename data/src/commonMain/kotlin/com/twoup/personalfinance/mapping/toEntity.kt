@@ -48,7 +48,7 @@ fun Transactions.toTransaction(): TransactionLocalModel{
         created = Instant.fromEpochMilliseconds(created).toLocalDateTime(kotlinx.datetime.TimeZone.currentSystemDefault()),
         category = category,
         account = account,
-        selectIndex = selectIndex,
+        selectIndex = selectIndex.toInt(),
         accountFrom = accountFrom,
         accountTo = accountTo
     )

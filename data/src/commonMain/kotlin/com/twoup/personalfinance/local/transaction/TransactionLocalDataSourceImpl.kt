@@ -43,16 +43,16 @@ class TransactionLocalDataSourceImpl(transactionDatabaseWrapper: PersonalFinance
 
     override suspend fun insertTransaction(transaction: TransactionLocalModel) {
         dbQuery.insertTransaction(
-            transaction.income!!,
-            transaction.expenses!!,
-            transaction.transferBalance!!,
+            transaction.income,
+            transaction.expenses,
+            transaction.transferBalance,
             transaction.description,
             DateTimeUtil.toEpochMillis(transaction.created),
             transaction.category,
             transaction.account,
-            transaction.selectIndex,
-            transaction.accountFrom!!,
-            transaction.accountTo!!
+            transaction.selectIndex.toLong(),
+            transaction.accountFrom,
+            transaction.accountTo
         )
     }
 

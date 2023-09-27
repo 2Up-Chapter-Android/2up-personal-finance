@@ -52,7 +52,7 @@ fun BudgetBox(viewModel: MainScreenViewModel) {
 }
 
 @Composable
-fun BudgetItem(name: String, amount: Int, textColor: Color) {
+fun BudgetItem(name: String, amount: Long, textColor: Color) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
@@ -60,9 +60,7 @@ fun BudgetItem(name: String, amount: Int, textColor: Color) {
         Text(name, fontSize = font_size_text_item_budge)
         Text(
             text = "$amount",
-            color = textColor,
-//            fontSize = font_size_text_item_budge,
-//            modifier = Modifier.padding(top = padding_budge_item)
+            color = textColor
         )
     }
 }

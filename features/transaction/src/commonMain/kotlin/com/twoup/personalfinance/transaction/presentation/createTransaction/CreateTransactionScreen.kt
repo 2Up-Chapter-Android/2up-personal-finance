@@ -68,6 +68,7 @@ import com.twoup.personalfinance.utils.DateTimeUtil
 import dev.icerock.moko.resources.compose.colorResource
 import dev.icerock.moko.resources.compose.localized
 import dev.icerock.moko.resources.desc.desc
+import io.github.aakira.napier.Napier
 import kotlinx.datetime.Instant
 import kotlinx.datetime.toLocalDateTime
 
@@ -102,9 +103,9 @@ class CreateTransactionScreen : Screen {
         )
         val openDialog = remember { mutableStateOf(true) }
 
-//        LaunchedEffect(navigator) {
-//            viewModel.loadTransaction()
-//        }
+        LaunchedEffect(navigator) {
+            viewModel.loadTransaction()
+        }
 
         LaunchedEffect(getListWalletState.value) {
             getListWalletState.value.fold(onSuccess = { listWallet.value.addAll(it.data) },
@@ -145,24 +146,27 @@ class CreateTransactionScreen : Screen {
                             tabLayoutTrans(
                                 index = index, value = tabName, selectedTabIndex = selectedTabIndex
                             )
+                            Napier.d("the number is ${selectedTabIndex.value}", tag = "selectedTabIndex")
                         }
                     }
                     when (selectedTabIndex.value) {
-                        0 -> IncomeScreen(
+                        0 -> TransactionScreen(
                             viewModel = viewModel,
                             navigator = navigator,
                             openDialog = openDialog,
-                            selectIndex = selectedTabIndex
+                            selectIndex = selectedTabIndex,
+                            transactionType = TransactionType.Income
                         )
 
-                        1 -> ExpensesScreen(
+                        1 -> TransactionScreen(
                             viewModel = viewModel,
                             navigator = navigator,
                             openDialog = openDialog,
-                            selectIndex = selectedTabIndex.value
+                            selectIndex = selectedTabIndex,
+                            transactionType = TransactionType.Expense
                         )
 
-                        2 -> TransferScreen(
+                        else -> TransferScreen(
                             viewModel = viewModel,
                             navigator = navigator,
                             openDialog = openDialog,

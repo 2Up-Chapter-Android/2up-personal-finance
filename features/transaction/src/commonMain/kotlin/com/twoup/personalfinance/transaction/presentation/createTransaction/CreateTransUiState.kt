@@ -24,13 +24,6 @@ data class CreateTransUiState(
     val isOpenChooseCategory: Boolean = false,
     val isOpenChooseAccountTo: Boolean = false,
     val isOpenChooseAccountFrom: Boolean = false,
-
     val tabColor: Int = 0,
 
-//    var account_id: Long = 0,
-//    var account_name: String = "",
-//    var account_type: String = "",
-//    var descriptionAccount: String = "",
-//    var income: Long = 0,
-//    var expense: Long = 0,
 )

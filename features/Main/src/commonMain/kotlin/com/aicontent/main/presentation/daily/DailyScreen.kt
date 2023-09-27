@@ -35,6 +35,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.registry.rememberScreen
@@ -50,7 +51,9 @@ import com.twoup.personalfinance.utils.DateTimeUtil
 @Composable
 fun DailyScreen(viewModel: DailyScreenViewModel) {
     val navigator = LocalNavigator.currentOrThrow
-    val listTransaction = viewModel.transaction.value.sortedByDescending { it.created.date.dayOfMonth }
+    val listTransaction =
+        viewModel.transaction.value.sortedByDescending { it.created }
+    // it is so good men
     val distinctTransactions = listTransaction.distinctBy { it.created.date.dayOfMonth }
 
     LaunchedEffect(navigator) {
@@ -79,14 +82,10 @@ fun DailyScreen(viewModel: DailyScreenViewModel) {
                         ) {
                             Divider(thickness = 0.5.dp, color = Color.LightGray)
                             TitleTransaction(dateDistinct, transactions)
-
                             Divider(thickness = 0.5.dp, color = Color.LightGray)
                             DateTransactionsGroup(transactions, navigator)
                             Divider(thickness = 0.5.dp, color = Color.LightGray)
-
                         }
-                    }
-                    item {
                     }
                 }
             }
@@ -107,18 +106,14 @@ fun DailyScreen(viewModel: DailyScreenViewModel) {
 fun DateTransactionsGroup(transactions: List<TransactionLocalModel>, navigator: Navigator) {
     Column {
         transactions.forEach { transaction ->
-            val itemTransactionScreen =
-                rememberScreen(MainScreenSharedScreen.ItemTransaction(transaction))
+            val itemTransactionScreen = rememberScreen(MainScreenSharedScreen.ItemTransaction(transaction))
+            val isTransfer = transaction.transferBalance > 0
 
-            if (transaction.transferBalance!! > 0) {
-                ItemDailyTransferScreen(transaction) {
-                    navigator.push(itemTransactionScreen)
-                }
-            } else if (transaction.income!! > 0 || transaction.expenses !!> 0) {
-                ItemDailyScreen(transaction) {
-                    navigator.push(itemTransactionScreen)
-                }
-            }
+            ItemDailyScreen(
+                transaction,
+                onNoteClick = { navigator.push(itemTransactionScreen) },
+                isTransfer = isTransfer
+            )
         }
     }
 }
@@ -132,8 +127,12 @@ fun TitleTransaction(
     val totalExpenses = calculateTotalExpenses(transactions)
     val boxColor = Color(0xFF336699) // Replace "336699" with your desired hex RGB value
 
-    Row(modifier = Modifier.padding(4.dp), Arrangement.SpaceBetween, Alignment.CenterVertically) {
-        Row(modifier = Modifier.weight(1f)) {
+    Row(
+        modifier = Modifier.padding(4.dp),
+        Arrangement.SpaceBetween,
+        Alignment.CenterVertically
+    ) {
+        Row(modifier = Modifier.weight(1.2f)) {
             Text(
                 text = DateTimeUtil.formatDateTransDays(dateDistinct.created),
                 fontWeight = FontWeight.Bold,
@@ -155,7 +154,6 @@ fun TitleTransaction(
                 Box(
                     modifier = Modifier
                         .fillMaxSize(),
-//                        .padding(8.dp),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
@@ -175,29 +173,52 @@ fun TitleTransaction(
             )
         }
 
-        Row(modifier = Modifier.weight(1f), Arrangement.SpaceBetween) {
+//        Row(modifier = Modifier.weight(1f), Arrangement.SpaceBetween) {
             Text(
                 text = buildString {
                     append(totalIncome)
-                    append("đ")
+                    append(" đ")
                 },
-                color = Color.Blue
+                color = Color.Blue,
+                modifier = Modifier.weight(1f),
+                textAlign = TextAlign.End,
+                fontSize = adjustFontSize(totalIncome.toString()).sp
             )
+
             Text(
                 text = buildString {
                     append(totalExpenses)
-                    append("đ")
+                    append(" đ")
                 },
                 color = Color.Red,
-                modifier = Modifier.padding(end = padding_end_text_daily_item)
+                modifier = Modifier.padding(end = padding_end_text_daily_item).weight(1f),
+                textAlign = TextAlign.End,
+                fontSize = adjustFontSize(totalExpenses.toString()).sp
+
             )
-        }
+//        }
     }
 }
 
-fun calculateTotalIncome(transactions: List<TransactionLocalModel>): Int {
-    return transactions.filter { it.income > 0 }.sumOf { it.income }.toInt()
+fun calculateTotalIncome(transactions: List<TransactionLocalModel>): Long {
+    return transactions.filter { it.income > 0 }.sumOf { it.income }
 }
-fun calculateTotalExpenses(transactions: List<TransactionLocalModel>): Int {
-    return transactions.filter { it.expenses > 0 }.sumOf { it.expenses }.toInt()
+
+fun calculateTotalExpenses(transactions: List<TransactionLocalModel>): Long {
+    return transactions.filter { it.expenses > 0 }.sumOf { it.expenses }
+}
+
+fun adjustFontSize(text: String): Float {
+    val maxLength = 10 // Maximum character length before font size decrease
+    val fontSize10sp = 10f
+    val fontSize12sp = 12f
+    val fontSize14sp = 14f
+    val fontSize16sp = 16f
+
+    return when {
+        text.length <= maxLength -> fontSize14sp
+        text.length <= maxLength * 2 -> fontSize12sp
+        text.length <= maxLength * 3 -> fontSize10sp
+        else -> fontSize16sp
+    }
 }

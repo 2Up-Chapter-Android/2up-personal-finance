@@ -79,8 +79,8 @@ fun AccountListScreen(accounts: List<AccountLocalModel>, viewModel: AccountListV
 @Composable
 fun AccountList(accounts: List<AccountLocalModel>, viewModel: AccountListViewModel) {
     val transactions = viewModel.transactions.value
-    val totalAsset = transactions.filter { it.income > 0 }.sumOf { it.income }.toInt()
-    val totalLiabilities = transactions.filter { it.expenses > 0 }.sumOf { it.expenses }.toInt()
+    val totalAsset = transactions.filter { it.income > 0 }.sumOf { it.income }
+    val totalLiabilities = transactions.filter { it.expenses > 0 }.sumOf { it.expenses }
     val totalBalance = totalAsset - totalLiabilities
 
     Column(
@@ -101,15 +101,15 @@ fun AccountList(accounts: List<AccountLocalModel>, viewModel: AccountListViewMod
             items(accounts) { account ->
                 val selectedTransactions =
                     transactions.filter { transaction -> transaction.account == account.account_name }
-                val balance = calculateBalance(selectedTransactions, transactions)
-                AccountItem(account, balance.toInt(), {})
+                val balance = calculateBalance(selectedTransactions, transactions, account)
+                AccountItem(account, balance, {})
             }
         }
     }
 }
 
 @Composable
-fun TotalRow(asset: Int, liabilities: Int, totalBalance: Int) {
+fun TotalRow(asset: Long, liabilities: Long, totalBalance: Long) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -132,7 +132,7 @@ fun TotalRow(asset: Int, liabilities: Int, totalBalance: Int) {
 }
 
 @Composable
-fun TotalColumn(title: String, value: Int, color: Color) {
+fun TotalColumn(title: String, value: Long, color: Color) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
@@ -148,17 +148,17 @@ fun TotalColumn(title: String, value: Int, color: Color) {
 }
 
 @Composable
-fun calculateBalance(selectedTransactions: List<TransactionLocalModel>, allTransactions: List<TransactionLocalModel>): Long {
+fun calculateBalance(selectedTransactions: List<TransactionLocalModel>, allTransactions: List<TransactionLocalModel>, account : AccountLocalModel): Long {
     val totalIncome = selectedTransactions.sumOf { transaction -> transaction.income }
     val totalExpense = selectedTransactions.sumOf { transaction -> transaction.expenses }
-    val totalTransferFrom = allTransactions.filter { it.account == it.accountFrom }.sumOf { transaction -> transaction.transferBalance }
-    val totalTransferTo = allTransactions.filter { it.account == it.accountTo }.sumOf { transaction -> transaction.transferBalance }
+    val totalTransferFrom = allTransactions.filter { it.accountFrom == account.account_name }.sumOf { transaction -> transaction.transferBalance }
+    val totalTransferTo = allTransactions.filter { it.accountTo == account.account_name  }.sumOf { transaction -> transaction.transferBalance }
 
     return totalIncome - totalExpense - totalTransferFrom + totalTransferTo
 }
 
 @Composable
-fun AccountItem(account: AccountLocalModel, balance: Int, onItemClick: () -> Unit) {
+fun AccountItem(account: AccountLocalModel, balance: Long, onItemClick: () -> Unit) {
     val balanceColor = if (balance > 0) Color.Blue else Color.Red
 
     Column(

@@ -38,6 +38,7 @@ import com.twoup.personalfinance.utils.DateTimeUtil
 import dev.icerock.moko.resources.compose.colorResource
 import dev.icerock.moko.resources.compose.localized
 import dev.icerock.moko.resources.desc.desc
+import io.github.aakira.napier.Napier
 
 @Composable
 fun TransferScreen(
@@ -119,30 +120,6 @@ fun TransferScreen(
         //Create this transaction and back to dashboard screen
         Button(
             onClick = {
-//                val accountFrom = accounts.find { it.account_name == createTransUiState.value.accountFrom }
-//                val accountTo = accounts.find { it.account_name == createTransUiState.value.accountTo }
-//
-//                val newBalanceFrom = accountFrom!!.liabilities?.minus(createTransUiState.value.transferBalance) ?: 0
-//                val newBalanceTo = accountTo!!.asset?.plus(createTransUiState.value.transferBalance) ?: 0
-//
-//                val updatedAccountFrom = AccountLocalModel(
-//                    account_id = accountFrom.account_id,
-//                    account_name = accountFrom.account_name,
-//                    account_type = accountFrom.account_type,
-//                    description = accountFrom.description,
-//                    asset = accountFrom.asset,
-//                    liabilities = newBalanceFrom
-//                )
-//
-//                val updatedAccountTo = AccountLocalModel(
-//                    account_id = accountTo.account_id,
-//                    account_name = accountTo.account_name,
-//                    account_type = accountTo.account_type,
-//                    description = accountTo.description,
-//                    asset = newBalanceTo,
-//                    liabilities = accountTo.liabilities
-//                )
-
                 viewModel.insertTransaction(
                     TransactionLocalModel(
                         transaction_id = createTransUiState.value.id,
@@ -153,14 +130,13 @@ fun TransferScreen(
                         created = createTransUiState.value.date,
                         category = createTransUiState.value.category,
                         account = createTransUiState.value.account,
-                        selectIndex = selectIndex.toString(),
+                        selectIndex = selectIndex.value,
                         accountFrom = createTransUiState.value.accountFrom,
                         accountTo = createTransUiState.value.accountTo
                     )
                 )
+                Napier.d("the number selected in transfer is  ${selectIndex.value}", tag = "selectedTabIndex")
 
-//                viewModel.updateAccountFrom(updatedAccountFrom)
-//                viewModel.updateAccountTo(updatedAccountTo)
                 navigator.pop()
             },
             modifier = Modifier.weight(1f)

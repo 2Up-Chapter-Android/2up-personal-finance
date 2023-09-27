@@ -11,7 +11,7 @@ data class TransactionLocalModel(
     val created: LocalDateTime,
     val category : String,
     val account : String,
-    val selectIndex : String,
+    val selectIndex : Int,
     val accountFrom : String,
     val accountTo : String
 )

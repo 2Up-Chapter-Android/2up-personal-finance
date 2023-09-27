@@ -1,14 +1,12 @@
-package com.aicontent.main.presentation.daily
+package com.aicontent.main.presentation.daily.editItem
 
 import PersonalFinance.features.Main.MR
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -18,7 +16,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.Card
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -37,10 +34,7 @@ import androidx.compose.material3.DisplayMode
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -55,32 +49,30 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.rememberScreenModel
-import cafe.adriel.voyager.core.registry.rememberScreen
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import com.aicontent.main.presentation.daily.AccountBottomSheet
+import com.aicontent.main.presentation.daily.CategoryBottomSheet
+import com.aicontent.main.presentation.daily.DailyScreenViewModel
 import com.aicontent.main.theme.create_transaction_padding_end_text
 import com.aicontent.main.theme.create_transaction_padding_row
 import com.aicontent.main.theme.create_transaction_padding_start_text
+import com.aicontent.main.theme.marginStart_createTrans_actionBar_tabName
 import com.aicontent.main.theme.textSize_transaction_textField
 import com.aicontent.main.theme.thickness_transaction_borderStroke
 import com.twoup.personalfinance.domain.model.transaction.createTrans.TransactionLocalModel
-import com.twoup.personalfinance.domain.model.wallet.Wallet
-import com.twoup.personalfinance.navigation.MainScreenSharedScreen
 import com.twoup.personalfinance.utils.DateTimeUtil
-import com.twoup.personalfinance.utils.data.fold
 import dev.icerock.moko.resources.compose.colorResource
 import dev.icerock.moko.resources.compose.localized
 import dev.icerock.moko.resources.desc.desc
+import io.github.aakira.napier.Napier
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
-import org.koin.core.component.KoinComponent
 
 class ItemTransactionScreen(private val transaction: TransactionLocalModel) : Screen {
-
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun Content() {
@@ -91,67 +83,85 @@ class ItemTransactionScreen(private val transaction: TransactionLocalModel) : Sc
         val focusManager = LocalFocusManager.current
         val categorys = viewModel.categorys.value
         val accounts = viewModel.accounts.value
+        val selectedTabIndex = remember { mutableStateOf(transaction.selectIndex) }
         val interactionSource = remember { MutableInteractionSource() }
         val time = remember { mutableStateOf(DateTimeUtil.toEpochMillis(DateTimeUtil.now())) }
         val state = rememberDatePickerState(
             initialDisplayMode = DisplayMode.Picker,
             initialSelectedDateMillis = time.value
         )
+        val tabList = listOf(
+            MR.strings.createTrans_tab_income.desc().localized(),
+            MR.strings.createTrans_tab_expense.desc().localized(),
+            MR.strings.createTrans_tab_transfer.desc().localized()
+        )
 
         Column(modifier = Modifier.padding(16.dp)) {
-
-            LineTransInfor(
-                text = DateTimeUtil.formatNoteDate(transaction.created),
-                textLabel = MR.strings.createTrans_inputLabel_date.desc().localized(),
-                onTextChange = { viewModel.onDateChange(transactionUiState.date) },
-                keyboardOption = KeyboardOptions(imeAction = ImeAction.Next),
-//                readOnly = true,
-                textFieldModifier = Modifier.onFocusChanged {
-                    viewModel.openCloseDatePicker(it.hasFocus)
-                    openDialog.value = it.hasFocus
+            Row(modifier = Modifier.fillMaxWidth()) {
+                IconButton(onClick = { navigator.pop() }) {
+                    Icon(
+                        imageVector = Icons.Default.ArrowBack,
+                        contentDescription = "",
+                        tint = Color.Black
+                    )
                 }
-            )
 
-            LineTransInfor(
-                text = transaction.account,
-                textLabel = MR.strings.createTrans_inputLabel_account.desc().localized(),
-                keyboardOption = KeyboardOptions(imeAction = ImeAction.Next),
-//                readOnly = true,
-                textFieldModifier = Modifier.onFocusChanged {
-                    viewModel.openCloseChooseWallet(it.hasFocus)
-                }
-            )
-
-            LineTransInfor(
-                text = transaction.category,
-                textLabel = MR.strings.createTrans_inputLabel_category.desc().localized(),
-                keyboardOption = KeyboardOptions(imeAction = ImeAction.Next),
-//                readOnly = true,
-                textFieldModifier = Modifier.onFocusChanged {
-                    viewModel.openCloseChooseCategory(it.hasFocus)
-                }
-            )
-
-            LineTransInfor(
-                text = transaction.income.toString(),
-                textLabel = MR.strings.createTrans_inputLabel_amount.desc().localized(),
-                keyboardOption = KeyboardOptions(
-                    imeAction = ImeAction.Next,
-                    keyboardType = KeyboardType.Number
-                ),
-                onTextChange = { viewModel.onAmountChange(it) },
-            )
-
-            LineTransInfor(
-                text = transaction.description,
-                textLabel = MR.strings.createTrans_inputLabel_note.desc().localized(),
-                onTextChange = { viewModel.onNoteChange(it) },
-                keyboardOption = KeyboardOptions(imeAction = ImeAction.Next),
-            )
-
-            Button(onClick = { navigator.pop() }) {
-                Text(text = "Go Back")
+                Spacer(modifier = Modifier.width(marginStart_createTrans_actionBar_tabName))
+                Text(
+                    text = tabList[selectedTabIndex.value],
+                    color = Color.Black,
+                    modifier = Modifier.align(Alignment.CenterVertically),
+                )
             }
+            Column(
+                modifier = Modifier.verticalScroll(rememberScrollState())
+                    .weight(weight = 1f, fill = false)
+            ) {
+                TabRow(selectedTabIndex = selectedTabIndex.value,
+                    contentColor = Color.Transparent,
+                    backgroundColor = MaterialTheme.colors.surface,
+                    divider = { /*remove underline*/ },
+                    indicator = { /*remove indicator*/ }) {
+                    tabList.forEachIndexed { index, tabName ->
+                        tabLayoutTrans(
+                            index = index, value = tabName, selectedTabIndex = selectedTabIndex
+                        )
+                    }
+                }
+            }
+            Napier.d("the number test in edit screen ${selectedTabIndex.value}", tag = "selectedTabIndex")
+
+            when (selectedTabIndex.value) {
+                0 -> TransactionScreen(
+                    viewModel = viewModel,
+                    navigator = navigator,
+                    openDialog = openDialog,
+                    selectIndex = selectedTabIndex,
+                    transaction = transaction,
+                    transactionType = TransactionType.INCOME
+                )
+
+                1 -> TransactionScreen(
+                    viewModel = viewModel,
+                    navigator = navigator,
+                    openDialog = openDialog,
+                    selectIndex = selectedTabIndex,
+                    transaction = transaction,
+                    transactionType = TransactionType.EXPENSES
+                )
+
+                else -> TransactionScreen(
+                    viewModel = viewModel,
+                    navigator = navigator,
+                    openDialog = openDialog,
+                    selectIndex = selectedTabIndex,
+                    transaction = transaction,
+                    transactionType = TransactionType.TRANSFER                )
+            }
+
+//            Button(onClick = { navigator.pop() }) {
+//                Text(text = "Go Back")
+//            }
 
             AnimatedVisibility(visible = transactionUiState.isOpenChooseWallet) {
                 AccountBottomSheet(
@@ -186,7 +196,7 @@ class ItemTransactionScreen(private val transaction: TransactionLocalModel) : Sc
                                     )
                                 viewModel.onDateChange(
                                     Instant.fromEpochMilliseconds(time.value)
-                                        .toLocalDateTime(kotlinx.datetime.TimeZone.currentSystemDefault())
+                                        .toLocalDateTime(TimeZone.currentSystemDefault())
                                 )
                             }) {
                                 Text("OK", color = Color.Black)
@@ -269,6 +279,63 @@ fun LineTransInfor(
                 unfocusedIndicatorColor = Color.Gray
             )
         )
+    }
+}
+
+@Composable
+fun tabLayoutTrans(index: Int, value: String, selectedTabIndex: MutableState<Int>) {
+    Tab(
+        selected = selectedTabIndex.value == index,
+        onClick = { selectedTabIndex.value = index },
+        modifier = Modifier.fillMaxWidth(),
+    ) {
+        Button(
+            onClick = {
+                selectedTabIndex.value = index
+            },
+            modifier = Modifier.padding(vertical = create_transaction_padding_row),
+            shape = RoundedCornerShape(20),
+            border = if (selectedTabIndex.value == index) {
+                when (selectedTabIndex.value) {
+                    0 -> BorderStroke(thickness_transaction_borderStroke, Color.Blue)
+                    1 -> BorderStroke(
+                        thickness_transaction_borderStroke,
+                        colorResource(MR.colors.createTrans_tab_expense)
+                    )
+
+                    else -> BorderStroke(thickness_transaction_borderStroke, Color.Black)
+                }
+            } else {
+                BorderStroke(thickness_transaction_borderStroke, Color.Gray)
+            },
+            colors = if (selectedTabIndex.value == index) {
+                when (selectedTabIndex.value) {
+                    0 -> ButtonDefaults.outlinedButtonColors(
+                        contentColor = Color.Blue, backgroundColor = Color.White
+                    )
+
+                    1 -> ButtonDefaults.outlinedButtonColors(
+                        contentColor = colorResource(MR.colors.createTrans_tab_expense),
+                        backgroundColor = Color.White
+                    )
+
+                    else -> ButtonDefaults.outlinedButtonColors(
+                        contentColor = Color.Black, backgroundColor = Color.White
+                    )
+                }
+            } else {
+                ButtonDefaults.outlinedButtonColors(
+                    contentColor = Color.Gray,
+                    backgroundColor = colorResource(MR.colors.createTrans_tab_unselected)
+                )
+            }
+        ) {
+            Text(
+                text = value,
+                style = typography.button,
+                fontWeight = FontWeight.Bold
+            )
+        }
     }
 }
 

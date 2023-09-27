@@ -93,4 +93,32 @@ class DailyScreenViewModel : ScreenModel, KoinComponent {
             isOpenChooseAmount = isOpen
         )
     }
+    fun onIncomeChange(text: String) {
+        _transactionUiState.value = transactionUiState.value.copy(
+//            amount = text.toLong(),
+            income = text.toLong()
+        )
+    }
+    fun onExpensesChange(text: String) {
+        _transactionUiState.value = transactionUiState.value.copy(
+//            amount = text.toLong(),
+            expenses = text.toLong()
+        )
+    }
+    fun onTransferChange(text: String) {
+        _transactionUiState.value = transactionUiState.value.copy(
+//            amount = text.toLong(),
+            transfer = text.toLong()
+        )
+    }
+    fun openCloseChooseCategoryAccountTo(isOpen: Boolean) {
+        _transactionUiState.value = transactionUiState.value.copy(
+            isOpenChooseAccountTo = isOpen
+        )
+    }
+    fun openCloseChooseCategoryAccountFrom(isOpen: Boolean) {
+        _transactionUiState.value = transactionUiState.value.copy(
+            isOpenChooseAccountFrom = isOpen
+        )
+    }
 }

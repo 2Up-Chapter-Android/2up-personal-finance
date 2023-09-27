@@ -157,7 +157,7 @@ CREATE TABLE Transactions (
     created INTEGER NOT NULL,
     category TEXT NOT NULL,
     account TEXT NOT NULL,
-    selectIndex TEXT NOT NULL,
+    selectIndex INTEGER NOT NULL,
     accountFrom TEXT NOT NULL,
     accountTo TEXT NOT NULL
 );

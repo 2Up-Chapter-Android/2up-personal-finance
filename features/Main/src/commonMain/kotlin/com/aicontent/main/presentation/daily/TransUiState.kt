@@ -10,18 +10,24 @@ import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.toLocalDateTime
 
 data class TransUiState(
-//    val transaction: TransactionLocalModel
     val date: LocalDateTime = Instant.fromEpochMilliseconds(DateTimeUtil.toEpochMillis(DateTimeUtil.now()))
         .toLocalDateTime(kotlinx.datetime.TimeZone.currentSystemDefault()),
     val amount: String = "",
     val category: String = "",
-//    val account: Wallet = Wallet(),
     val account: String = "",
     val note: String = "",
     val isOpenDatePicker: Boolean = false,
     val isOpenChooseWallet: Boolean = false,
     val isOpenChooseCategory: Boolean = false,
     val isOpenChooseAmount: Boolean = false,
+    val isOpenChooseAccountFrom: Boolean = false,
+    val isOpenChooseAccountTo: Boolean = false,
     val tabColor: Int = 0,
+    val income : Long = 0,
+    val expenses : Long = 0,
+    val transfer : Long = 0,
+    val accountFrom : String = "",
+    val accountTo : String = ""
+
 ) {
 }

@@ -16,7 +16,6 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
@@ -39,11 +38,12 @@ import dev.icerock.moko.resources.compose.localized
 import dev.icerock.moko.resources.desc.desc
 
 @Composable
-fun ExpensesScreen(
+fun TransactionScreen(
     viewModel: CreateTransViewModel,
     navigator: Navigator,
     openDialog: MutableState<Boolean>,
-    selectIndex: Int
+    selectIndex: MutableState<Int>,
+    transactionType: TransactionType // Add this parameter to specify the transaction type
 ) {
     val createTransUiState = viewModel.createTransUiState.collectAsState()
 
@@ -58,6 +58,24 @@ fun ExpensesScreen(
             openDialog.value = it.hasFocus
         }
     )
+
+    val transactionAmount: String
+    val onAmountChange: (String) -> Unit
+
+    when (transactionType) {
+        TransactionType.Expense -> {
+            transactionAmount = createTransUiState.value.expenses.toString()
+            onAmountChange = { viewModel.onExpensesChange(it) }
+        }
+        TransactionType.Income -> {
+            transactionAmount = createTransUiState.value.income.toString()
+            onAmountChange = { viewModel.onIncomeChange(it) }
+        }
+        TransactionType.Transfer -> {
+            transactionAmount = createTransUiState.value.transferBalance.toString()
+            onAmountChange = { viewModel.onTransferChange(it) }
+        }
+    }
 
     LineTransInfor(
         text = createTransUiState.value.account,
@@ -80,13 +98,13 @@ fun ExpensesScreen(
     )
 
     LineTransInfor(
-        text = createTransUiState.value.expenses.toString(),
+        text = transactionAmount,
         textLabel = MR.strings.createTrans_inputLabel_amount.desc().localized(),
         keyboardOption = KeyboardOptions(
             imeAction = ImeAction.Next,
             keyboardType = KeyboardType.Number
         ),
-        onTextChange = { viewModel.onExpensesChange(it) },
+        onTextChange = onAmountChange,
     )
 
     LineTransInfor(
@@ -114,24 +132,57 @@ fun ExpensesScreen(
         modifier = Modifier.fillMaxWidth()
             .padding(create_transaction_padding_horizontal)
     ) {
-        //Create this transaction and back to dashboard screen
+        // Create this transaction and back to the dashboard screen
         Button(
             onClick = {
-                viewModel.insertTransaction(
-                    TransactionLocalModel(
-                        transaction_id = createTransUiState.value.id,
-                        income = 0,
-                        expenses = createTransUiState.value.expenses,
-                        transferBalance = 0,
-                        description = createTransUiState.value.note,
-                        created = createTransUiState.value.date,
-                        category = createTransUiState.value.category,
-                        account = createTransUiState.value.account,
-                        selectIndex = selectIndex.toString(),
-                        accountFrom = "",
-                        accountTo = ""
-                    )
-                )
+                val transaction = when (transactionType) {
+                    TransactionType.Expense -> {
+                        TransactionLocalModel(
+                            transaction_id = createTransUiState.value.id,
+                            income = 0,
+                            expenses = createTransUiState.value.expenses,
+                            transferBalance = 0,
+                            description = createTransUiState.value.note,
+                            created = createTransUiState.value.date,
+                            category = createTransUiState.value.category,
+                            account = createTransUiState.value.account,
+                            selectIndex = selectIndex.value,
+                            accountFrom = "",
+                            accountTo = ""
+                        )
+                    }
+                    TransactionType.Income -> {
+                        TransactionLocalModel(
+                            transaction_id = createTransUiState.value.id,
+                            income = createTransUiState.value.income,
+                            expenses = 0,
+                            transferBalance = 0,
+                            description = createTransUiState.value.note,
+                            created = createTransUiState.value.date,
+                            category = createTransUiState.value.category,
+                            account = createTransUiState.value.account,
+                            selectIndex = selectIndex.value,
+                            accountFrom = "",
+                            accountTo = ""
+                        )
+                    }
+                    TransactionType.Transfer -> {
+                        TransactionLocalModel(
+                            transaction_id = createTransUiState.value.id,
+                            income = 0,
+                            expenses = 0,
+                            transferBalance = createTransUiState.value.transferBalance,
+                            description = createTransUiState.value.note,
+                            created = createTransUiState.value.date,
+                            category = createTransUiState.value.category,
+                            account = createTransUiState.value.account,
+                            selectIndex = selectIndex.value,
+                            accountFrom = createTransUiState.value.accountFrom,
+                            accountTo = createTransUiState.value.accountTo
+                        )
+                    }
+                }
+                viewModel.insertTransaction(transaction)
                 navigator.pop()
             },
             modifier = Modifier.weight(1f)
@@ -139,7 +190,11 @@ fun ExpensesScreen(
                 .height(buttonHeight_transaction_buttonNextAction),
             colors = ButtonDefaults.outlinedButtonColors(
                 backgroundColor = colorResource(
-                    MR.colors.createTrans_tab_expense
+                    when (transactionType) {
+                        TransactionType.Expense -> MR.colors.createTrans_tab_expense
+                        TransactionType.Income -> MR.colors.createTrans_tab_income
+                        TransactionType.Transfer -> MR.colors.createTrans_tab_transfer
+                    }
                 )
             ),
             shape = RoundedCornerShape(20)
@@ -150,7 +205,7 @@ fun ExpensesScreen(
                 color = Color.White
             )
         }
-        //Create this transaction and continue create another transaction
+
         Button(
             onClick = { /* Handle image button click */ },
             modifier = Modifier.height(buttonHeight_transaction_buttonNextAction),
@@ -166,4 +221,11 @@ fun ExpensesScreen(
             )
         }
     }
+}
+
+
+enum class TransactionType {
+    Expense,
+    Income,
+    Transfer
 }
