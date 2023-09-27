@@ -36,6 +36,31 @@ object DateTimeUtil {
 
         }
     }
+    fun formatDateTrans(dateTime: LocalDateTime): String {
+        val month = if (dateTime.month.ordinal < 10) "0${dateTime.month.ordinal}" else dateTime.month.ordinal
+        val year = dateTime.year
+        return buildString {
+            append(month)
+            append(".")
+            append(year)
+        }
+    }
+    fun formatDateTransDays(dateTime: LocalDateTime): String {
+//        val month = dateTime.month.name.lowercase().take(3).replaceFirstChar { it.uppercase() }
+        val day = if (dateTime.dayOfMonth < 10) "0${dateTime.dayOfMonth}" else dateTime.dayOfMonth
+//        val year = dateTime.year
+        return buildString {
+            append(day)
+//            append(".")
+//            append(year)
+        }
+    }
+    fun formatDateTransMonth(dateTime: LocalDateTime): String {
+        val month = dateTime.month.name.lowercase().take(3).replaceFirstChar { it.uppercase() }
+        return buildString {
+            append(month)
+        }
+    }
 
     fun countDownDays(deleteDateTime: LocalDateTime): Int {
         // Get the current time

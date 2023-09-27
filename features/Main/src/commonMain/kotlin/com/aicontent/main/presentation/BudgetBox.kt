@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -19,14 +20,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.graphics.Color
+import com.aicontent.main.presentation.daily.calculateTotalExpenses
+import com.aicontent.main.presentation.daily.calculateTotalIncome
 import com.aicontent.main.theme.font_size_text_item_budge
 import com.aicontent.main.theme.padding_budge_box
 import com.aicontent.main.theme.padding_budge_item
+import com.twoup.personalfinance.domain.model.transaction.TransactionType
 
 @Composable
-fun BudgetBox() {
-    var income by remember { mutableStateOf(0) }
-    var expenses by remember { mutableStateOf(0) }
+fun BudgetBox(viewModel: MainScreenViewModel) {
+    val incomes = viewModel.transaction.value
+    val totalIncome = calculateTotalIncome(incomes)
+    val totalExpenses = calculateTotalExpenses(incomes)
 
     Row(
         modifier = Modifier
@@ -37,18 +42,17 @@ fun BudgetBox() {
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Spacer(modifier = Modifier.padding(padding_budge_item))
-        BudgetItem("Income", income, Color.Blue)
+        BudgetItem("Income", totalIncome, Color.Blue)
         Spacer(modifier = Modifier.padding(padding_budge_item))
-        BudgetItem("Expenses", expenses, Color.Red)
+        BudgetItem("Expenses", totalExpenses, Color.Red)
         Spacer(modifier = Modifier.padding(padding_budge_item))
-        BudgetItem("Total", income - expenses, Color.Black)
+        BudgetItem("Total", totalIncome - totalExpenses, Color.Black)
         Spacer(modifier = Modifier.padding(padding_budge_item))
     }
 }
 
 @Composable
-fun BudgetItem(name: String, amount: Int, textColor: Color) {
-
+fun BudgetItem(name: String, amount: Long, textColor: Color) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
@@ -56,10 +60,7 @@ fun BudgetItem(name: String, amount: Int, textColor: Color) {
         Text(name, fontSize = font_size_text_item_budge)
         Text(
             text = "$amount",
-            color = textColor,
-            fontSize = font_size_text_item_budge,
-            modifier = Modifier.padding(top = padding_budge_item)
+            color = textColor
         )
     }
 }
-

@@ -7,7 +7,9 @@ import com.twoup.personalfinance.domain.model.transaction.createTrans.Transactio
 import com.twoup.personalfinance.domain.model.wallet.getWallet.GetListWalletResponseModel
 import com.twoup.personalfinance.domain.usecase.localTransaction.UseCaseGetAllAccount
 import com.twoup.personalfinance.domain.usecase.localTransaction.UseCaseGetAllCategory
+import com.twoup.personalfinance.domain.usecase.localTransaction.UseCaseGetAllTransaction
 import com.twoup.personalfinance.domain.usecase.localTransaction.UseCaseInsertTransaction
+import com.twoup.personalfinance.domain.usecase.localTransaction.UseCaseUpdateAccountById
 import com.twoup.personalfinance.domain.usecase.transaction.GetListWalletsUseCase
 import com.twoup.personalfinance.utils.data.Resource
 import kotlinx.coroutines.GlobalScope
@@ -26,22 +28,23 @@ class CreateTransViewModel : ScreenModel, KoinComponent {
     private val useCaseGetAllAccount: UseCaseGetAllAccount by inject()
     private val useCaseGetAllCategory: UseCaseGetAllCategory by inject()
     private val useCaseInsertTransaction: UseCaseInsertTransaction by inject()
-    private val useCaseGetAllTransaction: UseCaseGetAllAccount by inject()
+    private val useCaseGetAllTransaction: UseCaseGetAllTransaction by inject()
+    private val useCaseUpdateAccountById: UseCaseUpdateAccountById by inject()
     val accounts: StateFlow<List<AccountLocalModel>> get() = useCaseGetAllAccount.accountState.asStateFlow()
     val categorys: StateFlow<List<CategoryLocalModel>> get() = useCaseGetAllCategory.categoryState.asStateFlow()
 
     init {
-        // TODO: check lại call api với backend, đang bị null
-//        loadTransaction()
-//        useCaseGetAllAccount.getAllAccount()
-//        useCaseGetAllCategory.getAllCategory()
-//        getListWallets()
+        loadTransaction()
+        useCaseGetAllAccount.getAllAccount()
+        useCaseGetAllCategory.getAllCategory()
 
     }
 
     fun loadTransaction() {
-        useCaseGetAllTransaction.getAllAccount()
-
+        useCaseGetAllTransaction.getAllTransaction()
+    }
+    fun loadAccount(){
+        useCaseGetAllAccount.getAllAccount()
     }
 
     private val getListWalletsUseCase: GetListWalletsUseCase by inject()
@@ -54,7 +57,19 @@ class CreateTransViewModel : ScreenModel, KoinComponent {
     val getListWalletState = _getListWalletState.asStateFlow()
 
     fun insertTransaction(transaction: TransactionLocalModel) {
-        useCaseInsertTransaction.insertTransaction(transaction)
+        useCaseInsertTransaction.insertTransaction(transaction, loadTransaction())
+    }
+
+    fun updateAccountFrom(account: AccountLocalModel) {
+        useCaseUpdateAccountById.updateAccount(
+            account, useCaseGetAllAccount.getAllAccount()
+        )
+    }
+
+    fun updateAccountTo(account: AccountLocalModel) {
+        useCaseUpdateAccountById.updateAccount(
+            account, useCaseGetAllAccount.getAllAccount()
+        )
     }
 
     private fun getListWallets() {
@@ -71,9 +86,22 @@ class CreateTransViewModel : ScreenModel, KoinComponent {
         )
     }
 
-    fun onAmountChange(text: String) {
+    fun onIncomeChange(text: String) {
         _createTransUiState.value = createTransUiState.value.copy(
-            amount = text.toDouble()
+//            amount = text.toLong(),
+            income = text.toLong()
+        )
+    }
+    fun onExpensesChange(text: String) {
+        _createTransUiState.value = createTransUiState.value.copy(
+//            amount = text.toLong(),
+            expenses = text.toLong()
+        )
+    }
+    fun onTransferChange(text: String) {
+        _createTransUiState.value = createTransUiState.value.copy(
+//            amount = text.toLong(),
+            transferBalance = text.toLong()
         )
     }
 
@@ -83,15 +111,20 @@ class CreateTransViewModel : ScreenModel, KoinComponent {
         )
     }
 
-//    fun onAccountChange(wallet: Wallet) {
-//        _createTransUiState.value = createTransUiState.value.copy(
-//            account = wallet
-//        )
-//    }
-
     fun onAccountChange(text: String) {
         _createTransUiState.value = createTransUiState.value.copy(
             account = text
+        )
+    }
+
+    fun onAccountFromChange(text: String) {
+        _createTransUiState.value = createTransUiState.value.copy(
+            accountFrom = text
+        )
+    }
+    fun onAccountToChange(text: String) {
+        _createTransUiState.value = createTransUiState.value.copy(
+            accountTo = text
         )
     }
 
@@ -118,12 +151,16 @@ class CreateTransViewModel : ScreenModel, KoinComponent {
         _createTransUiState.value = createTransUiState.value.copy(
             isOpenChooseCategory = isOpen
         )
-
     }
 
-    fun openCloseChooseAmount(isOpen: Boolean) {
+    fun openCloseChooseCategoryAccountTo(isOpen: Boolean) {
         _createTransUiState.value = createTransUiState.value.copy(
-            isOpenChooseAmount = isOpen
+            isOpenChooseAccountTo = isOpen
+        )
+    }
+    fun openCloseChooseCategoryAccountFrom(isOpen: Boolean) {
+        _createTransUiState.value = createTransUiState.value.copy(
+            isOpenChooseAccountFrom = isOpen
         )
     }
 }

@@ -4,6 +4,7 @@ import com.twoup.personalfinance.domain.model.transaction.account.AccountLocalMo
 import com.twoup.personalfinance.domain.model.transaction.category.CategoryLocalModel
 import com.twoup.personalfinance.domain.model.transaction.createTrans.TransactionLocalModel
 import com.twoup.personalfinance.domain.model.transaction.note.NoteTransactionEntity
+import com.twoup.personalfinance.resources.MR
 import comtwouppersonalfinancedatabase.Accounts
 import comtwouppersonalfinancedatabase.Categories
 import comtwouppersonalfinancedatabase.Notes
@@ -17,8 +18,8 @@ fun Accounts.toAccount(): AccountLocalModel{
         account_name = account_name,
         account_type = account_type,
         description = description,
-        income = income,
-        expense = expense
+        asset  = income,
+        liabilities = expense
     )
 }
 
@@ -40,11 +41,16 @@ fun Categories.toCategory(): CategoryLocalModel{
 fun Transactions.toTransaction(): TransactionLocalModel{
     return TransactionLocalModel(
         transaction_id = transaction_id,
-        amount = amount,
+        income = income,
+        expenses = expenses,
+        transferBalance = transferBalance,
         description = description,
         created = Instant.fromEpochMilliseconds(created).toLocalDateTime(kotlinx.datetime.TimeZone.currentSystemDefault()),
         category = category,
-        account = account
+        account = account,
+        selectIndex = selectIndex.toInt(),
+        accountFrom = accountFrom,
+        accountTo = accountTo
     )
 }
 

@@ -8,24 +8,29 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-    class UseCaseUpdateTransactionById(private val dataSource: TransactionLocalDataSource) {
+class UseCaseUpdateTransactionById(private val dataSource: TransactionLocalDataSource) {
 
-        @OptIn(DelicateCoroutinesApi::class)
-        fun updateTransaction(transaction: TransactionLocalModel, loadNote: Unit) {
-            GlobalScope.launch {
-                withContext(Dispatchers.Main) {
-                    dataSource.updateTransaction(
-                        TransactionLocalModel(
-                            transaction_id = transaction.transaction_id,
-                            amount = transaction.amount,
-                            description = transaction.description,
-                            created = transaction.created,
-                            category = transaction.category,
-                            account = transaction.account
-                        )
+    @OptIn(DelicateCoroutinesApi::class)
+    fun updateTransaction(transaction: TransactionLocalModel, loadNote: Unit) {
+        GlobalScope.launch {
+            withContext(Dispatchers.Main) {
+                dataSource.updateTransaction(
+                    TransactionLocalModel(
+                        transaction_id = transaction.transaction_id,
+                        income = transaction.income,
+                        expenses = transaction.expenses,
+                        transferBalance = transaction.transferBalance,
+                        description = transaction.description,
+                        created = transaction.created,
+                        category = transaction.category,
+                        account = transaction.account,
+                        selectIndex = transaction.selectIndex,
+                        accountTo = transaction.accountTo,
+                        accountFrom = transaction.accountFrom
                     )
-                }
-                loadNote
+                )
             }
+            loadNote
         }
     }
+}

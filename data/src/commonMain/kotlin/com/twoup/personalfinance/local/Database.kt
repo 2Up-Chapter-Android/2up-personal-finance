@@ -129,7 +129,8 @@ class Database(databaseWrapper: PersonalFinanceDatabaseWrapper) : IDatabase {
     }
 
     private fun GetAllInfoTransaction.mapToDomain() = Transaction(
-        amount = transaction_amount.toInt(),
+        income = transaction_income.toInt(),
+        expenses = transaction_expenses.toInt(),
         category = Category(
             id = transaction_category,
             name = category_name ?: "",

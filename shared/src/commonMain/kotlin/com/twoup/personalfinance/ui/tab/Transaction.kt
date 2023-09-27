@@ -31,5 +31,6 @@ internal object Transaction : DestinationTab {
     @Composable
     override fun Content() {
         Navigator(MainScreen())
+
     }
 }

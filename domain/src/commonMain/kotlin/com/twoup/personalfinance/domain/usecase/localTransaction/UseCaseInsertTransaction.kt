@@ -11,9 +11,10 @@ import kotlinx.coroutines.withContext
 class UseCaseInsertTransaction(private val dataSource: TransactionLocalDataSource) {
 
     @OptIn(DelicateCoroutinesApi::class)
-    fun insertTransaction(transaction: TransactionLocalModel) {
+    fun insertTransaction(transaction: TransactionLocalModel, LoadTransaction : Unit) {
         GlobalScope.launch {
             dataSource.insertTransaction(transaction)
+            LoadTransaction
         }
     }
 }

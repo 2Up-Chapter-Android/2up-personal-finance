@@ -53,44 +53,10 @@ CREATE TABLE Accounts (
     account_name TEXT NOT NULL,
     account_type TEXT NOT NULL,
     description TEXT NOT NULL,
-    income REAL DEFAULT 0,
-    expense REAL DEFAULT 0
+    income INTEGER DEFAULT 0,
+    expense INTEGER DEFAULT 0
     --     transaction_id INTEGER NOT NULL,
 --     FOREIGN KEY (transaction_id) REFERENCES Transactions(transaction_id)
-);
-
--- Table for storing income categories
-CREATE TABLE Categories (
-    category_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    category_name TEXT NOT NULL
---     transaction_id INTEGER NOT NULL,
---     FOREIGN KEY (transaction_id) REFERENCES Transactions(transaction_id)
-);
-
--- Table for storing income subcategories
--- CREATE TABLE SubCategories (
---     subCategory_id INTEGER PRIMARY KEY AUTOINCREMENT,
---     subCategory_name TEXT NOT NULL,
---     category_id INTEGER NOT NULL,
---     FOREIGN KEY (category_id) REFERENCES Categories(category_id) ON DELETE CASCADE
--- );
--- bỏ
-
--- Table for recording income transactions
-CREATE TABLE Transactions (
-    transaction_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    amount REAL NOT NULL,
-    description TEXT NOT NULL,
-    created INTEGER NOT NULL,
-    category TEXT NOT NULL,
-    account TEXT NOT NULL
-);
-
--- -- Table for additional notes for transactions
-CREATE TABLE notes (
-    note_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    note_text TEXT NOT NULL,
-    created INTEGER NOT NULL
 );
 
 insertAccount:
@@ -106,9 +72,43 @@ VALUES ('Case account','digital money','none',0,0);
 INSERT INTO Accounts (account_name, account_type, description,  income, expense)
 VALUES ('Debt account','Flat money','none',0,0);
 
--- insertSubCategory:
--- INSERT INTO SubCategories(subCategory_name, category_id)
--- VALUES(?,?);
+updateAccountById:
+UPDATE Accounts
+SET account_name = ?, income = ?, expense =?
+WHERE account_id = ?;
+
+CREATE TABLE GroupAccount(
+    group_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    group_name TEXT NOT NULL
+);
+
+INSERT INTO GroupAccount(group_name) VALUES ('Cash');
+
+INSERT INTO GroupAccount(group_name) VALUES ('Bank account');
+
+INSERT INTO GroupAccount(group_name) VALUES ('Credit');
+
+INSERT INTO GroupAccount(group_name) VALUES ('Debit card');
+
+INSERT INTO GroupAccount(group_name) VALUES ('CD');
+
+INSERT INTO GroupAccount(group_name) VALUES ('Invest');
+
+INSERT INTO GroupAccount(group_name) VALUES ('Credit limit');
+
+INSERT INTO GroupAccount(group_name) VALUES ('Loan');
+
+INSERT INTO GroupAccount(group_name) VALUES ('Insurance');
+
+INSERT INTO GroupAccount(group_name) VALUES ('Other');
+
+-- Table for storing income categories
+CREATE TABLE Categories (
+    category_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    category_name TEXT NOT NULL
+--     transaction_id INTEGER NOT NULL,
+--     FOREIGN KEY (transaction_id) REFERENCES Transactions(transaction_id)
+);
 
 insertCategoryItem:
 INSERT INTO Categories(category_name)
@@ -143,34 +143,54 @@ VALUES ('Event');
 
 INSERT INTO Categories(category_name)
 VALUES ('Other');
+
 INSERT INTO Categories(category_name)
 VALUES ('food');
+
+-- Table for recording income transactions
+CREATE TABLE Transactions (
+    transaction_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    income INTEGER NOT NULL,
+    expenses INTEGER NOT NULL,
+    transferBalance INTEGER NOT NULL,
+    description TEXT NOT NULL,
+    created INTEGER NOT NULL,
+    category TEXT NOT NULL,
+    account TEXT NOT NULL,
+    selectIndex INTEGER NOT NULL,
+    accountFrom TEXT NOT NULL,
+    accountTo TEXT NOT NULL
+);
+
 insertTransaction:
-INSERT INTO Transactions(amount, description, created, category, account)
-VALUES (?, ?, ?,?,?);
+INSERT INTO Transactions(income, expenses,transferBalance, description, created, category, account,selectIndex, accountFrom, accountTo)
+VALUES (?, ?,? ,?,?,?,?,?,?,?);
+
+INSERT INTO Transactions(income, expenses,transferBalance, description, created, category, account,selectIndex, accountFrom, accountTo)
+VALUES (50,0, 0,'Grocery shopping', 1634567890, 'Food$Drink', 'Bank account', '2',"","");
+
+INSERT INTO Transactions(income, expenses,transferBalance, description, created, category, account,selectIndex, accountFrom, accountTo)
+VALUES (0,50, 0,'Dinner with friends', 1634567930, 'Food$Drink', 'Bank account','1', "", "");
+
+-- -- Table for additional notes for transactions
+CREATE TABLE notes (
+    note_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    note_text TEXT NOT NULL,
+    created INTEGER NOT NULL
+);
 
 insertNote:
 INSERT INTO notes(note_text, created)
 VALUES (?, ?);
-
-updateAccountById:
-UPDATE Accounts
-SET account_name = ?, income = ?, expense =?
-WHERE account_id = ?;
 
 updagteCategoryById:
 UPDATE Categories
 SET category_name = ?
 WHERE category_id = ?;
 
--- updateSubCategoryById:
--- UPDATE SubCategories
--- SET subCategory_name = ?
--- WHERE subCategory_id = ?;
-
 updateTransactionById:
 UPDATE Transactions
-SET amount = ?, description = ?
+SET income = ?,expenses = ?, description = ?
 WHERE transaction_id = ?;
 
 updateNoteById:
@@ -186,10 +206,6 @@ deleteCategoryById:
 DELETE FROM Categories
 WHERE category_id = ?;
 
--- deleteSubCategoryById:
--- DELETE FROM SubCategories
--- WHERE subCategory_id = ?;
-
 deleteTransactionById:
 DELETE FROM Transactions
 WHERE transaction_id = ?;
@@ -204,9 +220,6 @@ DELETE FROM Accounts;
 deleteAllCategory:
 DELETE FROM Categories;
 
--- deleteAllSubCategory:
--- DELETE FROM SubCategories;
-
 deleteTransaction:
 DELETE FROM Transactions;
 
@@ -219,8 +232,6 @@ SELECT * FROM Accounts;
 getAllCategoryItem:
 SELECT * FROM Categories;
 
--- getAllSubCategory:kjh
-
 getAllTransaction:
 SELECT * FROM Transactions;
 
@@ -230,7 +241,8 @@ SELECT * FROM notes;
 getAllInfoTransaction:
 SELECT
     t.transaction_id,
-    t.amount AS transaction_amount,
+    t.income AS transaction_income,
+    t.expenses AS transaction_expenses,
     t.description AS transaction_description,
     t.created AS transaction_created,
     t.category AS transaction_category,

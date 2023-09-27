@@ -2,6 +2,7 @@ package com.aicontent.main.presentation
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.FabPosition
@@ -47,6 +48,10 @@ class MainScreen() : Screen {
         val listTransactionState = viewModel.getListTransactionState.collectAsState()
         val listTransaction = remember { mutableStateOf(mutableListOf<TransactionEntity>()) }
 
+        LaunchedEffect(navigator) {
+            viewModel.loadNotes()
+        }
+
         LaunchedEffect(listTransactionState.value) {
             listTransactionState.value.fold(
                 onSuccess = {
@@ -77,23 +82,30 @@ class MainScreen() : Screen {
                 )
             },
             content = {
-                Column {
-                    BudgetBox()
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(bottom = 56.dp), // Adjust the bottom padding to match BottomAppBar height
+                    horizontalAlignment = Alignment.CenterHorizontally,
+//                    verticalArrangement = Arrangement.Top
+                )
+                    {
+                        BudgetBox(viewModel = viewModel)
 
-                    Column(
-                        modifier = Modifier.fillMaxSize(),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Top
-                    ) {
-                        when (viewModel.selectedTabIndex.value) {
-                            0 -> DailyScreen(viewModelDailyScreen)
-                            1 -> CalenderScreen()
-                            4 -> MonthlyScreen()
-                            3 -> TotalScreen()
-                            else -> NoteScreen()
+                        Column(
+                            modifier = Modifier.fillMaxSize(),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Top
+                        ) {
+                            when (viewModel.selectedTabIndex.value) {
+                                0 -> DailyScreen(viewModelDailyScreen)
+                                1 -> CalenderScreen()
+                                4 -> MonthlyScreen()
+                                3 -> TotalScreen()
+                                else -> NoteScreen()
+                            }
                         }
                     }
-                }
             },
             floatingActionButton = {
                 FloatingActionButton(
