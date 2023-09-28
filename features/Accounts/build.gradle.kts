@@ -50,6 +50,9 @@ kotlin {
                 implementation(libs.voyager.navigator)
                 //Logging
                 implementation(libs.napier)
+                //Kotlinx Date time
+                implementation(libs.datetime)
+
             }
         }
         val commonTest by getting {

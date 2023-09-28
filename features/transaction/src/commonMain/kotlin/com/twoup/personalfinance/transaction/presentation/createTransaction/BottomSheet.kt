@@ -31,6 +31,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.twoup.personalfinance.domain.model.transaction.account.AccountLocalModel
@@ -46,12 +47,14 @@ import dev.icerock.moko.resources.desc.desc
 
 @Composable
 fun AccountBottomSheet(
-    focusManager: FocusManager,
+//    focusManager: FocusManager,
     accounts: List<AccountLocalModel>,
     viewModel: CreateTransViewModel,
 //    onAccountChange: () -> Unit,
     interactionSource: MutableInteractionSource
 ) {
+    val focusManager = LocalFocusManager.current
+
     Column(
         modifier = Modifier.fillMaxHeight(0.5f).fillMaxWidth()
             .background(color = colorResource(MR.colors.createTrans_chooseWallet_background))
@@ -122,11 +125,13 @@ fun AccountBottomSheet(
 
 @Composable
 fun CategoryBottomSheet(
-    focusManager: FocusManager,
+//    focusManager: FocusManager,
     categorys: List<CategoryLocalModel>,
     viewModel: CreateTransViewModel,
     interactionSource: MutableInteractionSource
 ) {
+    val focusManager = LocalFocusManager.current
+
     Column(
         modifier = Modifier.fillMaxHeight(0.5f).fillMaxWidth()
             .background(color = colorResource(MR.colors.createTrans_chooseWallet_background))

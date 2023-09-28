@@ -34,9 +34,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import com.aicontent.main.presentation.daily.DailyScreenViewModel
 import dev.icerock.moko.resources.compose.localized
 import dev.icerock.moko.resources.desc.desc
+
+//val lightBrown = Color(0xFFD2B48C) // You can adjust the color code as needed
+//val lightBrown = Color(0xFF8B4513) // You can adjust the color code as needed
 
 @Composable
 fun TopAppBar(
@@ -48,7 +50,9 @@ fun TopAppBar(
     var selectedTabIndex by remember { mutableStateOf(0) }
     viewModel.selectedTabIndex.value = selectedTabIndex
 
-    Column {
+    Column(
+//        modifier = Modifier.background(color = lightBrown)
+    ) {
         FirstRow(onBookMark, onSearchClicked, onAnalysis)
         TabRowWithTabs(selectedTabIndex) { newIndex ->
             selectedTabIndex = newIndex
@@ -65,6 +69,7 @@ private fun FirstRow(
     Row(
         modifier = Modifier
             .fillMaxWidth(),
+//            .background(color = lightBrown),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Row(
@@ -75,6 +80,7 @@ private fun FirstRow(
                     color = MaterialTheme.colors.surface,
                     RoundedCornerShape(rounded_corner_shape)
                 ),
+
             verticalAlignment = Alignment.CenterVertically
         ) {
             IconButton(
@@ -113,6 +119,7 @@ private fun FirstRow(
                         rounded_corner_shape
                     )
                 ),
+//                .background(color = lightBrown),
             horizontalArrangement = Arrangement.End,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -156,7 +163,9 @@ private fun TabRowWithTabs(selectedTabIndex: Int, onTabSelected: (Int) -> Unit) 
         modifier = Modifier
             .fillMaxWidth()
             .background(MaterialTheme.colors.surface)
-    ) {
+//            .background(color = lightBrown),
+
+        ) {
         val tabs = listOf(
             TabInfo(MR.strings.daily.desc().localized(), 0),
             TabInfo(MR.strings.calendar.desc().localized(), 1),
@@ -176,8 +185,9 @@ private fun TabRowWithTabs(selectedTabIndex: Int, onTabSelected: (Int) -> Unit) 
                         modifier = Modifier.padding(padding_tab_item),
                         fontSize = font_size_text_tab
                     )
-                }
-            )
+                },
+//                modifier = Modifier.background(color = lightBrown),
+                )
         }
     }
 }

@@ -8,17 +8,16 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class UseCaseUpdateCategoryById(private val dataSource: TransactionLocalDataSource) {
-
+class UseCaseUpdateCategoryIncomeById(private val dataSource: TransactionLocalDataSource) {
     @OptIn(DelicateCoroutinesApi::class)
-    fun updateCategory(category: CategoryLocalModel, loadNote: Unit) {
+    fun updateCategoryIncome(category: CategoryLocalModel, loadNote: Unit) {
         GlobalScope.launch {
             withContext(Dispatchers.Main) {
-                dataSource.updateCategory(
+                dataSource.updateCategoryIncome(
                     CategoryLocalModel(
                         category_id = category.category_id,
                         category_name = category.category_name,
-                        )
+                    )
                 )
             }
             loadNote

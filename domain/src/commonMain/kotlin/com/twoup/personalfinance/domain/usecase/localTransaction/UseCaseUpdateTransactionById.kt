@@ -17,16 +17,17 @@ class UseCaseUpdateTransactionById(private val dataSource: TransactionLocalDataS
                 dataSource.updateTransaction(
                     TransactionLocalModel(
                         transaction_id = transaction.transaction_id,
-                        income = transaction.income,
-                        expenses = transaction.expenses,
-                        transferBalance = transaction.transferBalance,
-                        description = transaction.description,
-                        created = transaction.created,
-                        category = transaction.category,
-                        account = transaction.account,
-                        selectIndex = transaction.selectIndex,
-                        accountTo = transaction.accountTo,
-                        accountFrom = transaction.accountFrom
+                        transaction_income = transaction.transaction_income,
+                        transaction_expenses = transaction.transaction_expenses,
+                        transaction_transfer = transaction.transaction_transfer,
+                        transaction_description = transaction.transaction_description,
+                        transaction_note = transaction.transaction_note,
+                        transaction_created = transaction.transaction_created,
+                        transaction_category = transaction.transaction_category,
+                        transaction_account = transaction.transaction_account,
+                        transaction_selectIndex = transaction.transaction_selectIndex,
+                        transaction_accountTo = transaction.transaction_accountTo,
+                        transaction_accountFrom = transaction.transaction_accountFrom
                     )
                 )
             }

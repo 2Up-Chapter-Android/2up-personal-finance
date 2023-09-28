@@ -6,7 +6,8 @@ import com.twoup.personalfinance.domain.model.transaction.createTrans.Transactio
 import com.twoup.personalfinance.domain.model.transaction.note.NoteTransactionEntity
 import com.twoup.personalfinance.resources.MR
 import comtwouppersonalfinancedatabase.Accounts
-import comtwouppersonalfinancedatabase.Categories
+import comtwouppersonalfinancedatabase.CategorieExpense
+import comtwouppersonalfinancedatabase.CategorieIncome
 import comtwouppersonalfinancedatabase.Notes
 import comtwouppersonalfinancedatabase.Transactions
 import kotlinx.datetime.Instant
@@ -17,47 +18,45 @@ fun Accounts.toAccount(): AccountLocalModel{
         account_id = account_id,
         account_name = account_name,
         account_type = account_type,
-        description = description,
-        asset  = income,
-        liabilities = expense
+        account_description = account_description,
+        account_asset  = account_asset,
+        account_liabilities = account_liabilities
     )
 }
-
-//fun SubCategories.toSubCategories(): SubCategoriesLocalModel{
-//    return SubCategoriesLocalModel(
-//        subCategories_id  = subCategory_id,
-//        subCategories_name = subCategory_name,
-//        category_id = category_id
-//    )
-//}
-
-fun Categories.toCategory(): CategoryLocalModel{
+fun CategorieExpense.toCategoryExpenses(): CategoryLocalModel{
     return CategoryLocalModel(
         category_id = category_id,
         category_name = category_name,
     )
 }
-
+fun CategorieIncome.toCategoryIncome(): CategoryLocalModel{
+    return CategoryLocalModel(
+        category_id = category_id,
+        category_name = category_name,
+    )
+}
 fun Transactions.toTransaction(): TransactionLocalModel{
     return TransactionLocalModel(
         transaction_id = transaction_id,
-        income = income,
-        expenses = expenses,
-        transferBalance = transferBalance,
-        description = description,
-        created = Instant.fromEpochMilliseconds(created).toLocalDateTime(kotlinx.datetime.TimeZone.currentSystemDefault()),
-        category = category,
-        account = account,
-        selectIndex = selectIndex.toInt(),
-        accountFrom = accountFrom,
-        accountTo = accountTo
+        transaction_income = transaction_income,
+        transaction_expenses = transaction_expenses,
+        transaction_transfer = transaction_transfer,
+        transaction_description = transaction_description,
+        transaction_note = transaction_note,
+        transaction_created = Instant.fromEpochMilliseconds(transaction_created).toLocalDateTime(kotlinx.datetime.TimeZone.currentSystemDefault()),
+        transaction_category = transaction_category,
+        transaction_account = transaction_account,
+        transaction_selectIndex = transaction_selectIndex.toInt(),
+        transaction_accountFrom = transaction_accountFrom,
+        transaction_accountTo = transaction_accountTo
     )
 }
 
 fun Notes.toNote(): NoteTransactionEntity{
     return NoteTransactionEntity(
         note_id = note_id,
+        note_title = note_title,
         note_text = note_text,
-        created = Instant.fromEpochMilliseconds(created).toLocalDateTime(kotlinx.datetime.TimeZone.currentSystemDefault()),
+        created = Instant.fromEpochMilliseconds(note_created).toLocalDateTime(kotlinx.datetime.TimeZone.currentSystemDefault()),
     )
 }

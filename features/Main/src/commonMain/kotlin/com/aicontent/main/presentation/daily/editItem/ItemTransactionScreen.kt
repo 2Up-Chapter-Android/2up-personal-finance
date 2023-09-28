@@ -83,7 +83,7 @@ class ItemTransactionScreen(private val transaction: TransactionLocalModel) : Sc
         val focusManager = LocalFocusManager.current
         val categorys = viewModel.categorys.value
         val accounts = viewModel.accounts.value
-        val selectedTabIndex = remember { mutableStateOf(transaction.selectIndex) }
+        val selectedTabIndex = remember { mutableStateOf(transaction.transaction_selectIndex) }
         val interactionSource = remember { MutableInteractionSource() }
         val time = remember { mutableStateOf(DateTimeUtil.toEpochMillis(DateTimeUtil.now())) }
         val state = rememberDatePickerState(
@@ -134,7 +134,6 @@ class ItemTransactionScreen(private val transaction: TransactionLocalModel) : Sc
             when (selectedTabIndex.value) {
                 0 -> TransactionScreen(
                     viewModel = viewModel,
-                    navigator = navigator,
                     openDialog = openDialog,
                     selectIndex = selectedTabIndex,
                     transaction = transaction,
@@ -143,25 +142,19 @@ class ItemTransactionScreen(private val transaction: TransactionLocalModel) : Sc
 
                 1 -> TransactionScreen(
                     viewModel = viewModel,
-                    navigator = navigator,
                     openDialog = openDialog,
                     selectIndex = selectedTabIndex,
                     transaction = transaction,
                     transactionType = TransactionType.EXPENSES
                 )
 
-                else -> TransactionScreen(
+                2 -> TransactionScreen(
                     viewModel = viewModel,
-                    navigator = navigator,
                     openDialog = openDialog,
                     selectIndex = selectedTabIndex,
                     transaction = transaction,
                     transactionType = TransactionType.TRANSFER                )
             }
-
-//            Button(onClick = { navigator.pop() }) {
-//                Text(text = "Go Back")
-//            }
 
             AnimatedVisibility(visible = transactionUiState.isOpenChooseWallet) {
                 AccountBottomSheet(

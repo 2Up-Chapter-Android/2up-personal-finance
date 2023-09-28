@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="createTrans_tab_income">#0000FF</color> <!-- Blue color for createTrans_tab_income -->
+    <color name="createTrans_tab_transfer">#808080</color> <!-- White gray color for createTrans_tab_transfer -->
+    <color name="createTrans_tab_expense">#ff603b</color>
+    <color name="createTrans_tab_unselected">#f3f6f4</color>
+    <color name="createTrans_border_line_break">#c6c6c8</color>
+    <color name="createTrans_line_break">#dedee1</color>
+    <color name="createTrans_chooseWallet_background">#f4f4f4</color>
+    <color name="createTrans_chooseWallet_walletItem_border">#CCCCCC</color>
+</resources>

@@ -6,7 +6,7 @@ import com.twoup.personalfinance.domain.model.transaction.category.CategoryLocal
 import com.twoup.personalfinance.domain.model.transaction.createTrans.TransactionLocalModel
 import com.twoup.personalfinance.domain.model.wallet.getWallet.GetListWalletResponseModel
 import com.twoup.personalfinance.domain.usecase.localTransaction.UseCaseGetAllAccount
-import com.twoup.personalfinance.domain.usecase.localTransaction.UseCaseGetAllCategory
+import com.twoup.personalfinance.domain.usecase.localTransaction.UseCaseGetAllCategoryExpenses
 import com.twoup.personalfinance.domain.usecase.localTransaction.UseCaseGetAllTransaction
 import com.twoup.personalfinance.domain.usecase.localTransaction.UseCaseInsertTransaction
 import com.twoup.personalfinance.domain.usecase.localTransaction.UseCaseUpdateAccountById
@@ -26,17 +26,18 @@ import org.koin.core.component.inject
 class CreateTransViewModel : ScreenModel, KoinComponent {
 
     private val useCaseGetAllAccount: UseCaseGetAllAccount by inject()
-    private val useCaseGetAllCategory: UseCaseGetAllCategory by inject()
+    private val useCaseGetAllCategoryExpenses: UseCaseGetAllCategoryExpenses by inject()
+    private val useCaseGetAllCategoryIncome: UseCaseGetAllCategoryExpenses by inject()
     private val useCaseInsertTransaction: UseCaseInsertTransaction by inject()
     private val useCaseGetAllTransaction: UseCaseGetAllTransaction by inject()
     private val useCaseUpdateAccountById: UseCaseUpdateAccountById by inject()
     val accounts: StateFlow<List<AccountLocalModel>> get() = useCaseGetAllAccount.accountState.asStateFlow()
-    val categorys: StateFlow<List<CategoryLocalModel>> get() = useCaseGetAllCategory.categoryState.asStateFlow()
+    val categorys: StateFlow<List<CategoryLocalModel>> get() = useCaseGetAllCategoryExpenses.categoryExpenseState.asStateFlow()
 
     init {
         loadTransaction()
         useCaseGetAllAccount.getAllAccount()
-        useCaseGetAllCategory.getAllCategory()
+        useCaseGetAllCategoryExpenses.getAllCategoryExpenses()
 
     }
 

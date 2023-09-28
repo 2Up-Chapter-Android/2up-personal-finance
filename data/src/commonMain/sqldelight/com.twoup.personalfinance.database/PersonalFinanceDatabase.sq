@@ -46,36 +46,44 @@ deletCategoryById:
 DELETE FROM PersonalFinanceDatabaseCategory
 WHERE id =?;
 
-
 -- Table for storing accounts
 CREATE TABLE Accounts (
     account_id INTEGER PRIMARY KEY AUTOINCREMENT,
     account_name TEXT NOT NULL,
     account_type TEXT NOT NULL,
-    description TEXT NOT NULL,
-    income INTEGER DEFAULT 0,
-    expense INTEGER DEFAULT 0
-    --     transaction_id INTEGER NOT NULL,
---     FOREIGN KEY (transaction_id) REFERENCES Transactions(transaction_id)
+    account_description TEXT NOT NULL,
+    account_asset INTEGER DEFAULT 0,
+    account_liabilities INTEGER DEFAULT 0
 );
 
 insertAccount:
-INSERT INTO Accounts(account_name, account_type, description, income, expense)
-VALUES (?, ?, ?, ?,?);
+INSERT INTO Accounts(account_name, account_type, account_description, account_asset, account_liabilities)
+VALUES (?, ?, ?, ?, ?);
 
-INSERT INTO Accounts (account_name, account_type, description, income, expense)
-VALUES ('Bank account','Flat money','none',0,0);
+-- Sample inserts:
+INSERT INTO Accounts(account_name, account_type, account_description, account_asset, account_liabilities)
+VALUES ('Bank account', 'Flat money', 'none', 0, 0);
 
-INSERT INTO Accounts (account_name, account_type, description,  income, expense)
-VALUES ('Case account','digital money','none',0,0);
+INSERT INTO Accounts(account_name, account_type, account_description, account_asset, account_liabilities)
+VALUES ('Cash account', 'digital money', 'none', 0, 0);
 
-INSERT INTO Accounts (account_name, account_type, description,  income, expense)
-VALUES ('Debt account','Flat money','none',0,0);
+INSERT INTO Accounts(account_name, account_type, account_description, account_asset, account_liabilities)
+VALUES ('Debt account', 'Flat money', 'none', 0, 0);
 
 updateAccountById:
 UPDATE Accounts
-SET account_name = ?, income = ?, expense =?
+SET account_name = ?, account_asset = ?, account_liabilities = ?
 WHERE account_id = ?;
+
+deleteAccountById:
+DELETE FROM Accounts
+WHERE account_id = ?;
+
+getAllAccount:
+SELECT * FROM Accounts;
+
+deleteAllAccount:
+DELETE FROM Accounts;
 
 CREATE TABLE GroupAccount(
     group_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -103,137 +111,152 @@ INSERT INTO GroupAccount(group_name) VALUES ('Insurance');
 INSERT INTO GroupAccount(group_name) VALUES ('Other');
 
 -- Table for storing income categories
-CREATE TABLE Categories (
+CREATE TABLE CategorieIncome (
     category_id INTEGER PRIMARY KEY AUTOINCREMENT,
     category_name TEXT NOT NULL
---     transaction_id INTEGER NOT NULL,
---     FOREIGN KEY (transaction_id) REFERENCES Transactions(transaction_id)
 );
 
-insertCategoryItem:
-INSERT INTO Categories(category_name)
-VALUES (?);
+CREATE TABLE CategorieExpense (
+    category_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    category_name TEXT NOT NULL
+);
 
-INSERT INTO Categories(category_name)
-VALUES ('Food$Drink');
+insertCategoryExpenses:
+INSERT INTO CategorieExpense(category_name) VALUES (?);
 
-INSERT INTO Categories(category_name)
-VALUES ('Entertainment');
+INSERT INTO CategorieExpense(category_name) VALUES ('Food$Drink');
 
-INSERT INTO Categories(category_name)
-VALUES ('Self growth');
+INSERT INTO CategorieExpense(category_name) VALUES ('Entertainment');
 
-INSERT INTO Categories(category_name)
-VALUES ('Transportation');
+INSERT INTO CategorieExpense(category_name) VALUES ('Self growth');
 
-INSERT INTO Categories(category_name)
-VALUES ('Living');
+INSERT INTO CategorieExpense(category_name) VALUES ('Transportation');
 
-INSERT INTO Categories(category_name)
-VALUES ('Beautify');
+INSERT INTO CategorieExpense(category_name) VALUES ('Living');
 
-INSERT INTO Categories(category_name)
-VALUES ('Health');
+INSERT INTO CategorieExpense(category_name) VALUES ('Beautify');
 
-INSERT INTO Categories(category_name)
-VALUES ('Education');
+INSERT INTO CategorieExpense(category_name) VALUES ('Health');
 
-INSERT INTO Categories(category_name)
-VALUES ('Event');
+INSERT INTO CategorieExpense(category_name) VALUES ('Education');
 
-INSERT INTO Categories(category_name)
-VALUES ('Other');
+INSERT INTO CategorieExpense(category_name) VALUES ('Event');
 
-INSERT INTO Categories(category_name)
-VALUES ('food');
+INSERT INTO CategorieExpense(category_name) VALUES ('Other');
+
+INSERT INTO CategorieExpense(category_name) VALUES ('food');
+
+insertCategoryIncome:
+INSERT INTO CategorieIncome(category_name) VALUES (?);
+
+INSERT INTO CategorieIncome(category_name) VALUES ('salary');
+
+INSERT INTO CategorieIncome(category_name) VALUES ('subsidy');
+
+INSERT INTO CategorieIncome(category_name) VALUES ('pay overtime');
+
+INSERT INTO CategorieIncome(category_name) VALUES ('bonus');
+
+INSERT INTO CategorieIncome(category_name) VALUES ('other');
+
+updagteCategoryExpensesById:
+UPDATE CategorieExpense
+SET category_name = ?
+WHERE category_id = ?;
+
+updagteCategoryIncomeById:
+UPDATE CategorieIncome
+SET category_name = ?
+WHERE category_id = ?;
+
+deleteCategoryIncomeById:
+DELETE FROM CategorieIncome
+WHERE category_id = ?;
+
+deleteCategoryExpensesById:
+DELETE FROM CategorieExpense
+WHERE category_id = ?;
+
+deleteAllCategoryIncome:
+DELETE FROM CategorieIncome;
+
+deleteAllCategoryExpenses:
+DELETE FROM CategorieExpense;
+
+getAllCategoryIncome:
+SELECT * FROM CategorieIncome;
+
+getAllCategoryExpenses:
+SELECT * FROM CategorieExpense;
 
 -- Table for recording income transactions
 CREATE TABLE Transactions (
     transaction_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    income INTEGER NOT NULL,
-    expenses INTEGER NOT NULL,
-    transferBalance INTEGER NOT NULL,
-    description TEXT NOT NULL,
-    created INTEGER NOT NULL,
-    category TEXT NOT NULL,
-    account TEXT NOT NULL,
-    selectIndex INTEGER NOT NULL,
-    accountFrom TEXT NOT NULL,
-    accountTo TEXT NOT NULL
+    transaction_income INTEGER NOT NULL,
+    transaction_expenses INTEGER NOT NULL,
+    transaction_transfer INTEGER NOT NULL,
+    transaction_description TEXT NOT NULL,
+    transaction_note TEXT NOT NULL,
+    transaction_created INTEGER NOT NULL,
+    transaction_category TEXT NOT NULL,
+    transaction_account TEXT NOT NULL,
+    transaction_selectIndex INTEGER NOT NULL,
+    transaction_accountFrom TEXT NOT NULL,
+    transaction_accountTo TEXT NOT NULL
 );
 
 insertTransaction:
-INSERT INTO Transactions(income, expenses,transferBalance, description, created, category, account,selectIndex, accountFrom, accountTo)
-VALUES (?, ?,? ,?,?,?,?,?,?,?);
+INSERT INTO Transactions(transaction_income, transaction_expenses, transaction_transfer, transaction_description, transaction_note, transaction_created, transaction_category, transaction_account, transaction_selectIndex, transaction_accountFrom, transaction_accountTo)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
 
-INSERT INTO Transactions(income, expenses,transferBalance, description, created, category, account,selectIndex, accountFrom, accountTo)
-VALUES (50,0, 0,'Grocery shopping', 1634567890, 'Food$Drink', 'Bank account', '2',"","");
+-- Sample inserts:
+INSERT INTO Transactions(transaction_income, transaction_expenses, transaction_transfer, transaction_description, transaction_note, transaction_created, transaction_category, transaction_account, transaction_selectIndex, transaction_accountFrom, transaction_accountTo)
+VALUES (50000, 0, 0, 'Grocery shopping', 'hmmm', 1634567890, 'salary', 'Bank account', 0, '', '');
 
-INSERT INTO Transactions(income, expenses,transferBalance, description, created, category, account,selectIndex, accountFrom, accountTo)
-VALUES (0,50, 0,'Dinner with friends', 1634567930, 'Food$Drink', 'Bank account','1', "", "");
+INSERT INTO Transactions(transaction_income, transaction_expenses, transaction_transfer, transaction_description, transaction_note, transaction_created, transaction_category, transaction_account, transaction_selectIndex, transaction_accountFrom, transaction_accountTo)
+VALUES (0, 50000, 0, 'Dinner with friends', 'why i do that', 1734567930, 'Food$Drink', 'Bank account', 1, '', '');
+
+INSERT INTO Transactions(transaction_income, transaction_expenses, transaction_transfer, transaction_description, transaction_note, transaction_created, transaction_category, transaction_account, transaction_selectIndex, transaction_accountFrom, transaction_accountTo)
+VALUES (0, 0, 50000, 'transfer to another bank', 'i think i work', 1834567930, '', 'Bank account', 2, 'Bank account', 'Cash account');
+
+updateTransactionById:
+UPDATE Transactions
+SET transaction_income = ?, transaction_expenses = ?, transaction_description = ?
+WHERE transaction_id = ?;
+
+deleteTransactionById:
+DELETE FROM Transactions
+WHERE transaction_id = ?;
+
+deleteAllTransaction:
+DELETE FROM Transactions;
+
+getAllTransaction:
+SELECT * FROM Transactions;
 
 -- -- Table for additional notes for transactions
 CREATE TABLE notes (
     note_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    note_title TEXT NOT NULL,
     note_text TEXT NOT NULL,
-    created INTEGER NOT NULL
+    note_created INTEGER NOT NULL
 );
 
 insertNote:
-INSERT INTO notes(note_text, created)
-VALUES (?, ?);
-
-updagteCategoryById:
-UPDATE Categories
-SET category_name = ?
-WHERE category_id = ?;
-
-updateTransactionById:
-UPDATE Transactions
-SET income = ?,expenses = ?, description = ?
-WHERE transaction_id = ?;
+INSERT INTO notes(note_title, note_text, note_created)
+VALUES (?, ?,?);
 
 updateNoteById:
 UPDATE notes
 SET note_text = ?
 WHERE note_id = ?;
 
-deleteAccountById:
-DELETE FROM Accounts
-WHERE account_id = ?;
-
-deleteCategoryById:
-DELETE FROM Categories
-WHERE category_id = ?;
-
-deleteTransactionById:
-DELETE FROM Transactions
-WHERE transaction_id = ?;
-
 deleteNoteById:
 DELETE FROM notes
 WHERE note_id = ?;
 
-deleteAllAccount:
-DELETE FROM Accounts;
-
-deleteAllCategory:
-DELETE FROM Categories;
-
-deleteTransaction:
-DELETE FROM Transactions;
-
 deleteAllNote:
 DELETE FROM notes;
-
-getAllAccount:
-SELECT * FROM Accounts;
-
-getAllCategoryItem:
-SELECT * FROM Categories;
-
-getAllTransaction:
-SELECT * FROM Transactions;
 
 getAllNote:
 SELECT * FROM notes;
@@ -241,13 +264,13 @@ SELECT * FROM notes;
 getAllInfoTransaction:
 SELECT
     t.transaction_id,
-    t.income AS transaction_income,
-    t.expenses AS transaction_expenses,
-    t.description AS transaction_description,
-    t.created AS transaction_created,
-    t.category AS transaction_category,
+    t.transaction_income AS transaction_income,
+    t.transaction_expenses AS transaction_expenses,
+    t.transaction_description AS transaction_description,
+    t.transaction_created AS transaction_created,
+    t.transaction_category AS transaction_category,
     c.category_name AS category_name,
-    t.account AS transaction_account,
+    t.transaction_account AS transaction_account,
     a.account_name AS account_name,
     w.id AS wallet_id,
     w.amount AS wallet_amount,
@@ -255,6 +278,6 @@ SELECT
     w.name AS wallet_name,
     w.walletGroup AS wallet_group
 FROM Transactions t
-LEFT JOIN Categories c ON t.category = c.category_id
-LEFT JOIN Accounts a ON t.account = a.account_id
-LEFT JOIN Wallet w ON t.account = w.id;
+LEFT JOIN CategorieExpense c ON t.transaction_category = c.category_id
+LEFT JOIN Accounts a ON t.transaction_account = a.account_id
+LEFT JOIN Wallet w ON t.transaction_account = w.id;

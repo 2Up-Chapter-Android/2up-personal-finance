@@ -152,7 +152,6 @@ class CreateTransactionScreen : Screen {
                     when (selectedTabIndex.value) {
                         0 -> TransactionScreen(
                             viewModel = viewModel,
-                            navigator = navigator,
                             openDialog = openDialog,
                             selectIndex = selectedTabIndex,
                             transactionType = TransactionType.Income
@@ -160,7 +159,6 @@ class CreateTransactionScreen : Screen {
 
                         1 -> TransactionScreen(
                             viewModel = viewModel,
-                            navigator = navigator,
                             openDialog = openDialog,
                             selectIndex = selectedTabIndex,
                             transactionType = TransactionType.Expense
@@ -168,7 +166,6 @@ class CreateTransactionScreen : Screen {
 
                         else -> TransferScreen(
                             viewModel = viewModel,
-                            navigator = navigator,
                             openDialog = openDialog,
                             selectIndex = selectedTabIndex
                         )
@@ -177,7 +174,7 @@ class CreateTransactionScreen : Screen {
 
                 AnimatedVisibility(visible = createTransUiState.value.isOpenChooseWallet || createTransUiState.value.isOpenChooseAccountTo || createTransUiState.value.isOpenChooseAccountFrom) {
                     AccountBottomSheet(
-                        focusManager = focusManager,
+//                        focusManager = { Local },
                         accounts = accounts,
                         viewModel = viewModel,
                         interactionSource = interactionSource
@@ -186,7 +183,7 @@ class CreateTransactionScreen : Screen {
 
                 AnimatedVisibility(visible = createTransUiState.value.isOpenChooseCategory) {
                     CategoryBottomSheet(
-                        focusManager = focusManager,
+//                        focusManager = focusManager,
                         categorys = categorys,
                         viewModel = viewModel,
                         interactionSource = interactionSource
@@ -294,8 +291,6 @@ fun tabLayoutTrans(index: Int, value: String, selectedTabIndex: MutableState<Int
         }
     }
 }
-
-
 @Composable
 fun LineTransInfor(
     textLabel: String,
@@ -306,9 +301,10 @@ fun LineTransInfor(
     textFieldModifier: Modifier = Modifier,
 ) {
     Row(
-        verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(
-            create_transaction_padding_row
-        )
+        verticalAlignment = Alignment.CenterVertically,
+//        modifier = Modifier.padding(
+//            create_transaction_padding_row
+//        )
     ) {
         Text(
             text = textLabel,
