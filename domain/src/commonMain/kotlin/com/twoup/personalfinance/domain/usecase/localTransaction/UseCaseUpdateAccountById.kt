@@ -19,9 +19,9 @@ class UseCaseUpdateAccountById(private val dataSource: TransactionLocalDataSourc
                         account_id = account.account_id,
                         account_name = account.account_name,
                         account_type = account.account_type,
-                        description = account.description,
-                        asset  = account.asset,
-                        liabilities = account.liabilities
+                        account_description = account.account_description,
+                        account_asset  = account.account_asset,
+                        account_liabilities = account.account_liabilities
                     )
                 )
             }

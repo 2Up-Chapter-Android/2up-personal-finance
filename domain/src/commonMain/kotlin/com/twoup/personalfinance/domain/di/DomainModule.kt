@@ -7,16 +7,19 @@ import com.twoup.personalfinance.domain.usecase.authentication.SendOtpUseCase
 import com.twoup.personalfinance.domain.usecase.category.CategoryUseCase
 import com.twoup.personalfinance.domain.usecase.transaction.GetListTransactionUseCase
 import com.twoup.personalfinance.domain.usecase.localTransaction.UseCaseDeleteAccountById
-import com.twoup.personalfinance.domain.usecase.localTransaction.UseCaseDeleteCategoryById
+import com.twoup.personalfinance.domain.usecase.localTransaction.UseCaseDeleteCategoryExpenseById
+import com.twoup.personalfinance.domain.usecase.localTransaction.UseCaseDeleteCategoryIncomeById
 import com.twoup.personalfinance.domain.usecase.localTransaction.UseCaseDeleteTransactionById
 import com.twoup.personalfinance.domain.usecase.localTransaction.UseCaseGetAllAccount
-import com.twoup.personalfinance.domain.usecase.localTransaction.UseCaseGetAllCategory
+import com.twoup.personalfinance.domain.usecase.localTransaction.UseCaseGetAllCategoryExpenses
+import com.twoup.personalfinance.domain.usecase.localTransaction.UseCaseGetAllCategoryIncome
 import com.twoup.personalfinance.domain.usecase.localTransaction.UseCaseGetAllTransaction
 import com.twoup.personalfinance.domain.usecase.localTransaction.UseCaseInsertAccount
-import com.twoup.personalfinance.domain.usecase.localTransaction.UseCaseInsertCategory
+import com.twoup.personalfinance.domain.usecase.localTransaction.UseCaseInsertCategoryIncome
 import com.twoup.personalfinance.domain.usecase.localTransaction.UseCaseInsertTransaction
 import com.twoup.personalfinance.domain.usecase.localTransaction.UseCaseUpdateAccountById
-import com.twoup.personalfinance.domain.usecase.localTransaction.UseCaseUpdateCategoryById
+import com.twoup.personalfinance.domain.usecase.localTransaction.UseCaseUpdateCategoryExpensesById
+import com.twoup.personalfinance.domain.usecase.localTransaction.UseCaseUpdateCategoryIncomeById
 import com.twoup.personalfinance.domain.usecase.localTransaction.UseCaseUpdateTransactionById
 import com.twoup.personalfinance.domain.usecase.transaction.GetListWalletsUseCase
 import org.koin.dsl.module
@@ -48,22 +51,20 @@ private fun categoryDomainModule() = module {
 }
 
 private fun localTransactionDomainModule() = module {
-//    single<TransactionLocalDataSource> { TransactionLocalDataSourceImpl(get()) }
-
     single { UseCaseDeleteAccountById(get()) }
-    single { UseCaseDeleteCategoryById(get()) }
-//    single { UseCaseDeleteSubCategoriesById(get()) }
+    single { UseCaseDeleteCategoryExpenseById(get()) }
     single { UseCaseDeleteTransactionById(get()) }
+    single { UseCaseDeleteCategoryIncomeById (get()) }
     single { UseCaseGetAllTransaction(get()) }
     single { UseCaseGetAllAccount(get()) }
-    single { UseCaseGetAllCategory(get()) }
-//    single { UseCaseGetAllSubCategories(get()) }
+    single { UseCaseGetAllCategoryExpenses(get()) }
+    single { UseCaseGetAllCategoryIncome(get()) }
     single { UseCaseInsertAccount(get()) }
-    single { UseCaseInsertCategory(get()) }
-//    single { UseCaseInsertSubCategories(get()) }
     single { UseCaseInsertTransaction(get()) }
+    single { UseCaseInsertCategoryIncome(get()) }
+    single { UseCaseGetAllCategoryExpenses(get()) }
     single { UseCaseUpdateAccountById(get()) }
-    single { UseCaseUpdateCategoryById(get()) }
-//    single { UseCaseUpdateSubCategoriesById(get()) }
     single { UseCaseUpdateTransactionById(get()) }
+    single { UseCaseUpdateCategoryIncomeById(get()) }
+    single { UseCaseUpdateCategoryExpensesById(get()) }
 }

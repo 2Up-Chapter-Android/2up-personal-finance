@@ -37,9 +37,17 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.model.rememberScreenModel
+import cafe.adriel.voyager.core.registry.rememberScreen
 import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.currentOrThrow
 import com.twoup.personalfinance.domain.model.transaction.account.AccountLocalModel
 import com.twoup.personalfinance.domain.model.transaction.createTrans.TransactionLocalModel
+import com.twoup.personalfinance.navigation.AccountSharedScreen
+import com.twoup.personalfinance.navigation.MainScreenSharedScreen
+import io.github.aakira.napier.Napier
+
+val VeryLightGray = Color(0xFFF5F5F5) // You can adjust the color code as needed
 
 class AccountListScreen() : Screen {
 
@@ -58,7 +66,7 @@ fun AccountListScreen(accounts: List<AccountLocalModel>, viewModel: AccountListV
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = "My Accounts") },
+                title = { Text(text = "Accounts", fontSize = 16.sp) },
                 actions = {
                     Row {
                         IconButton(onClick = { /* Handle first icon click */ }) {
@@ -76,13 +84,16 @@ fun AccountListScreen(accounts: List<AccountLocalModel>, viewModel: AccountListV
         }
     )
 }
+
 @Composable
 fun AccountList(accounts: List<AccountLocalModel>, viewModel: AccountListViewModel) {
     val transactions = viewModel.transactions.value
-    val totalAsset = transactions.filter { it.income > 0 }.sumOf { it.income }
-    val totalLiabilities = transactions.filter { it.expenses > 0 }.sumOf { it.expenses }
+    val totalAsset =
+        transactions.filter { it.transaction_income > 0 }.sumOf { it.transaction_income }
+    val totalLiabilities =
+        transactions.filter { it.transaction_expenses > 0 }.sumOf { it.transaction_expenses }
     val totalBalance = totalAsset - totalLiabilities
-
+    val navigator = LocalNavigator.currentOrThrow
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -95,16 +106,37 @@ fun AccountList(accounts: List<AccountLocalModel>, viewModel: AccountListViewMod
             color = Color.LightGray
         )
 
+        fun getSelectedTransactions(account: AccountLocalModel): List<TransactionLocalModel> {
+            return transactions.filter { transaction -> transaction.transaction_account == account.account_name }
+        }
+
+        fun getAccountTransactions(account: AccountLocalModel): List<TransactionLocalModel> {
+            return transactions.filter {
+                it.transaction_account == account.account_name
+                        || it.transaction_accountFrom == account.account_name
+                        || it.transaction_accountTo == account.account_name
+            }
+        }
+
+// In your LazyColumn
         LazyColumn(
             modifier = Modifier.fillMaxSize()
         ) {
             items(accounts) { account ->
-                val selectedTransactions =
-                    transactions.filter { transaction -> transaction.account == account.account_name }
-                val balance = calculateBalance(selectedTransactions, transactions, account)
-                AccountItem(account, balance, {})
+                val selectedTransactions = getSelectedTransactions(account)
+                val balance =
+                    calculateBalance(selectedTransactions, transactions, account, accounts)
+                val listTransactionForAccount = rememberScreen(
+                    AccountSharedScreen.ListTransactionForAccountScreen(
+                        getAccountTransactions(account), account
+                    )
+                )
+                AccountItem(account, balance) {
+                    navigator.push(listTransactionForAccount)
+                }
             }
         }
+
     }
 }
 
@@ -148,14 +180,40 @@ fun TotalColumn(title: String, value: Long, color: Color) {
 }
 
 @Composable
-fun calculateBalance(selectedTransactions: List<TransactionLocalModel>, allTransactions: List<TransactionLocalModel>, account : AccountLocalModel): Long {
-    val totalIncome = selectedTransactions.sumOf { transaction -> transaction.income }
-    val totalExpense = selectedTransactions.sumOf { transaction -> transaction.expenses }
-    val totalTransferFrom = allTransactions.filter { it.accountFrom == account.account_name }.sumOf { transaction -> transaction.transferBalance }
-    val totalTransferTo = allTransactions.filter { it.accountTo == account.account_name  }.sumOf { transaction -> transaction.transferBalance }
+fun calculateBalance(
+    selectedTransactions: List<TransactionLocalModel>,
+    allTransactions: List<TransactionLocalModel>,
+    account: AccountLocalModel,
+    allAccounts: List<AccountLocalModel>
+): Long {
+    // Calculate the total income, expenses, transfers from, and transfers to in a single pass
+    var totalIncome = 0L
+    var totalExpense = 0L
+    var totalTransferFrom = 0L
+    var totalTransferTo = 0L
+
+    for (transaction in selectedTransactions) {
+        totalIncome += transaction.transaction_income
+        totalExpense += transaction.transaction_expenses
+    }
+    for (transaction in allTransactions.filter { it.transaction_transfer > 0 }) {
+        if (transaction.transaction_accountFrom == account.account_name) {
+            totalTransferFrom += transaction.transaction_transfer
+        }
+
+        if (transaction.transaction_accountTo == account.account_name) {
+            totalTransferTo += transaction.transaction_transfer
+        }
+        Napier.d("transaction = $transaction", tag = "total")
+        Napier.d("account = $account", tag = "total")
+
+    }
+    Napier.d("totalTransferFrom = $totalTransferFrom", tag = "total")
+    Napier.d("totalTransferTo = $totalTransferTo", tag = "total")
 
     return totalIncome - totalExpense - totalTransferFrom + totalTransferTo
 }
+
 
 @Composable
 fun AccountItem(account: AccountLocalModel, balance: Long, onItemClick: () -> Unit) {
@@ -170,7 +228,7 @@ fun AccountItem(account: AccountLocalModel, balance: Long, onItemClick: () -> Un
             modifier = Modifier
                 .fillMaxWidth()
                 .height(48.dp),
-            verticalAlignment = Alignment.CenterVertically,
+            verticalAlignment = Alignment.Bottom,
         ) {
             Text(
                 text = account.account_name,
@@ -194,16 +252,15 @@ fun AccountItem(account: AccountLocalModel, balance: Long, onItemClick: () -> Un
                 .fillMaxWidth()
                 .height(48.dp)
                 .clickable(onClick = onItemClick)
-                .background(Color.LightGray),
+                .background(VeryLightGray),
             verticalAlignment = Alignment.CenterVertically,
-
         ) {
             Text(
                 text = account.account_name,
                 style = MaterialTheme.typography.body1,
                 fontWeight = FontWeight.Normal,
                 color = Color.Black,
-                modifier = Modifier.weight(1f).padding(8.dp)
+                modifier = Modifier.weight(1f).padding(8.dp),
             )
 
             Text(

@@ -14,16 +14,21 @@ import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalTextInputService
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.Navigator
+import cafe.adriel.voyager.navigator.currentOrThrow
 import com.twoup.personalfinance.domain.model.transaction.createTrans.TransactionLocalModel
 import com.twoup.personalfinance.transaction.presentation.theme.buttonHeight_transaction_buttonNextAction
 import com.twoup.personalfinance.transaction.presentation.theme.create_transaction_padding_horizontal
@@ -40,12 +45,16 @@ import dev.icerock.moko.resources.desc.desc
 @Composable
 fun TransactionScreen(
     viewModel: CreateTransViewModel,
-    navigator: Navigator,
     openDialog: MutableState<Boolean>,
     selectIndex: MutableState<Int>,
     transactionType: TransactionType // Add this parameter to specify the transaction type
 ) {
     val createTransUiState = viewModel.createTransUiState.collectAsState()
+    val navigator = LocalNavigator.currentOrThrow
+
+    LaunchedEffect(navigator){
+        viewModel.loadTransaction()
+    }
 
     LineTransInfor(
         text = DateTimeUtil.formatNoteDate(createTransUiState.value.date),
@@ -67,52 +76,58 @@ fun TransactionScreen(
             transactionAmount = createTransUiState.value.expenses.toString()
             onAmountChange = { viewModel.onExpensesChange(it) }
         }
+
         TransactionType.Income -> {
             transactionAmount = createTransUiState.value.income.toString()
             onAmountChange = { viewModel.onIncomeChange(it) }
         }
+
         TransactionType.Transfer -> {
             transactionAmount = createTransUiState.value.transferBalance.toString()
             onAmountChange = { viewModel.onTransferChange(it) }
         }
     }
+    CompositionLocalProvider(
+        LocalTextInputService provides null
+    ) {
+        LineTransInfor(
+            text = createTransUiState.value.account,
+            textLabel = MR.strings.createTrans_inputLabel_account.desc().localized(),
+            keyboardOption = KeyboardOptions(imeAction = ImeAction.Next),
+            readOnly = true,
+            textFieldModifier = Modifier.onFocusChanged {
+                viewModel.openCloseChooseWallet(it.hasFocus)
+            }
+        )
+//        command + shift + ^
 
-    LineTransInfor(
-        text = createTransUiState.value.account,
-        textLabel = MR.strings.createTrans_inputLabel_account.desc().localized(),
-        keyboardOption = KeyboardOptions(imeAction = ImeAction.Next),
-        readOnly = true,
-        textFieldModifier = Modifier.onFocusChanged {
-            viewModel.openCloseChooseWallet(it.hasFocus)
-        }
-    )
+//    }
+        LineTransInfor(
+            text = createTransUiState.value.category,
+            textLabel = MR.strings.createTrans_inputLabel_category.desc().localized(),
+            keyboardOption = KeyboardOptions(imeAction = ImeAction.Next),
+            readOnly = true,
+            textFieldModifier = Modifier.onFocusChanged {
+                viewModel.openCloseChooseCategory(it.hasFocus)
+            }
+        )
+    }
+        LineTransInfor(
+            text = transactionAmount,
+            textLabel = MR.strings.createTrans_inputLabel_amount.desc().localized(),
+            keyboardOption = KeyboardOptions(
+                imeAction = ImeAction.Next,
+                keyboardType = KeyboardType.Number
+            ),
+            onTextChange = onAmountChange,
+        )
 
-    LineTransInfor(
-        text = createTransUiState.value.category,
-        textLabel = MR.strings.createTrans_inputLabel_category.desc().localized(),
-        keyboardOption = KeyboardOptions(imeAction = ImeAction.Next),
-        readOnly = true,
-        textFieldModifier = Modifier.onFocusChanged {
-            viewModel.openCloseChooseCategory(it.hasFocus)
-        }
-    )
-
-    LineTransInfor(
-        text = transactionAmount,
-        textLabel = MR.strings.createTrans_inputLabel_amount.desc().localized(),
-        keyboardOption = KeyboardOptions(
-            imeAction = ImeAction.Next,
-            keyboardType = KeyboardType.Number
-        ),
-        onTextChange = onAmountChange,
-    )
-
-    LineTransInfor(
-        text = createTransUiState.value.note,
-        textLabel = MR.strings.createTrans_inputLabel_note.desc().localized(),
-        onTextChange = { viewModel.onNoteChange(it) },
-        keyboardOption = KeyboardOptions(imeAction = ImeAction.Next),
-    )
+        LineTransInfor(
+            text = createTransUiState.value.note,
+            textLabel = MR.strings.createTrans_inputLabel_note.desc().localized(),
+            onTextChange = { viewModel.onNoteChange(it) },
+            keyboardOption = KeyboardOptions(imeAction = ImeAction.Next),
+        )
 
     Spacer(
         modifier = Modifier
@@ -139,51 +154,57 @@ fun TransactionScreen(
                     TransactionType.Expense -> {
                         TransactionLocalModel(
                             transaction_id = createTransUiState.value.id,
-                            income = 0,
-                            expenses = createTransUiState.value.expenses,
-                            transferBalance = 0,
-                            description = createTransUiState.value.note,
-                            created = createTransUiState.value.date,
-                            category = createTransUiState.value.category,
-                            account = createTransUiState.value.account,
-                            selectIndex = selectIndex.value,
-                            accountFrom = "",
-                            accountTo = ""
+                            transaction_income = 0,
+                            transaction_expenses = createTransUiState.value.expenses,
+                            transaction_transfer = 0,
+                            transaction_description = createTransUiState.value.note,
+                            transaction_note = createTransUiState.value.note,
+                            transaction_created = createTransUiState.value.date,
+                            transaction_category = createTransUiState.value.category,
+                            transaction_account = createTransUiState.value.account,
+                            transaction_selectIndex = selectIndex.value,
+                            transaction_accountFrom = "",
+                            transaction_accountTo = ""
                         )
                     }
+
                     TransactionType.Income -> {
                         TransactionLocalModel(
                             transaction_id = createTransUiState.value.id,
-                            income = createTransUiState.value.income,
-                            expenses = 0,
-                            transferBalance = 0,
-                            description = createTransUiState.value.note,
-                            created = createTransUiState.value.date,
-                            category = createTransUiState.value.category,
-                            account = createTransUiState.value.account,
-                            selectIndex = selectIndex.value,
-                            accountFrom = "",
-                            accountTo = ""
+                            transaction_income = createTransUiState.value.income,
+                            transaction_expenses = 0,
+                            transaction_transfer = 0,
+                            transaction_note = "",
+                            transaction_description = createTransUiState.value.note,
+                            transaction_created = createTransUiState.value.date,
+                            transaction_category = createTransUiState.value.category,
+                            transaction_account = createTransUiState.value.account,
+                            transaction_selectIndex = selectIndex.value,
+                            transaction_accountFrom = "",
+                            transaction_accountTo = ""
                         )
                     }
+
                     TransactionType.Transfer -> {
                         TransactionLocalModel(
                             transaction_id = createTransUiState.value.id,
-                            income = 0,
-                            expenses = 0,
-                            transferBalance = createTransUiState.value.transferBalance,
-                            description = createTransUiState.value.note,
-                            created = createTransUiState.value.date,
-                            category = createTransUiState.value.category,
-                            account = createTransUiState.value.account,
-                            selectIndex = selectIndex.value,
-                            accountFrom = createTransUiState.value.accountFrom,
-                            accountTo = createTransUiState.value.accountTo
+                            transaction_income = 0,
+                            transaction_expenses = 0,
+                            transaction_note = "",
+                            transaction_transfer = createTransUiState.value.transferBalance,
+                            transaction_description = createTransUiState.value.note,
+                            transaction_created = createTransUiState.value.date,
+                            transaction_category = createTransUiState.value.category,
+                            transaction_account = createTransUiState.value.account,
+                            transaction_selectIndex = selectIndex.value,
+                            transaction_accountFrom = createTransUiState.value.accountFrom,
+                            transaction_accountTo = createTransUiState.value.accountTo
                         )
                     }
                 }
                 viewModel.insertTransaction(transaction)
                 navigator.pop()
+                viewModel.loadTransaction()
             },
             modifier = Modifier.weight(1f)
                 .padding(end = create_transaction_padding_row)

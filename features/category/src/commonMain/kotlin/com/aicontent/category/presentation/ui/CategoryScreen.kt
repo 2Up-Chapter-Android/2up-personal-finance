@@ -79,7 +79,7 @@ class CategoryScreen : Screen {
                         }
 
                         else -> {
-                            val errorMessage = error?.errorMessage.toString()
+                            val errorMessage = error.errorMessage.toString()
                             Napier.d(tag = "Test Category", message = errorMessage)
                         }
                     }

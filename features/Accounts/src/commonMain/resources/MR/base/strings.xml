@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<resources>
+<!--    All-->
+    <string name="daily">Daily</string>
+    <string name="calendar">Calendar</string>
+    <string name="monthly">Monthly</string>
+    <string name="total">Total</string>
+    <string name="note">Note</string>
+
+    <!--    Daily-->
+    <string name="daily_screen">Daily Screen</string>
+
+    <!--    Calendar-->
+    <string name="calendar_screen">Calendar Screen</string>
+
+    <!--    Monthly-->
+    <string name="monthly_screen">Monthly Screen</string>
+
+    <!--    Total-->
+    <string name="total_screen">Total Screen</string>
+
+    <!--    Note-->
+    <string name="note_screen">Note Screen</string>
+
+    <string name="createTrans_tab_income">Income</string>
+    <string name="createTrans_tab_expense">Expense</string>
+    <string name="createTrans_tab_transfer">Transfer</string>
+    <string name="createTrans_inputLabel_date">Date</string>
+    <string name="createTrans_inputLabel_from">From</string>
+    <string name="createTrans_inputLabel_to">To</string>
+    <string name="createTrans_inputLabel_amount">Amount</string>
+    <string name="createTrans_inputLabel_category">Category</string>
+    <string name="createTrans_inputLabel_account">Account</string>
+    <string name="createTrans_inputLabel_note">Note</string>
+    <string name="createTrans_button_createTrans">Create</string>
+    <string name="createTrans_button_saveAndCreateAnother">Continue</string>
+
+</resources>

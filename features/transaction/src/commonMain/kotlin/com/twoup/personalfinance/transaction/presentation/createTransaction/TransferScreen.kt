@@ -14,6 +14,8 @@ import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
@@ -21,10 +23,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalTextInputService
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.Navigator
+import cafe.adriel.voyager.navigator.currentOrThrow
 import com.twoup.personalfinance.domain.model.transaction.account.AccountLocalModel
 import com.twoup.personalfinance.domain.model.transaction.createTrans.TransactionLocalModel
 import com.twoup.personalfinance.transaction.presentation.theme.buttonHeight_transaction_buttonNextAction
@@ -43,45 +48,52 @@ import io.github.aakira.napier.Napier
 @Composable
 fun TransferScreen(
     viewModel: CreateTransViewModel,
-    navigator: Navigator,
     openDialog: MutableState<Boolean>,
     selectIndex: MutableState<Int>
 ) {
+    val navigator = LocalNavigator.currentOrThrow
     val createTransUiState = viewModel.createTransUiState.collectAsState()
     val accounts = viewModel.accounts.value
 
-    LineTransInfor(
-        text = DateTimeUtil.formatNoteDate(createTransUiState.value.date),
-        textLabel = MR.strings.createTrans_inputLabel_date.desc().localized(),
-        onTextChange = { viewModel.onDateChange(createTransUiState.value.date) },
-        keyboardOption = KeyboardOptions(imeAction = ImeAction.Next),
-        readOnly = true,
-        textFieldModifier = Modifier.onFocusChanged {
-            viewModel.openCloseDatePicker(it.hasFocus)
-            openDialog.value = it.hasFocus
-        }
-    )
+    LaunchedEffect(navigator){
+        viewModel.loadTransaction()
+    }
 
-    LineTransInfor(
-        text = createTransUiState.value.accountFrom,
-        textLabel = MR.strings.createTrans_inputLabel_from.desc().localized(),
-        keyboardOption = KeyboardOptions(imeAction = ImeAction.Next),
-        readOnly = true,
-        textFieldModifier = Modifier.onFocusChanged {
-            viewModel.openCloseChooseCategoryAccountFrom(it.hasFocus)
-        }
-    )
+    CompositionLocalProvider(
+        LocalTextInputService provides null
+    ) {
+        LineTransInfor(
+            text = DateTimeUtil.formatNoteDate(createTransUiState.value.date),
+            textLabel = MR.strings.createTrans_inputLabel_date.desc().localized(),
+            onTextChange = { viewModel.onDateChange(createTransUiState.value.date) },
+            keyboardOption = KeyboardOptions(imeAction = ImeAction.Next),
+            readOnly = true,
+            textFieldModifier = Modifier.onFocusChanged {
+                viewModel.openCloseDatePicker(it.hasFocus)
+                openDialog.value = it.hasFocus
+            }
+        )
 
-    LineTransInfor(
-        text = createTransUiState.value.accountTo,
-        textLabel = MR.strings.createTrans_inputLabel_to.desc().localized(),
-        keyboardOption = KeyboardOptions(imeAction = ImeAction.Next),
-        readOnly = true,
-        textFieldModifier = Modifier.onFocusChanged {
-            viewModel.openCloseChooseCategoryAccountTo(it.hasFocus)
-        }
-    )
+        LineTransInfor(
+            text = createTransUiState.value.accountFrom,
+            textLabel = MR.strings.createTrans_inputLabel_from.desc().localized(),
+            keyboardOption = KeyboardOptions(imeAction = ImeAction.Next),
+            readOnly = true,
+            textFieldModifier = Modifier.onFocusChanged {
+                viewModel.openCloseChooseCategoryAccountFrom(it.hasFocus)
+            }
+        )
 
+        LineTransInfor(
+            text = createTransUiState.value.accountTo,
+            textLabel = MR.strings.createTrans_inputLabel_to.desc().localized(),
+            keyboardOption = KeyboardOptions(imeAction = ImeAction.Next),
+            readOnly = true,
+            textFieldModifier = Modifier.onFocusChanged {
+                viewModel.openCloseChooseCategoryAccountTo(it.hasFocus)
+            }
+        )
+    }
     LineTransInfor(
         text = createTransUiState.value.transferBalance.toString(),
         textLabel = MR.strings.createTrans_inputLabel_amount.desc().localized(),
@@ -123,21 +135,26 @@ fun TransferScreen(
                 viewModel.insertTransaction(
                     TransactionLocalModel(
                         transaction_id = createTransUiState.value.id,
-                        income = 0,
-                        expenses = 0,
-                        transferBalance = createTransUiState.value.transferBalance,
-                        description = createTransUiState.value.note,
-                        created = createTransUiState.value.date,
-                        category = createTransUiState.value.category,
-                        account = createTransUiState.value.account,
-                        selectIndex = selectIndex.value,
-                        accountFrom = createTransUiState.value.accountFrom,
-                        accountTo = createTransUiState.value.accountTo
+                        transaction_income = 0,
+                        transaction_expenses = 0,
+                        transaction_note = "",
+                        transaction_transfer = createTransUiState.value.transferBalance,
+                        transaction_description = createTransUiState.value.note,
+                        transaction_created = createTransUiState.value.date,
+                        transaction_category = createTransUiState.value.category,
+                        transaction_account = createTransUiState.value.account,
+                        transaction_selectIndex = selectIndex.value,
+                        transaction_accountFrom = createTransUiState.value.accountFrom,
+                        transaction_accountTo = createTransUiState.value.accountTo
                     )
                 )
-                Napier.d("the number selected in transfer is  ${selectIndex.value}", tag = "selectedTabIndex")
-
+                Napier.d(
+                    "the number selected in transfer is  ${selectIndex.value}",
+                    tag = "selectedTabIndex"
+                )
                 navigator.pop()
+                viewModel.loadTransaction()
+
             },
             modifier = Modifier.weight(1f)
                 .padding(end = create_transaction_padding_row)

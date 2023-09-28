@@ -1,4 +1,4 @@
-package com.aicontent.main.presentation.daily
+package com.aicontent.accounts.presentation
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -17,7 +17,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.aicontent.main.theme.*
+import com.aicontent.accounts.theme.font_size_text_item_category
+import com.aicontent.accounts.theme.padding_end_text_daily_item
+import com.aicontent.accounts.theme.padding_vertical_text_daily_item
 import com.twoup.personalfinance.domain.model.transaction.createTrans.TransactionLocalModel
 
 @Composable

@@ -4,14 +4,15 @@ import kotlinx.datetime.LocalDateTime
 
 data class TransactionLocalModel(
     val transaction_id: Long?,
-    val income: Long,
-    val expenses : Long,
-    val transferBalance : Long,
-    val description: String,
-    val created: LocalDateTime,
-    val category : String,
-    val account : String,
-    val selectIndex : Int,
-    val accountFrom : String,
-    val accountTo : String
+    val transaction_income: Long,
+    val transaction_expenses : Long,
+    val transaction_transfer : Long,
+    val transaction_description: String,
+    val transaction_note : String,
+    val transaction_created: LocalDateTime,
+    val transaction_category : String,
+    val transaction_account : String,
+    val transaction_selectIndex : Int,
+    val transaction_accountFrom : String,
+    val transaction_accountTo : String
 )

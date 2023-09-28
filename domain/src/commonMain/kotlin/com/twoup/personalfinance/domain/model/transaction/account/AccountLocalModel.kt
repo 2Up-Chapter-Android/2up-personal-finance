@@ -4,7 +4,7 @@ data class AccountLocalModel(
     val account_id: Long?,
     val account_name: String,
     val account_type: String,
-    val description: String,
-    val asset: Long?,
-    val liabilities: Long?,
+    val account_description: String,
+    val account_asset: Long?,
+    val account_liabilities: Long?,
 )

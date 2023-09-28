@@ -37,7 +37,7 @@ object DateTimeUtil {
         }
     }
     fun formatDateTrans(dateTime: LocalDateTime): String {
-        val month = if (dateTime.month.ordinal < 10) "0${dateTime.month.ordinal}" else dateTime.month.ordinal
+        val month = if (dateTime.monthNumber < 10) "0${dateTime.monthNumber}" else dateTime.monthNumber
         val year = dateTime.year
         return buildString {
             append(month)
@@ -46,13 +46,9 @@ object DateTimeUtil {
         }
     }
     fun formatDateTransDays(dateTime: LocalDateTime): String {
-//        val month = dateTime.month.name.lowercase().take(3).replaceFirstChar { it.uppercase() }
         val day = if (dateTime.dayOfMonth < 10) "0${dateTime.dayOfMonth}" else dateTime.dayOfMonth
-//        val year = dateTime.year
         return buildString {
             append(day)
-//            append(".")
-//            append(year)
         }
     }
     fun formatDateTransMonth(dateTime: LocalDateTime): String {
@@ -61,6 +57,22 @@ object DateTimeUtil {
             append(month)
         }
     }
+    fun formatTimeForAccount(dateTime: LocalDateTime): String {
+        val day = if (dateTime.dayOfMonth < 10) "0${dateTime.dayOfMonth}" else dateTime.dayOfMonth
+        val year = dateTime.year
+        val month = dateTime.month.name.lowercase().take(3).replaceFirstChar { it.uppercase() }
+
+        // Calculate the last day of the month manually
+        val lastDayOfMonth = when (dateTime.month) {
+            Month.JANUARY, Month.MARCH, Month.MAY, Month.JULY, Month.AUGUST, Month.OCTOBER, Month.DECEMBER -> "31"
+            Month.APRIL, Month.JUNE, Month.SEPTEMBER, Month.NOVEMBER -> "30"
+            else -> if (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)) "29" else "28"
+        }
+
+        return "$day $month.${dateTime.dayOfMonth}.$lastDayOfMonth"
+    }
+
+
 
     fun countDownDays(deleteDateTime: LocalDateTime): Int {
         // Get the current time
