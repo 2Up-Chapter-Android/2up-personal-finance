@@ -9,9 +9,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class UseCaseUpdateTransactionById(private val dataSource: TransactionLocalDataSource) {
-
     @OptIn(DelicateCoroutinesApi::class)
-    fun updateTransaction(transaction: TransactionLocalModel, loadNote: Unit) {
+    fun updateTransaction(transaction: TransactionLocalModel, loadTransaction: Unit) {
         GlobalScope.launch {
             withContext(Dispatchers.Main) {
                 dataSource.updateTransaction(
@@ -31,7 +30,7 @@ class UseCaseUpdateTransactionById(private val dataSource: TransactionLocalDataS
                     )
                 )
             }
-            loadNote
+            loadTransaction
         }
     }
 }

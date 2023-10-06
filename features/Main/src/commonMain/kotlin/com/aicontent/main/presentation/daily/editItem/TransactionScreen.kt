@@ -1,6 +1,9 @@
 package com.aicontent.main.presentation.daily.editItem
 
 import PersonalFinance.features.Main.MR
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -8,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Text
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.unit.dp
 import com.aicontent.main.theme.create_transaction_spacer_padding_bottom
@@ -25,6 +27,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Create
@@ -34,6 +38,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -47,6 +53,7 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import com.aicontent.main.presentation.daily.DailyScreenViewModel
 import com.twoup.personalfinance.domain.model.transaction.createTrans.TransactionLocalModel
 import com.twoup.personalfinance.utils.DateTimeUtil
+import io.github.aakira.napier.Napier
 
 enum class TransactionType {
     INCOME,
@@ -63,20 +70,26 @@ fun TransactionScreen(
     transactionType: TransactionType // You can define this enum or sealed class
 ) {
     val navigator = LocalNavigator.currentOrThrow
-    val transactionUiState = viewModel.transactionUiState.collectAsState()
+    val transactionUiState = viewModel.transactionUiState.collectAsState().value
 
-    LaunchedEffect(Unit){
+    Napier.d("transactionUiState =  $transactionUiState", tag = "transactionUiState")
+
+    LaunchedEffect(Unit) {
         viewModel.loadTransaction()
+        viewModel.updateTransactionUiState(transaction)
     }
+
     when (transactionType) {
         TransactionType.EXPENSES -> {
             CompositionLocalProvider(
                 LocalTextInputService provides null
             ) {
                 LineTransInfor(
-                    text = DateTimeUtil.formatNoteDate(transaction.transaction_created),
+                    text = DateTimeUtil.formatNoteDate(transactionUiState.date),
                     textLabel = MR.strings.createTrans_inputLabel_date.desc().localized(),
-                    onTextChange = { viewModel.onDateChange(transaction.transaction_created) },
+                    onTextChange = {
+                        viewModel.onDateChange(transactionUiState.date)
+                    },
                     keyboardOption = KeyboardOptions(imeAction = ImeAction.Next),
                     readOnly = true,
                     textFieldModifier = Modifier.onFocusChanged {
@@ -84,9 +97,13 @@ fun TransactionScreen(
                         openDialog.value = it.hasFocus
                     }
                 )
+                Napier.d(
+                    "openCloseDatePicker =  ${transactionUiState.isOpenDatePicker}",
+                    tag = "isOpenDatePicker"
+                )
 
                 LineTransInfor(
-                    text = transaction.transaction_account,
+                    text = transactionUiState.account,
                     textLabel = MR.strings.createTrans_inputLabel_account.desc().localized(),
                     keyboardOption = KeyboardOptions(imeAction = ImeAction.Next),
                     readOnly = true,
@@ -95,8 +112,10 @@ fun TransactionScreen(
                     }
                 )
 
+//                Napier.d("is open choose wallet ${}", tag = "isOpenChooseWallet")
+
                 LineTransInfor(
-                    text = transaction.transaction_category,
+                    text = transactionUiState.category,
                     textLabel = MR.strings.createTrans_inputLabel_category.desc().localized(),
                     keyboardOption = KeyboardOptions(imeAction = ImeAction.Next),
                     readOnly = true,
@@ -105,20 +124,38 @@ fun TransactionScreen(
                     }
                 )
             }
+
             LineTransInfor(
-                text = transaction.transaction_expenses.toString(),
+                text = transactionUiState.expenses.toString(),
                 textLabel = MR.strings.createTrans_inputLabel_amount.desc().localized(),
                 keyboardOption = KeyboardOptions(
                     imeAction = ImeAction.Next,
                     keyboardType = KeyboardType.Number
                 ),
-                onTextChange = { viewModel.onExpensesChange(it) },
+                onTextChange = {
+                    viewModel.onExpensesChange(it)
+                    viewModel.updateShowSaveButton()
+                },
+            )
+            Napier.d("hmmmm =  ${transactionUiState.expenses}", tag = "transaction  item ")
+
+            LineTransInfor(
+                text = transactionUiState.note,
+                textLabel = MR.strings.createTrans_inputLabel_note.desc().localized(),
+                onTextChange = {
+                    viewModel.onNoteChange(it)
+                    viewModel.updateShowSaveButton()
+                },
+                keyboardOption = KeyboardOptions(imeAction = ImeAction.Next),
             )
 
             LineTransInfor(
-                text = transaction.transaction_description,
-                textLabel = MR.strings.createTrans_inputLabel_note.desc().localized(),
-                onTextChange = { viewModel.onNoteChange(it) },
+                text = transactionUiState.description,
+                textLabel = MR.strings.createTrans_inputLabel_description.desc().localized(),
+                onTextChange = {
+                    viewModel.onDescriptionChange(it)
+                    viewModel.updateShowSaveButton()
+                },
                 keyboardOption = KeyboardOptions(imeAction = ImeAction.Next),
             )
         }
@@ -128,9 +165,9 @@ fun TransactionScreen(
                 LocalTextInputService provides null
             ) {
                 LineTransInfor(
-                    text = DateTimeUtil.formatNoteDate(transaction.transaction_created),
+                    text = DateTimeUtil.formatNoteDate(transactionUiState.date),
                     textLabel = MR.strings.createTrans_inputLabel_date.desc().localized(),
-                    onTextChange = { viewModel.onDateChange(transaction.transaction_created) },
+                    onTextChange = { viewModel.onDateChange(transactionUiState.date) },
                     keyboardOption = KeyboardOptions(imeAction = ImeAction.Next),
                     readOnly = true,
                     textFieldModifier = Modifier.onFocusChanged {
@@ -140,7 +177,7 @@ fun TransactionScreen(
                 )
 
                 LineTransInfor(
-                    text = transaction.transaction_account,
+                    text = transactionUiState.account,
                     textLabel = MR.strings.createTrans_inputLabel_account.desc().localized(),
                     keyboardOption = KeyboardOptions(imeAction = ImeAction.Next),
                     readOnly = true,
@@ -150,7 +187,7 @@ fun TransactionScreen(
                 )
 
                 LineTransInfor(
-                    text = transaction.transaction_category,
+                    text = transactionUiState.category,
                     textLabel = MR.strings.createTrans_inputLabel_category.desc().localized(),
                     keyboardOption = KeyboardOptions(imeAction = ImeAction.Next),
                     readOnly = true,
@@ -160,19 +197,35 @@ fun TransactionScreen(
                 )
             }
             LineTransInfor(
-                text = transaction.transaction_income.toString(),
+                text = "${transactionUiState.income}",
                 textLabel = MR.strings.createTrans_inputLabel_amount.desc().localized(),
                 keyboardOption = KeyboardOptions(
                     imeAction = ImeAction.Next,
                     keyboardType = KeyboardType.Number
                 ),
-                onTextChange = { viewModel.onIncomeChange(it) },
+                onTextChange = {
+                    viewModel.onIncomeChange(it.toLong())
+                    viewModel.updateShowSaveButton()
+                },
             )
 
             LineTransInfor(
-                text = transaction.transaction_description,
+                text = transactionUiState.note,
                 textLabel = MR.strings.createTrans_inputLabel_note.desc().localized(),
-                onTextChange = { viewModel.onNoteChange(it) },
+                onTextChange = {
+                    viewModel.onNoteChange(it)
+                    viewModel.updateShowSaveButton()
+                },
+                keyboardOption = KeyboardOptions(imeAction = ImeAction.Next),
+            )
+
+            LineTransInfor(
+                text = transactionUiState.description,
+                textLabel = MR.strings.createTrans_inputLabel_description.desc().localized(),
+                onTextChange = {
+                    viewModel.onDescriptionChange(it)
+                    viewModel.updateShowSaveButton()
+                },
                 keyboardOption = KeyboardOptions(imeAction = ImeAction.Next),
             )
         }
@@ -182,9 +235,9 @@ fun TransactionScreen(
                 LocalTextInputService provides null
             ) {
                 LineTransInfor(
-                    text = DateTimeUtil.formatNoteDate(transaction.transaction_created),
+                    text = DateTimeUtil.formatNoteDate(transactionUiState.date),
                     textLabel = MR.strings.createTrans_inputLabel_date.desc().localized(),
-                    onTextChange = { viewModel.onDateChange(transaction.transaction_created) },
+                    onTextChange = { viewModel.onDateChange(transactionUiState.date) },
                     keyboardOption = KeyboardOptions(imeAction = ImeAction.Next),
                     readOnly = true,
                     textFieldModifier = Modifier.onFocusChanged {
@@ -194,7 +247,7 @@ fun TransactionScreen(
                 )
 
                 LineTransInfor(
-                    text = transaction.transaction_accountFrom,
+                    text = transactionUiState.accountFrom,
                     textLabel = MR.strings.createTrans_inputLabel_from.desc().localized(),
                     keyboardOption = KeyboardOptions(imeAction = ImeAction.Next),
                     readOnly = true,
@@ -204,7 +257,7 @@ fun TransactionScreen(
                 )
 
                 LineTransInfor(
-                    text = transaction.transaction_accountTo,
+                    text = transactionUiState.accountTo,
                     textLabel = MR.strings.createTrans_inputLabel_to.desc().localized(),
                     keyboardOption = KeyboardOptions(imeAction = ImeAction.Next),
                     readOnly = true,
@@ -214,19 +267,35 @@ fun TransactionScreen(
                 )
             }
             LineTransInfor(
-                text = transaction.transaction_transfer.toString(),
+                text = transactionUiState.transfer.toString(),
                 textLabel = MR.strings.createTrans_inputLabel_amount.desc().localized(),
                 keyboardOption = KeyboardOptions(
                     imeAction = ImeAction.Next,
                     keyboardType = KeyboardType.Number
                 ),
-                onTextChange = { viewModel.onTransferChange(it) },
+                onTextChange = {
+                    viewModel.onTransferChange(it)
+                    viewModel.updateShowSaveButton()
+                },
             )
 
             LineTransInfor(
-                text = transaction.transaction_description,
+                text = transactionUiState.note,
                 textLabel = MR.strings.createTrans_inputLabel_note.desc().localized(),
-                onTextChange = { viewModel.onNoteChange(it) },
+                onTextChange = {
+                    viewModel.onNoteChange(it)
+                    viewModel.updateShowSaveButton()
+                },
+                keyboardOption = KeyboardOptions(imeAction = ImeAction.Next),
+            )
+
+            LineTransInfor(
+                text = transactionUiState.description,
+                textLabel = MR.strings.createTrans_inputLabel_description.desc().localized(),
+                onTextChange = {
+                    viewModel.onDescriptionChange(it)
+                    viewModel.updateShowSaveButton()
+                },
                 keyboardOption = KeyboardOptions(imeAction = ImeAction.Next),
             )
         }
@@ -246,36 +315,75 @@ fun TransactionScreen(
             .fillMaxWidth()
             .background(colorResource(MR.colors.createTrans_line_break)),
     )
-    // Inside your Row composable
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween,
-        modifier = Modifier.fillMaxWidth()
-            .padding(2.dp)
+// AnimatedVisibility for the remaining buttons
+    AnimatedVisibility(
+        visible = !transactionUiState.showSaveButton,
+        enter = fadeIn(),
+        exit = fadeOut()
     ) {
-        // Delete Button
-        TransactionButton(
-            text = "Delete",
-            icon = Icons.Default.Delete
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier.fillMaxWidth()
+                .padding(2.dp)
         ) {
-            transaction.transaction_id?.let { viewModel.deleteTransactionById(it) }
-            navigator.pop()
-        }
+            // Delete Button
+            TransactionButton(
+                text = "Delete",
+                icon = Icons.Default.Delete
+            ) {
+                transactionUiState.id.let { viewModel.deleteTransactionById(it) }
+                navigator.pop()
+            }
 
-        // Copy Button
-        TransactionButton(
-            text = "Copy",
-            icon = Icons.Default.Create
-        ) {
-            // Handle copy button click
-        }
+            // Copy Button
+            TransactionButton(
+                text = "Copy",
+                icon = Icons.Default.Create
+            ) {
+                // Handle copy button click
+            }
 
-        // Bookmark Button
-        TransactionButton(
-            text = "Bookmark",
-            icon = Icons.Default.Star
+            // Bookmark Button
+            TransactionButton(
+                text = "Bookmark",
+                icon = Icons.Default.Star
+            ) {
+                // Handle bookmark button click
+            }
+        }
+    }
+
+// Save Button
+    AnimatedVisibility(
+        visible = transactionUiState.showSaveButton,
+        enter = fadeIn(),
+        exit = fadeOut()
+    ) {
+        Button(
+            onClick = {
+                viewModel.updateTransaction(
+                    TransactionLocalModel(
+                        transaction_id = transactionUiState.id,
+                        transaction_income = transactionUiState.income,
+                        transaction_expenses = transactionUiState.expenses,
+                        transaction_transfer = transactionUiState.transfer,
+                        transaction_description = transactionUiState.description,
+                        transaction_note = transactionUiState.note,
+                        transaction_created = transactionUiState.date,
+                        transaction_category = transactionUiState.category,
+                        transaction_account = transactionUiState.account,
+                        transaction_selectIndex = transactionUiState.selectIndex,
+                        transaction_accountFrom = transactionUiState.accountFrom,
+                        transaction_accountTo = transactionUiState.accountTo
+                    )
+                )
+                navigator.pop()
+            },
+            modifier = Modifier.fillMaxWidth(),
+            colors = ButtonDefaults.buttonColors(backgroundColor = colorResource(MR.colors.createTrans_tab_expense))
         ) {
-            // Handle bookmark button click
+            Text("Save", color = Color.White)
         }
     }
 }

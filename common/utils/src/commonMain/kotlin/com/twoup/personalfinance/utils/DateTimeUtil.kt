@@ -45,6 +45,16 @@ object DateTimeUtil {
             append(year)
         }
     }
+
+    fun formatDateTransactionByMonth(dateTime: LocalDateTime): String {
+        val month = dateTime.month.name.lowercase().take(3).replaceFirstChar { it.uppercase() }
+        val year = dateTime.year
+        return buildString {
+            append(month)
+            append(" ")
+            append(year)
+        }
+    }
     fun formatDateTransDays(dateTime: LocalDateTime): String {
         val day = if (dateTime.dayOfMonth < 10) "0${dateTime.dayOfMonth}" else dateTime.dayOfMonth
         return buildString {
@@ -57,10 +67,10 @@ object DateTimeUtil {
             append(month)
         }
     }
-    fun formatTimeForAccount(dateTime: LocalDateTime): String {
-        val day = if (dateTime.dayOfMonth < 10) "0${dateTime.dayOfMonth}" else dateTime.dayOfMonth
+    fun formatTimeForAccountLast(dateTime: LocalDateTime): String {
+        val yearNumber = (dateTime.year % 100).toString().padStart(2, '0')
         val year = dateTime.year
-        val month = dateTime.month.name.lowercase().take(3).replaceFirstChar { it.uppercase() }
+        val month = if (dateTime.monthNumber < 10) "0${dateTime.monthNumber}" else dateTime.monthNumber
 
         // Calculate the last day of the month manually
         val lastDayOfMonth = when (dateTime.month) {
@@ -69,10 +79,22 @@ object DateTimeUtil {
             else -> if (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)) "29" else "28"
         }
 
-        return "$day $month.${dateTime.dayOfMonth}.$lastDayOfMonth"
+        return "$month.$lastDayOfMonth.$yearNumber"
     }
+    fun formatTimeForAccountFirst(dateTime: LocalDateTime): String {
+        val yearNumber = (dateTime.year % 100).toString().padStart(2, '0')
+        val year = dateTime.year
+        val month = if (dateTime.monthNumber < 10) "0${dateTime.monthNumber}" else dateTime.monthNumber
 
+        // Calculate the last day of the month manually
+        val lastDayOfMonth = when (dateTime.month) {
+            Month.JANUARY, Month.MARCH, Month.MAY, Month.JULY, Month.AUGUST, Month.OCTOBER, Month.DECEMBER -> "31"
+            Month.APRIL, Month.JUNE, Month.SEPTEMBER, Month.NOVEMBER -> "30"
+            else -> if (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)) "29" else "28"
+        }
 
+        return "$month.1.$yearNumber"
+    }
 
     fun countDownDays(deleteDateTime: LocalDateTime): Int {
         // Get the current time
@@ -91,10 +113,9 @@ object DateTimeUtil {
         val now = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
 
         // Calculate the time difference between deleteDateTime and now
-        val diffInDays = calculateDaysDifference(deleteDateTime, now)
 
         // Check if the time difference is exactly 30 days
-        return when (diffInDays) {
+        return when (calculateDaysDifference(deleteDateTime, now)) {
             30 -> true
             else -> false
         }

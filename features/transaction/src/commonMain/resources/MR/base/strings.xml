@@ -8,6 +8,7 @@
     <string name="createTrans_inputLabel_from">From</string>
     <string name="createTrans_inputLabel_to">To</string>
     <string name="createTrans_inputLabel_amount">Amount</string>
+    <string name="createTrans_inputLabel_description">Description</string>
     <string name="createTrans_inputLabel_category">Category</string>
     <string name="createTrans_inputLabel_account">Account</string>
     <string name="createTrans_inputLabel_note">Note</string>

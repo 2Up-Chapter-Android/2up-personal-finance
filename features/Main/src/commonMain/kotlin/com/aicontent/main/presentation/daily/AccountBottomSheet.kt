@@ -8,23 +8,15 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -32,7 +24,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -41,7 +32,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.aicontent.main.theme.paddingHorizontal_createTrans_chooseWallet_actionBar
@@ -57,11 +48,14 @@ import dev.icerock.moko.resources.desc.desc
 
 @Composable
 fun AccountBottomSheet(
-    focusManager: FocusManager,
+//    focusManager: FocusManager,
     accounts: List<AccountLocalModel>,
     viewModel: DailyScreenViewModel,
+//    onAccountChange: () -> Unit,
     interactionSource: MutableInteractionSource
 ) {
+    val focusManager = LocalFocusManager.current
+
     Column(
         modifier = Modifier.fillMaxHeight(0.5f).fillMaxWidth()
             .background(color = colorResource(MR.colors.createTrans_chooseWallet_background))
@@ -100,7 +94,23 @@ fun AccountBottomSheet(
                             interactionSource = interactionSource,
                             indication = null
                         ) {
-                            viewModel.onAccountChange(account.account_name)
+                            viewModel.updateShowSaveButton()
+
+                            val uiState = viewModel.transactionUiState.value
+
+                            with(uiState) {
+                                if (isOpenChooseAccountTo) {
+                                    viewModel.onAccountToChange(account.account_name)
+                                }
+
+                                if (isOpenChooseAccountFrom) {
+                                    viewModel.onAccountFromChange(account.account_name)
+                                }
+
+                                if (isOpenChooseWallet) {
+                                    viewModel.onAccountChange(account.account_name)
+                                }
+                            }
                             focusManager.clearFocus()
                         },
                     contentAlignment = Alignment.Center
@@ -118,11 +128,12 @@ fun AccountBottomSheet(
 
 @Composable
 fun CategoryBottomSheet(
-    focusManager: FocusManager,
     categorys: List<CategoryLocalModel>,
     viewModel: DailyScreenViewModel,
     interactionSource: MutableInteractionSource
 ) {
+    val focusManager = LocalFocusManager.current
+
     Column(
         modifier = Modifier.fillMaxHeight(0.5f).fillMaxWidth()
             .background(color = colorResource(MR.colors.createTrans_chooseWallet_background))
@@ -142,38 +153,42 @@ fun CategoryBottomSheet(
                 Icon(imageVector = Icons.Default.Clear, "", tint = Color.White)
             }
         }
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(1),
-            modifier = Modifier.fillMaxWidth(0.5f)
-        ) {
-            items(categorys) { category ->
-                Box(
-                    modifier = Modifier
-                        .border(
-                            width = Dp(0.5f),
-                            color = colorResource(MR.colors.createTrans_chooseWallet_walletItem_border)
+        Row(Modifier.fillMaxSize()) {
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(1),
+                modifier = Modifier.fillMaxWidth(0.5f)
+            ) {
+                items(categorys) { category ->
+                    Box(
+                        modifier = Modifier
+                            .border(
+                                width = Dp(0.5f),
+                                color = colorResource(MR.colors.createTrans_chooseWallet_walletItem_border)
+                            )
+                            .background(Color.White)
+                            .padding(
+                                horizontal = paddingHorizontal_createTrans_chooseWallet_walletItem,
+                                vertical = paddingVertical_createTrans_chooseWallet_walletItem
+                            )
+                            .clickable(
+                                interactionSource = interactionSource,
+                                indication = null
+                            ) {
+                                viewModel.updateShowSaveButton()
+                                viewModel.onCategoryChange(category.category_name)
+                                focusManager.clearFocus()
+                            },
+                        contentAlignment = Alignment.TopStart
+                    ) {
+                        Text(
+                            text = category.category_name,
+                            color = Color.Black,
+                            fontSize = textSize_createTransaction_chooseWallet_walletITem_name,
                         )
-                        .background(Color.White)
-                        .padding(
-                            horizontal = paddingHorizontal_createTrans_chooseWallet_walletItem,
-                            vertical = paddingVertical_createTrans_chooseWallet_walletItem
-                        )
-                        .clickable(
-                            interactionSource = interactionSource,
-                            indication = null
-                        ) {
-                            viewModel.onCategoryChange(category.category_name)
-                            focusManager.clearFocus()
-                        },
-                    contentAlignment = Alignment.TopStart
-                ) {
-                    Text(
-                        text = category.category_name,
-                        color = Color.Black,
-                        fontSize = textSize_createTransaction_chooseWallet_walletITem_name,
-                    )
+                    }
                 }
             }
+            Spacer(modifier = Modifier.fillMaxHeight().background(Color.Gray).padding(0.25.dp) )
         }
     }
 }

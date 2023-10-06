@@ -50,7 +50,6 @@ import io.github.aakira.napier.Napier
 val VeryLightGray = Color(0xFFF5F5F5) // You can adjust the color code as needed
 
 class AccountListScreen() : Screen {
-
     @Composable
     override fun Content() {
         val viewModel = rememberScreenModel { AccountListViewModel() }
@@ -58,7 +57,6 @@ class AccountListScreen() : Screen {
 
         AccountListScreen(accounts, viewModel)
     }
-
 }
 
 @Composable
@@ -87,6 +85,7 @@ fun AccountListScreen(accounts: List<AccountLocalModel>, viewModel: AccountListV
 
 @Composable
 fun AccountList(accounts: List<AccountLocalModel>, viewModel: AccountListViewModel) {
+
     val transactions = viewModel.transactions.value
     val totalAsset =
         transactions.filter { it.transaction_income > 0 }.sumOf { it.transaction_income }
@@ -94,6 +93,7 @@ fun AccountList(accounts: List<AccountLocalModel>, viewModel: AccountListViewMod
         transactions.filter { it.transaction_expenses > 0 }.sumOf { it.transaction_expenses }
     val totalBalance = totalAsset - totalLiabilities
     val navigator = LocalNavigator.currentOrThrow
+
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -125,10 +125,10 @@ fun AccountList(accounts: List<AccountLocalModel>, viewModel: AccountListViewMod
             items(accounts) { account ->
                 val selectedTransactions = getSelectedTransactions(account)
                 val balance =
-                    calculateBalance(selectedTransactions, transactions, account, accounts)
+                    calculateBalance(selectedTransactions, transactions, account)
                 val listTransactionForAccount = rememberScreen(
                     AccountSharedScreen.ListTransactionForAccountScreen(
-                        getAccountTransactions(account), account
+                        transactions, account
                     )
                 )
                 AccountItem(account, balance) {
@@ -184,7 +184,6 @@ fun calculateBalance(
     selectedTransactions: List<TransactionLocalModel>,
     allTransactions: List<TransactionLocalModel>,
     account: AccountLocalModel,
-    allAccounts: List<AccountLocalModel>
 ): Long {
     // Calculate the total income, expenses, transfers from, and transfers to in a single pass
     var totalIncome = 0L
@@ -227,7 +226,8 @@ fun AccountItem(account: AccountLocalModel, balance: Long, onItemClick: () -> Un
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(48.dp),
+                .height(48.dp)
+                .background(VeryLightGray),
             verticalAlignment = Alignment.Bottom,
         ) {
             Text(
@@ -251,8 +251,7 @@ fun AccountItem(account: AccountLocalModel, balance: Long, onItemClick: () -> Un
             modifier = Modifier
                 .fillMaxWidth()
                 .height(48.dp)
-                .clickable(onClick = onItemClick)
-                .background(VeryLightGray),
+                .clickable(onClick = onItemClick),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(

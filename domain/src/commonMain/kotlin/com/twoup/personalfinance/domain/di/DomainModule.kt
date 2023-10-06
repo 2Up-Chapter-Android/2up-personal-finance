@@ -10,6 +10,7 @@ import com.twoup.personalfinance.domain.usecase.localTransaction.UseCaseDeleteAc
 import com.twoup.personalfinance.domain.usecase.localTransaction.UseCaseDeleteCategoryExpenseById
 import com.twoup.personalfinance.domain.usecase.localTransaction.UseCaseDeleteCategoryIncomeById
 import com.twoup.personalfinance.domain.usecase.localTransaction.UseCaseDeleteTransactionById
+import com.twoup.personalfinance.domain.usecase.localTransaction.UseCaseFilterTransactionByMonth
 import com.twoup.personalfinance.domain.usecase.localTransaction.UseCaseGetAllAccount
 import com.twoup.personalfinance.domain.usecase.localTransaction.UseCaseGetAllCategoryExpenses
 import com.twoup.personalfinance.domain.usecase.localTransaction.UseCaseGetAllCategoryIncome
@@ -67,4 +68,5 @@ private fun localTransactionDomainModule() = module {
     single { UseCaseUpdateTransactionById(get()) }
     single { UseCaseUpdateCategoryIncomeById(get()) }
     single { UseCaseUpdateCategoryExpensesById(get()) }
+    single { UseCaseFilterTransactionByMonth(get()) }
 }

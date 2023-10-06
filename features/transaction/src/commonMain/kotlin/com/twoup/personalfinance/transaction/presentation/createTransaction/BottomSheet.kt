@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,6 +17,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -125,7 +127,6 @@ fun AccountBottomSheet(
 
 @Composable
 fun CategoryBottomSheet(
-//    focusManager: FocusManager,
     categorys: List<CategoryLocalModel>,
     viewModel: CreateTransViewModel,
     interactionSource: MutableInteractionSource
@@ -151,38 +152,41 @@ fun CategoryBottomSheet(
                 Icon(imageVector = Icons.Default.Clear, "", tint = Color.White)
             }
         }
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(1),
-            modifier = Modifier.fillMaxWidth(0.5f)
-        ) {
-            items(categorys) { category ->
-                Box(
-                    modifier = Modifier
-                        .border(
-                            width = Dp(0.5f),
-                            color = colorResource(MR.colors.createTrans_chooseWallet_walletItem_border)
+        Row(Modifier.fillMaxSize()) {
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(1),
+                modifier = Modifier.fillMaxWidth(0.5f)
+            ) {
+                items(categorys) { category ->
+                    Box(
+                        modifier = Modifier
+                            .border(
+                                width = Dp(0.5f),
+                                color = colorResource(MR.colors.createTrans_chooseWallet_walletItem_border)
+                            )
+                            .background(Color.White)
+                            .padding(
+                                horizontal = paddingHorizontal_createTrans_chooseWallet_walletItem,
+                                vertical = paddingVertical_createTrans_chooseWallet_walletItem
+                            )
+                            .clickable(
+                                interactionSource = interactionSource,
+                                indication = null
+                            ) {
+                                viewModel.onCategoryChange(category.category_name)
+                                focusManager.clearFocus()
+                            },
+                        contentAlignment = Alignment.TopStart
+                    ) {
+                        Text(
+                            text = category.category_name,
+                            color = Color.Black,
+                            fontSize = textSize_createTransaction_chooseWallet_walletITem_name,
                         )
-                        .background(Color.White)
-                        .padding(
-                            horizontal = paddingHorizontal_createTrans_chooseWallet_walletItem,
-                            vertical = paddingVertical_createTrans_chooseWallet_walletItem
-                        )
-                        .clickable(
-                            interactionSource = interactionSource,
-                            indication = null
-                        ) {
-                            viewModel.onCategoryChange(category.category_name)
-                            focusManager.clearFocus()
-                        },
-                    contentAlignment = Alignment.TopStart
-                ) {
-                    Text(
-                        text = category.category_name,
-                        color = Color.Black,
-                        fontSize = textSize_createTransaction_chooseWallet_walletITem_name,
-                    )
+                    }
                 }
             }
+            Spacer(modifier = Modifier.fillMaxHeight().background(Color.Gray).padding(0.25.dp) )
         }
     }
 }

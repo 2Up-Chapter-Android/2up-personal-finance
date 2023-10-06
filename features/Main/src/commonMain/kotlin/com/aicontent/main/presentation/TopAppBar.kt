@@ -30,10 +30,13 @@ import com.aicontent.main.theme.padding_tab_item
 import com.aicontent.main.theme.padding_text_top_bar
 import com.aicontent.main.theme.rounded_corner_shape
 import PersonalFinance.features.Main.MR
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import com.twoup.personalfinance.utils.DateTimeUtil
 import dev.icerock.moko.resources.compose.localized
 import dev.icerock.moko.resources.desc.desc
 
@@ -45,7 +48,7 @@ fun TopAppBar(
     onSearchClicked: () -> Unit,
     onBookMark: () -> Unit,
     onAnalysis: () -> Unit,
-    viewModel: MainScreenViewModel
+    viewModel: MainScreenViewModel,
 ) {
     var selectedTabIndex by remember { mutableStateOf(0) }
     viewModel.selectedTabIndex.value = selectedTabIndex
@@ -53,7 +56,7 @@ fun TopAppBar(
     Column(
 //        modifier = Modifier.background(color = lightBrown)
     ) {
-        FirstRow(onBookMark, onSearchClicked, onAnalysis)
+        FirstRow(onBookMark, onSearchClicked, onAnalysis, viewModel )
         TabRowWithTabs(selectedTabIndex) { newIndex ->
             selectedTabIndex = newIndex
         }
@@ -64,8 +67,20 @@ fun TopAppBar(
 private fun FirstRow(
     onBookMark: () -> Unit,
     onSearchClicked: () -> Unit,
-    onAnalysis: () -> Unit
+    onAnalysis: () -> Unit,
+    viewModel: MainScreenViewModel,
 ) {
+
+    LaunchedEffect(Unit){
+        viewModel.currentMonth
+        viewModel.currentYear
+    }
+
+    val listTransByMonth = viewModel.transactionByMonth.collectAsState().value
+    val currentMonth = viewModel.currentMonth
+    val currentYear = viewModel.currentYear
+    viewModel.filterTransactionByMonth(currentMonth, currentYear)
+
     Row(
         modifier = Modifier
             .fillMaxWidth(),
@@ -84,7 +99,11 @@ private fun FirstRow(
             verticalAlignment = Alignment.CenterVertically
         ) {
             IconButton(
-                onClick = {},
+                onClick = {
+                    viewModel.decrementMonth() // Decrease the month and year
+                    viewModel.currentMonth
+
+                },
                 content = {
                     Icon(
                         Icons.Default.KeyboardArrowLeft,
@@ -93,14 +112,19 @@ private fun FirstRow(
                 }
             )
 
+            val (currentMonthToo, currentYearToo) = viewModel.getCurrentMonthAndYear()
+
             Text(
-                text = "Jun 2023",// it will be replace soon
+                text = "$currentMonth/$currentYear", // Display current month and year
                 color = MaterialTheme.colors.onPrimary,
                 modifier = Modifier.padding(horizontal = padding_text_top_bar)
             )
 
             IconButton(
-                onClick = {},
+                onClick = {
+                    viewModel.incrementMonth() // Increase the month and year
+                    viewModel.currentMonth
+                },
                 content = {
                     Icon(
                         Icons.Default.KeyboardArrowRight,
@@ -165,7 +189,7 @@ private fun TabRowWithTabs(selectedTabIndex: Int, onTabSelected: (Int) -> Unit) 
             .background(MaterialTheme.colors.surface)
 //            .background(color = lightBrown),
 
-        ) {
+    ) {
         val tabs = listOf(
             TabInfo(MR.strings.daily.desc().localized(), 0),
             TabInfo(MR.strings.calendar.desc().localized(), 1),
@@ -187,7 +211,7 @@ private fun TabRowWithTabs(selectedTabIndex: Int, onTabSelected: (Int) -> Unit) 
                     )
                 },
 //                modifier = Modifier.background(color = lightBrown),
-                )
+            )
         }
     }
 }

@@ -34,6 +34,7 @@ import com.aicontent.main.presentation.total.TotalScreen
 import com.twoup.personalfinance.domain.model.transaction.TransactionEntity
 import com.twoup.personalfinance.domain.model.transaction.TransactionType
 import com.twoup.personalfinance.navigation.TransactionSharedScreen
+import com.twoup.personalfinance.utils.DateTimeUtil
 import com.twoup.personalfinance.utils.data.fold
 import io.github.aakira.napier.Napier
 
@@ -47,6 +48,7 @@ class MainScreen() : Screen {
         val transactionScreen = rememberScreen(TransactionSharedScreen.CreateTransactionScreen)
         val listTransactionState = viewModel.getListTransactionState.collectAsState()
         val listTransaction = remember { mutableStateOf(mutableListOf<TransactionEntity>()) }
+        val transactions = viewModel.transaction.collectAsState().value
 
         LaunchedEffect(navigator) {
             viewModel.loadNotes()
@@ -78,7 +80,7 @@ class MainScreen() : Screen {
                     onSearchClicked = {},
                     onBookMark = {},
                     onAnalysis = {},
-                    viewModel = viewModel
+                    viewModel = viewModel,
                 )
             },
             content = {
@@ -91,7 +93,6 @@ class MainScreen() : Screen {
                 )
                     {
                         BudgetBox(viewModel = viewModel)
-
                         Column(
                             modifier = Modifier.fillMaxSize(),
                             horizontalAlignment = Alignment.CenterHorizontally,

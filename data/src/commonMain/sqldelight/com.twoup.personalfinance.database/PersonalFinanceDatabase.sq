@@ -72,7 +72,8 @@ VALUES ('Debt account', 'Flat money', 'none', 0, 0);
 
 updateAccountById:
 UPDATE Accounts
-SET account_name = ?, account_asset = ?, account_liabilities = ?
+
+SET account_name = ?, account_asset = ?, account_liabilities = ?, account_type = ?, account_description = ?, account_liabilities = ?
 WHERE account_id = ?;
 
 deleteAccountById:
@@ -211,17 +212,17 @@ VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
 
 -- Sample inserts:
 INSERT INTO Transactions(transaction_income, transaction_expenses, transaction_transfer, transaction_description, transaction_note, transaction_created, transaction_category, transaction_account, transaction_selectIndex, transaction_accountFrom, transaction_accountTo)
-VALUES (50000, 0, 0, 'Grocery shopping', 'hmmm', 1634567890, 'salary', 'Bank account', 0, '', '');
+VALUES (50000, 0, 0, 'i hate this job but i need do it if i want to live ', 'salary', 1634567890, 'salary', 'Bank account', 0, '', '');
 
 INSERT INTO Transactions(transaction_income, transaction_expenses, transaction_transfer, transaction_description, transaction_note, transaction_created, transaction_category, transaction_account, transaction_selectIndex, transaction_accountFrom, transaction_accountTo)
 VALUES (0, 50000, 0, 'Dinner with friends', 'why i do that', 1734567930, 'Food$Drink', 'Bank account', 1, '', '');
 
 INSERT INTO Transactions(transaction_income, transaction_expenses, transaction_transfer, transaction_description, transaction_note, transaction_created, transaction_category, transaction_account, transaction_selectIndex, transaction_accountFrom, transaction_accountTo)
-VALUES (0, 0, 50000, 'transfer to another bank', 'i think i work', 1834567930, '', 'Bank account', 2, 'Bank account', 'Cash account');
+VALUES (0, 0, 50000, 'transfer to another bank', 'i think it will work', 1834567930, '', 'Bank account', 2, 'Bank account', 'Cash account');
 
 updateTransactionById:
 UPDATE Transactions
-SET transaction_income = ?, transaction_expenses = ?, transaction_description = ?
+SET transaction_income =?, transaction_expenses = ?, transaction_transfer = ?, transaction_description = ?, transaction_note = ?, transaction_created = ?, transaction_category = ?, transaction_account = ?, transaction_selectIndex = ?, transaction_accountFrom = ?, transaction_accountTo = ?
 WHERE transaction_id = ?;
 
 deleteTransactionById:
@@ -233,6 +234,10 @@ DELETE FROM Transactions;
 
 getAllTransaction:
 SELECT * FROM Transactions;
+
+-- filterTransaction:
+-- SELECT * FROM Transactions
+-- WHERE strftime('%Y-%m', datetime(transaction_created, 'unixepoch')) LIKE ?;
 
 -- -- Table for additional notes for transactions
 CREATE TABLE notes (
