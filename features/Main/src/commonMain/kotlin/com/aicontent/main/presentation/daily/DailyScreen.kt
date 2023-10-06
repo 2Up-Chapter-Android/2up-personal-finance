@@ -38,8 +38,6 @@ import com.aicontent.main.theme.padding_end_text_daily_item
 import com.twoup.personalfinance.domain.model.transaction.createTrans.TransactionLocalModel
 import com.twoup.personalfinance.navigation.MainScreenSharedScreen
 import com.twoup.personalfinance.utils.DateTimeUtil
-
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun DailyScreen(viewModel: DailyScreenViewModel) {
     val navigator = LocalNavigator.currentOrThrow
@@ -47,7 +45,7 @@ fun DailyScreen(viewModel: DailyScreenViewModel) {
         viewModel.transaction.value.sortedByDescending { it.transaction_created }
     val distinctTransactions = listTransaction.distinctBy { it.transaction_created.date.dayOfMonth }
 
-    LaunchedEffect(navigator) {
+    LaunchedEffect(Unit) {
         viewModel.loadTransaction()
     }
 
@@ -163,9 +161,7 @@ fun TitleTransaction(
                 modifier = Modifier.align(Alignment.Bottom).padding(4.dp)
             )
         }
-
-//        Row(modifier = Modifier.weight(1f), Arrangement.SpaceBetween) {
-            Text(
+         Text(
                 text = buildString {
                     append(totalIncome)
                     append(" đ")
@@ -185,9 +181,7 @@ fun TitleTransaction(
                 modifier = Modifier.padding(end = padding_end_text_daily_item).weight(1f),
                 textAlign = TextAlign.End,
                 fontSize = adjustFontSize(totalExpenses.toString()).sp
-
             )
-//        }
     }
 }
 

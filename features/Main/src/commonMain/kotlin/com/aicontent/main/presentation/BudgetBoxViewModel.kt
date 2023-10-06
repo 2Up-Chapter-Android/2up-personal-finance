@@ -1,7 +1,6 @@
 package com.aicontent.main.presentation
 
 import cafe.adriel.voyager.core.model.ScreenModel
-import com.aicontent.main.presentation.daily.TransUiState
 import com.twoup.personalfinance.domain.model.transaction.createTrans.TransactionLocalModel
 import com.twoup.personalfinance.domain.usecase.localTransaction.UseCaseGetAllTransaction
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,10 +20,4 @@ class BudgetBoxViewModel : ScreenModel, KoinComponent {
     private fun loadNotes() {
         useCaseGetAllTransaction.getAllTransaction()
     }
-//    private val _createTransUiState = MutableStateFlow(TransUiState())
-//    val createTransUiState = _createTransUiState.asStateFlow()
-
-    // insert get list transaction
-
-
 }

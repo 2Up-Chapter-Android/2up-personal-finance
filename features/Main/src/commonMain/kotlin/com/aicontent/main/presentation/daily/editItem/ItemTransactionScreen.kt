@@ -4,9 +4,11 @@ import PersonalFinance.features.Main.MR
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -34,18 +36,18 @@ import androidx.compose.material3.DisplayMode
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -69,7 +71,6 @@ import dev.icerock.moko.resources.compose.localized
 import dev.icerock.moko.resources.desc.desc
 import io.github.aakira.napier.Napier
 import kotlinx.datetime.Instant
-import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 
 class ItemTransactionScreen(private val transaction: TransactionLocalModel) : Screen {
@@ -78,11 +79,11 @@ class ItemTransactionScreen(private val transaction: TransactionLocalModel) : Sc
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
         val viewModel = rememberScreenModel { DailyScreenViewModel() }
-        val transactionUiState = viewModel.transactionUiState.value
         val openDialog = remember { mutableStateOf(true) }
         val focusManager = LocalFocusManager.current
-        val categorys = viewModel.categorys.value
-        val accounts = viewModel.accounts.value
+        val categoryExpenses by viewModel.categoryExpenses.collectAsState(emptyList())
+        val categoryIncome by viewModel.categoryIncome.collectAsState(emptyList())
+        val accounts by viewModel.accounts.collectAsState(emptyList())
         val selectedTabIndex = remember { mutableStateOf(transaction.transaction_selectIndex) }
         val interactionSource = remember { MutableInteractionSource() }
         val time = remember { mutableStateOf(DateTimeUtil.toEpochMillis(DateTimeUtil.now())) }
@@ -96,139 +97,156 @@ class ItemTransactionScreen(private val transaction: TransactionLocalModel) : Sc
             MR.strings.createTrans_tab_transfer.desc().localized()
         )
 
-        Column(modifier = Modifier.padding(16.dp)) {
-            Row(modifier = Modifier.fillMaxWidth()) {
-                IconButton(onClick = { navigator.pop() }) {
-                    Icon(
-                        imageVector = Icons.Default.ArrowBack,
-                        contentDescription = "",
-                        tint = Color.Black
+        LaunchedEffect(Unit) {
+            viewModel.loadTransaction()
+            viewModel.updateTransactionUiState(transaction)
+        }
+        val transactionUiState = viewModel.transactionUiState.collectAsState().value
+
+        Box(modifier = Modifier.fillMaxSize()) {
+            Column(modifier = Modifier.fillMaxSize()) {
+                Row(modifier = Modifier.fillMaxWidth()) {
+                    IconButton(onClick = { navigator.pop() }) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = "",
+                            tint = Color.Black
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.width(marginStart_createTrans_actionBar_tabName))
+                    Text(
+                        text = tabList[selectedTabIndex.value],
+                        color = Color.Black,
+                        modifier = Modifier.align(Alignment.CenterVertically),
                     )
                 }
 
-                Spacer(modifier = Modifier.width(marginStart_createTrans_actionBar_tabName))
-                Text(
-                    text = tabList[selectedTabIndex.value],
-                    color = Color.Black,
-                    modifier = Modifier.align(Alignment.CenterVertically),
-                )
-            }
-            Column(
-                modifier = Modifier.verticalScroll(rememberScrollState())
-                    .weight(weight = 1f, fill = false)
-            ) {
-                TabRow(selectedTabIndex = selectedTabIndex.value,
-                    contentColor = Color.Transparent,
-                    backgroundColor = MaterialTheme.colors.surface,
-                    divider = { /*remove underline*/ },
-                    indicator = { /*remove indicator*/ }) {
-                    tabList.forEachIndexed { index, tabName ->
-                        tabLayoutTrans(
-                            index = index, value = tabName, selectedTabIndex = selectedTabIndex
+                Column(
+                    modifier = Modifier.verticalScroll(rememberScrollState())
+                        .weight(weight = 1f, fill = false)
+                ) {
+
+                    TabRow(selectedTabIndex = selectedTabIndex.value,
+                        contentColor = Color.Transparent,
+                        backgroundColor = MaterialTheme.colors.surface,
+                        divider = { /*remove underline*/ },
+                        indicator = { /*remove indicator*/ }) {
+                        tabList.forEachIndexed { index, tabName ->
+                            tabLayoutTrans(
+                                index = index, value = tabName, selectedTabIndex = selectedTabIndex
+                            )
+                            Napier.d(
+                                "the number is ${selectedTabIndex.value}",
+                                tag = "selectedTabIndex"
+                            )
+                        }
+                    }
+
+                    Napier.d(
+                        "the number test in edit screen ${selectedTabIndex.value}",
+                        tag = "selectedTabIndex"
+                    )
+
+                    when (selectedTabIndex.value) {
+                        0 -> TransactionScreen(
+                            viewModel = viewModel,
+                            openDialog = openDialog,
+                            transaction = transaction,
+                            selectIndex = selectedTabIndex,
+                            transactionType = TransactionType.INCOME
+                        )
+
+                        1 -> TransactionScreen(
+                            viewModel = viewModel,
+                            openDialog = openDialog,
+                            transaction = transaction,
+                            selectIndex = selectedTabIndex,
+                            transactionType = TransactionType.EXPENSES
+                        )
+
+                        2 -> TransactionScreen(
+                            viewModel = viewModel,
+                            openDialog = openDialog,
+                            transaction = transaction,
+                            selectIndex = selectedTabIndex,
+                            transactionType = TransactionType.TRANSFER
                         )
                     }
                 }
-            }
-            Napier.d("the number test in edit screen ${selectedTabIndex.value}", tag = "selectedTabIndex")
-
-            when (selectedTabIndex.value) {
-                0 -> TransactionScreen(
-                    viewModel = viewModel,
-                    openDialog = openDialog,
-                    selectIndex = selectedTabIndex,
-                    transaction = transaction,
-                    transactionType = TransactionType.INCOME
+                Napier.d(
+                    "is open choose wallet ${transactionUiState.isOpenChooseWallet}",
+                    tag = "wallet"
                 )
 
-                1 -> TransactionScreen(
-                    viewModel = viewModel,
-                    openDialog = openDialog,
-                    selectIndex = selectedTabIndex,
-                    transaction = transaction,
-                    transactionType = TransactionType.EXPENSES
-                )
+                AnimatedVisibility(visible = transactionUiState.isOpenChooseWallet || transactionUiState.isOpenChooseAccountTo || transactionUiState.isOpenChooseAccountFrom) {
+                    AccountBottomSheet(
+                        accounts = accounts,
+                        viewModel = viewModel,
+                        interactionSource = interactionSource
+                    )
+                }
 
-                2 -> TransactionScreen(
-                    viewModel = viewModel,
-                    openDialog = openDialog,
-                    selectIndex = selectedTabIndex,
-                    transaction = transaction,
-                    transactionType = TransactionType.TRANSFER                )
-            }
-
-            AnimatedVisibility(visible = transactionUiState.isOpenChooseWallet) {
-                AccountBottomSheet(
-                    focusManager = focusManager,
-                    accounts = accounts,
-                    viewModel = viewModel,
-                    interactionSource = interactionSource
-                )
-            }
-
-            AnimatedVisibility(visible = transactionUiState.isOpenChooseCategory) {
-                CategoryBottomSheet(
-                    focusManager = focusManager,
-                    categorys = categorys,
-                    viewModel = viewModel,
-                    interactionSource = interactionSource
-                )
-            }
-
-            AnimatedVisibility(visible = transactionUiState.isOpenDatePicker) {
-                if (transactionUiState.isOpenDatePicker/*openDialog.value*/) {
-                    DatePickerDialog(
-                        onDismissRequest = { viewModel.openCloseDatePicker(false) /*openDialog.value = false*/ },
-                        confirmButton = {
-                            TextButton(onClick = {
-                                focusManager.clearFocus()
-                                viewModel.openCloseDatePicker(false)
-                                openDialog.value = false
-                                time.value =
-                                    state.selectedDateMillis ?: DateTimeUtil.toEpochMillis(
-                                        DateTimeUtil.now()
-                                    )
-                                viewModel.onDateChange(
-                                    Instant.fromEpochMilliseconds(time.value)
-                                        .toLocalDateTime(TimeZone.currentSystemDefault())
-                                )
-                            }) {
-                                Text("OK", color = Color.Black)
-                            }
+                AnimatedVisibility(visible = transactionUiState.isOpenChooseCategory) {
+                    CategoryBottomSheet(
+                        categorys = if (selectedTabIndex.value == 1) {
+                            categoryExpenses
+                        } else {
+                            categoryIncome
                         },
-                        dismissButton = {
-                            TextButton(
-                                onClick = {
+                        viewModel = viewModel,
+                        interactionSource = interactionSource
+                    )
+                }
+
+                AnimatedVisibility(visible = transactionUiState.isOpenDatePicker) {
+                    if (transactionUiState.isOpenDatePicker/*openDialog.value*/) {
+                        DatePickerDialog(onDismissRequest = { viewModel.openCloseDatePicker(false) /*openDialog.value = false*/ },
+                            confirmButton = {
+                                TextButton(onClick = {
                                     focusManager.clearFocus()
                                     viewModel.openCloseDatePicker(false)
                                     openDialog.value = false
-                                }
-                            ) {
-                                Text("Cancel", color = Color.Black)
-                            }
-                        }
-                    ) {
-//            TODO: DatePicker dang bi bug, neu ranh thi tu code headline cua minh, khong dung headline mac dinh cua DatePicker
-                        DatePicker(
-                            state = state,
-                            title = {
-                                Text(
-                                    text = "Choose Your Date",
-                                    modifier = Modifier.padding(
-                                        start = 24.dp,
-                                        end = 12.dp,
-                                        top = 16.dp
+                                    time.value =
+                                        state.selectedDateMillis ?: DateTimeUtil.toEpochMillis(
+                                            DateTimeUtil.now()
+                                        )
+                                    viewModel.onDateChange(
+                                        Instant.fromEpochMilliseconds(time.value)
+                                            .toLocalDateTime(kotlinx.datetime.TimeZone.currentSystemDefault())
                                     )
-                                )
+                                    viewModel.updateShowSaveButton()
+                                }) {
+                                    Text("OK", color = Color.Black)
+                                }
                             },
-                            showModeToggle = false
-                        )
+
+                            dismissButton = {
+                                TextButton(onClick = {
+                                    focusManager.clearFocus()
+                                    viewModel.openCloseDatePicker(false)
+                                    openDialog.value = false
+                                }) {
+                                    Text("Cancel", color = Color.Black)
+                                }
+                            }
+                        ) {
+                            DatePicker(
+                                state = state, title = {
+                                    Text(
+                                        text = "Choose Your Date", modifier = Modifier.padding(
+                                            start = 24.dp, end = 12.dp, top = 16.dp
+                                        )
+                                    )
+                                }, showModeToggle = false
+                            )
+                        }
                     }
                 }
             }
         }
     }
 }
-
 
 @Composable
 fun LineTransInfor(

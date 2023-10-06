@@ -43,7 +43,7 @@ fun ItemDailyScreen(
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     modifier = Modifier.padding(vertical = padding_vertical_text_daily_item),
-                    text = transaction.transaction_description,
+                    text = transaction.transaction_note,
                     color = Color.Black,
                     fontSize = 14.sp,
                     maxLines = 1,

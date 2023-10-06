@@ -27,7 +27,6 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.twoup.personalfinance.domain.model.transaction.createTrans.TransactionLocalModel
 import com.twoup.personalfinance.transaction.presentation.theme.buttonHeight_transaction_buttonNextAction
@@ -52,11 +51,11 @@ fun TransactionScreen(
     val createTransUiState = viewModel.createTransUiState.collectAsState()
     val navigator = LocalNavigator.currentOrThrow
 
-    LaunchedEffect(navigator){
+    LaunchedEffect(navigator) {
         viewModel.loadTransaction()
     }
 
-    LineTransInfor(
+    LineTransInformation(
         text = DateTimeUtil.formatNoteDate(createTransUiState.value.date),
         textLabel = MR.strings.createTrans_inputLabel_date.desc().localized(),
         onTextChange = { viewModel.onDateChange(createTransUiState.value.date) },
@@ -90,7 +89,7 @@ fun TransactionScreen(
     CompositionLocalProvider(
         LocalTextInputService provides null
     ) {
-        LineTransInfor(
+        LineTransInformation(
             text = createTransUiState.value.account,
             textLabel = MR.strings.createTrans_inputLabel_account.desc().localized(),
             keyboardOption = KeyboardOptions(imeAction = ImeAction.Next),
@@ -100,9 +99,7 @@ fun TransactionScreen(
             }
         )
 //        command + shift + ^
-
-//    }
-        LineTransInfor(
+        LineTransInformation(
             text = createTransUiState.value.category,
             textLabel = MR.strings.createTrans_inputLabel_category.desc().localized(),
             keyboardOption = KeyboardOptions(imeAction = ImeAction.Next),
@@ -112,22 +109,32 @@ fun TransactionScreen(
             }
         )
     }
-        LineTransInfor(
-            text = transactionAmount,
-            textLabel = MR.strings.createTrans_inputLabel_amount.desc().localized(),
-            keyboardOption = KeyboardOptions(
-                imeAction = ImeAction.Next,
-                keyboardType = KeyboardType.Number
-            ),
-            onTextChange = onAmountChange,
-        )
 
-        LineTransInfor(
-            text = createTransUiState.value.note,
-            textLabel = MR.strings.createTrans_inputLabel_note.desc().localized(),
-            onTextChange = { viewModel.onNoteChange(it) },
-            keyboardOption = KeyboardOptions(imeAction = ImeAction.Next),
-        )
+    // loai bo ky tu thua
+    LineTransInformation(
+        text = transactionAmount,
+        textLabel = MR.strings.createTrans_inputLabel_amount.desc().localized(),
+        keyboardOption = KeyboardOptions(
+            imeAction = ImeAction.Next,
+            keyboardType = KeyboardType.Number
+        ),
+        onTextChange = onAmountChange,
+    )
+
+    LineTransInformation(
+        text = createTransUiState.value.note,
+        textLabel = MR.strings.createTrans_inputLabel_note.desc().localized(),
+        onTextChange = { viewModel.onNoteChange(it) },
+        keyboardOption = KeyboardOptions(imeAction = ImeAction.Next),
+    )
+
+    LineTransInformation(
+        text = createTransUiState.value.description,
+        textLabel = MR.strings.createTrans_inputLabel_description.desc().localized(),
+        onTextChange = { viewModel.onDescriptionChange(it) },
+        keyboardOption = KeyboardOptions(imeAction = ImeAction.Next),
+        singleLine = false
+    )
 
     Spacer(
         modifier = Modifier
@@ -157,7 +164,7 @@ fun TransactionScreen(
                             transaction_income = 0,
                             transaction_expenses = createTransUiState.value.expenses,
                             transaction_transfer = 0,
-                            transaction_description = createTransUiState.value.note,
+                            transaction_description = createTransUiState.value.description,
                             transaction_note = createTransUiState.value.note,
                             transaction_created = createTransUiState.value.date,
                             transaction_category = createTransUiState.value.category,
@@ -174,8 +181,8 @@ fun TransactionScreen(
                             transaction_income = createTransUiState.value.income,
                             transaction_expenses = 0,
                             transaction_transfer = 0,
-                            transaction_note = "",
-                            transaction_description = createTransUiState.value.note,
+                            transaction_note = createTransUiState.value.note,
+                            transaction_description = createTransUiState.value.description,
                             transaction_created = createTransUiState.value.date,
                             transaction_category = createTransUiState.value.category,
                             transaction_account = createTransUiState.value.account,
@@ -190,9 +197,9 @@ fun TransactionScreen(
                             transaction_id = createTransUiState.value.id,
                             transaction_income = 0,
                             transaction_expenses = 0,
-                            transaction_note = "",
+                            transaction_note = createTransUiState.value.note,
                             transaction_transfer = createTransUiState.value.transferBalance,
-                            transaction_description = createTransUiState.value.note,
+                            transaction_description = createTransUiState.value.description,
                             transaction_created = createTransUiState.value.date,
                             transaction_category = createTransUiState.value.category,
                             transaction_account = createTransUiState.value.account,

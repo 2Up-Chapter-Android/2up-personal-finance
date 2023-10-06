@@ -13,8 +13,9 @@ import com.twoup.personalfinance.mapping.toCategoryIncome
 import com.twoup.personalfinance.mapping.toNote
 import com.twoup.personalfinance.mapping.toTransaction
 import com.twoup.personalfinance.utils.DateTimeUtil
-
-class TransactionLocalDataSourceImpl(transactionDatabaseWrapper: PersonalFinanceDatabaseWrapper) :
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toInstant
+ class TransactionLocalDataSourceImpl(transactionDatabaseWrapper: PersonalFinanceDatabaseWrapper) :
     TransactionLocalDataSource {
     private val database = transactionDatabaseWrapper.instance
     private val dbQuery = database.personalFinanceDatabaseQueries
@@ -23,11 +24,13 @@ class TransactionLocalDataSourceImpl(transactionDatabaseWrapper: PersonalFinance
             category.category_name,
         )
     }
+
     override suspend fun insertCategoryIncome(category: CategoryLocalModel) {
         dbQuery.insertCategoryIncome(
             category.category_name,
         )
     }
+
     override suspend fun insertAccount(account: AccountLocalModel) {
         dbQuery.insertAccount(
             account.account_name,
@@ -37,6 +40,7 @@ class TransactionLocalDataSourceImpl(transactionDatabaseWrapper: PersonalFinance
             account.account_liabilities
         )
     }
+
     override suspend fun insertTransaction(transaction: TransactionLocalModel) {
         dbQuery.insertTransaction(
             transaction.transaction_income,
@@ -52,6 +56,7 @@ class TransactionLocalDataSourceImpl(transactionDatabaseWrapper: PersonalFinance
             transaction.transaction_accountTo
         )
     }
+
     override suspend fun insertNote(note: NoteTransactionEntity) {
         dbQuery.insertNote(
             note.note_text,
@@ -59,41 +64,52 @@ class TransactionLocalDataSourceImpl(transactionDatabaseWrapper: PersonalFinance
             DateTimeUtil.toEpochMillis(note.created),
         )
     }
+
     override suspend fun getAllCategoryExpense(): List<CategoryLocalModel> {
         dbQuery.getAllCategoryExpenses()
         return dbQuery.getAllCategoryExpenses().executeAsList().map { it.toCategoryExpenses() }
     }
+
     override suspend fun getAllCategoryIncome(): List<CategoryLocalModel> {
         dbQuery.getAllCategoryIncome()
         return dbQuery.getAllCategoryIncome().executeAsList().map { it.toCategoryIncome() }
     }
+
     override suspend fun getALlAccount(): List<AccountLocalModel> {
         dbQuery.getAllAccount()
         return dbQuery.getAllAccount().executeAsList().map { it.toAccount() }
     }
+
     override suspend fun getAllTransaction(): List<TransactionLocalModel> {
         dbQuery.getAllTransaction()
         return dbQuery.getAllTransaction().executeAsList().map { it.toTransaction() }
     }
+
     override suspend fun getAllNote(): List<NoteTransactionEntity> {
         dbQuery.getAllNote()
         return dbQuery.getAllNote().executeAsList().map { it.toNote() }
     }
+
     override suspend fun deleteCategoryExpenseById(id: Long) {
         dbQuery.deleteCategoryExpensesById(id)
     }
+
     override suspend fun deleteCategoryIncomeById(id: Long) {
         dbQuery.deleteCategoryIncomeById(id)
     }
+
     override suspend fun deleteAccountById(id: Long) {
         dbQuery.deleteAccountById(id)
     }
+
     override suspend fun deleteTransactionById(id: Long) {
         dbQuery.deleteTransactionById(id)
     }
+
     override suspend fun deleteNoteById(id: Long) {
         dbQuery.deleteNoteById(id)
     }
+
     override suspend fun updateCategoryExpenses(category: CategoryLocalModel) {
         category.category_id?.let {
             dbQuery.updagteCategoryExpensesById(
@@ -102,6 +118,7 @@ class TransactionLocalDataSourceImpl(transactionDatabaseWrapper: PersonalFinance
             )
         }
     }
+
     override suspend fun updateCategoryIncome(category: CategoryLocalModel) {
         category.category_id?.let {
             dbQuery.updagteCategoryIncomeById(
@@ -110,32 +127,52 @@ class TransactionLocalDataSourceImpl(transactionDatabaseWrapper: PersonalFinance
             )
         }
     }
+
     override suspend fun updateAccount(account: AccountLocalModel) {
         account.account_id?.let {
             dbQuery.updateAccountById(
                 account_id = it,
                 account_name = account.account_name,
                 account_asset = account.account_asset,
-                account_liabilities = account.account_liabilities
+                account_liabilities = account.account_liabilities,
+                account_type = account.account_type,
+                account_description = account.account_description,
+                account_liabilities_ = account.account_liabilities
             )
         }
     }
+
     override suspend fun updateTransaction(transaction: TransactionLocalModel) {
         transaction.transaction_id?.let {
             dbQuery.updateTransactionById(
                 transaction_income = transaction.transaction_income,
                 transaction_expenses = transaction.transaction_expenses,
                 transaction_description = transaction.transaction_description,
-                transaction_id = it
+                transaction_id = it,
+                transaction_accountFrom = transaction.transaction_accountFrom,
+                transaction_account = transaction.transaction_account,
+                transaction_accountTo = transaction.transaction_accountTo,
+                transaction_category = transaction.transaction_category,
+                transaction_created = transaction.transaction_created.toInstant(TimeZone.currentSystemDefault())
+                    .toEpochMilliseconds(),
+                transaction_note = transaction.transaction_note,
+                transaction_selectIndex = transaction.transaction_selectIndex.toLong(),
+                transaction_transfer = transaction.transaction_transfer
+
             )
         }
     }
+
     override suspend fun updateNote(note: NoteTransactionEntity) {
-        note.note_id?.let {
-            dbQuery.updateNoteById(
-                note_id = it,
-                note_text = note.note_text
-            )
-        }
+        TODO("Not yet implemented")
     }
+
+//    override suspend fun filterTransactionByMonth(yearMonth: String): List<TransactionLocalModel> {
+//        val formattedYearMonth = "%$yearMonth%" // Add '%' for pattern matching
+//        return dbQuery.filterTransaction(formattedYearMonth)
+//            .executeAsList()
+//            .map { it.toTransaction() }
+//        return dbQuery.filterTransaction(formattedYearMonth).executeAsList().map { it.toTransaction() }
+//    }
+
 }

@@ -33,7 +33,7 @@ interface TransactionLocalDataSource {
     suspend fun updateAccount(account: AccountLocalModel)
     suspend fun updateTransaction(transaction: TransactionLocalModel)
     suspend fun updateNote(note: NoteTransactionEntity)
+//    suspend fun filterTransactionByMonth(yearMonth : String): List<TransactionLocalModel>
 
-//    suspend fun transferData()
     // ném vào database
 }

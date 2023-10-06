@@ -31,6 +31,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.DatePickerFormatter
+import androidx.compose.material3.DatePickerState
 import androidx.compose.material3.DisplayMode
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberDatePickerState
@@ -50,6 +52,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.DialogProperties
 import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.registry.rememberScreen
 import cafe.adriel.voyager.core.screen.Screen
@@ -71,6 +74,9 @@ import dev.icerock.moko.resources.desc.desc
 import io.github.aakira.napier.Napier
 import kotlinx.datetime.Instant
 import kotlinx.datetime.toLocalDateTime
+import kotlinx.datetime.TimeZone
+
+val VeryLightGray = Color(0xFFF5F5F5) // You can adjust the color code as needed
 
 class CreateTransactionScreen : Screen {
     @Composable
@@ -95,11 +101,17 @@ class CreateTransactionScreen : Screen {
             MR.strings.createTrans_tab_transfer.desc().localized()
         )
         val listWallet = remember { mutableStateOf(mutableListOf<Wallet>()) }
-        val categorys by viewModel.categorys.collectAsState(emptyList())
+        val categoryExpenses by viewModel.categoryExpenses.collectAsState(emptyList())
+        val categoryIncome by viewModel.categoryIncome.collectAsState(emptyList())
         val accounts by viewModel.accounts.collectAsState(emptyList())
+
+        //date picker
         val time = remember { mutableStateOf(DateTimeUtil.toEpochMillis(DateTimeUtil.now())) }
         val state = rememberDatePickerState(
-            initialDisplayMode = DisplayMode.Picker, initialSelectedDateMillis = time.value
+            initialDisplayMode = DisplayMode.Picker,
+            initialSelectedDateMillis = time.value,
+            yearRange = IntRange(1, 10000),
+            initialDisplayedMonthMillis = time.value
         )
         val openDialog = remember { mutableStateOf(true) }
 
@@ -136,7 +148,6 @@ class CreateTransactionScreen : Screen {
                     modifier = Modifier.verticalScroll(rememberScrollState())
                         .weight(weight = 1f, fill = false)
                 ) {
-
                     TabRow(selectedTabIndex = selectedTabIndex.value,
                         contentColor = Color.Transparent,
                         backgroundColor = MaterialTheme.colors.surface,
@@ -146,7 +157,10 @@ class CreateTransactionScreen : Screen {
                             tabLayoutTrans(
                                 index = index, value = tabName, selectedTabIndex = selectedTabIndex
                             )
-                            Napier.d("the number is ${selectedTabIndex.value}", tag = "selectedTabIndex")
+                            Napier.d(
+                                "the number is ${selectedTabIndex.value}",
+                                tag = "selectedTabIndex"
+                            )
                         }
                     }
                     when (selectedTabIndex.value) {
@@ -174,7 +188,6 @@ class CreateTransactionScreen : Screen {
 
                 AnimatedVisibility(visible = createTransUiState.value.isOpenChooseWallet || createTransUiState.value.isOpenChooseAccountTo || createTransUiState.value.isOpenChooseAccountFrom) {
                     AccountBottomSheet(
-//                        focusManager = { Local },
                         accounts = accounts,
                         viewModel = viewModel,
                         interactionSource = interactionSource
@@ -183,30 +196,37 @@ class CreateTransactionScreen : Screen {
 
                 AnimatedVisibility(visible = createTransUiState.value.isOpenChooseCategory) {
                     CategoryBottomSheet(
-//                        focusManager = focusManager,
-                        categorys = categorys,
+                        categorys = if (selectedTabIndex.value == 1) {
+                            categoryExpenses
+                        } else {
+                            categoryIncome
+                        },
                         viewModel = viewModel,
                         interactionSource = interactionSource
                     )
                 }
 
                 AnimatedVisibility(visible = createTransUiState.value.isOpenDatePicker) {
+
                     if (createTransUiState.value.isOpenDatePicker/*openDialog.value*/) {
-                        DatePickerDialog(onDismissRequest = { viewModel.openCloseDatePicker(false) /*openDialog.value = false*/ },
+                        DatePickerDialog(
+                            onDismissRequest = { viewModel.openCloseDatePicker(false) /*openDialog.value = false*/ },
                             confirmButton = {
-                                TextButton(onClick = {
-                                    focusManager.clearFocus()
-                                    viewModel.openCloseDatePicker(false)
-                                    openDialog.value = false
-                                    time.value =
-                                        state.selectedDateMillis ?: DateTimeUtil.toEpochMillis(
-                                            DateTimeUtil.now()
+                                TextButton(
+                                    onClick = {
+                                        focusManager.clearFocus()
+                                        viewModel.openCloseDatePicker(false)
+                                        openDialog.value = false
+                                        time.value =
+                                            state.selectedDateMillis ?: DateTimeUtil.toEpochMillis(
+                                                DateTimeUtil.now()
+                                            )
+                                        viewModel.onDateChange(
+                                            Instant.fromEpochMilliseconds(time.value)
+                                                .toLocalDateTime(TimeZone.currentSystemDefault())
                                         )
-                                    viewModel.onDateChange(
-                                        Instant.fromEpochMilliseconds(time.value)
-                                            .toLocalDateTime(kotlinx.datetime.TimeZone.currentSystemDefault())
-                                    )
-                                }) {
+                                    }
+                                ) {
                                     Text("OK", color = Color.Black)
                                 }
                             },
@@ -218,17 +238,47 @@ class CreateTransactionScreen : Screen {
                                 }) {
                                     Text("Cancel", color = Color.Black)
                                 }
-                            }) {
-//            TODO: DatePicker dang bi bug, neu ranh thi tu code headline cua minh, khong dung headline mac dinh cua DatePicker
-                            DatePicker(
-                                state = state, title = {
-                                    Text(
-                                        text = "Choose Your Date", modifier = Modifier.padding(
-                                            start = 24.dp, end = 12.dp, top = 16.dp
-                                        )
-                                    )
-                                }, showModeToggle = false
+                            },
+                            modifier = Modifier,
+                            // use to dismiss dialog
+                            properties = DialogProperties(
+                                dismissOnBackPress = true,
+                                dismissOnClickOutside = true,
+                                usePlatformDefaultWidth = true,
                             )
+                        ) {
+                            Column {
+                                DatePicker(
+                                    state = state,
+                                    title = {
+                                        Text(
+                                            text = "Choose Your Date",
+                                            modifier = Modifier.padding(
+                                                start = 24.dp,
+                                                end = 12.dp,
+                                                top = 16.dp
+                                            )
+                                        )
+                                    },
+                                    // under the title
+//                                headline = {
+//                                    Text(
+//                                        "hmmm",
+//                                        modifier = Modifier.padding(
+//                                            start = 24.dp,
+//                                            end = 12.dp,
+//                                            top = 16.dp
+//                                        )
+//                                    )
+//                                },
+//                                dateFormatter = DatePickerFormatter(
+//                                    yearSelectionSkeleton = "March 2021",
+////                                    selectedTabIndex = "Mar 27, 2021",
+////                                    selectedDateDescriptionSkeleton = "Saturday, March 27, 2021"
+//                                ),
+                                    showModeToggle = false
+                                )
+                            }
                         }
                     }
                 }
@@ -291,14 +341,16 @@ fun tabLayoutTrans(index: Int, value: String, selectedTabIndex: MutableState<Int
         }
     }
 }
+
 @Composable
-fun LineTransInfor(
+fun LineTransInformation(
     textLabel: String,
     text: String,
     onTextChange: (String) -> Unit = {},
     keyboardOption: KeyboardOptions,
     readOnly: Boolean = false,
     textFieldModifier: Modifier = Modifier,
+    singleLine: Boolean = true
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -324,7 +376,7 @@ fun LineTransInfor(
             textStyle = TextStyle(
                 fontSize = textSize_transaction_textField
             ),
-            singleLine = true,
+            singleLine = singleLine,
             readOnly = readOnly,
             keyboardOptions = keyboardOption,
             colors = TextFieldDefaults.textFieldColors(

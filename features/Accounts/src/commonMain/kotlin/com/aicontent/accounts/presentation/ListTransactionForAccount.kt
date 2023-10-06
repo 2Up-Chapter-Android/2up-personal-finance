@@ -5,7 +5,6 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,7 +19,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.AppBarDefaults
-import androidx.compose.material.Button
 import androidx.compose.material.Card
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
@@ -36,9 +34,6 @@ import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -57,17 +52,31 @@ import com.twoup.personalfinance.domain.model.transaction.account.AccountLocalMo
 import com.twoup.personalfinance.domain.model.transaction.createTrans.TransactionLocalModel
 import com.twoup.personalfinance.navigation.MainScreenSharedScreen
 import com.twoup.personalfinance.utils.DateTimeUtil
-import comtwouppersonalfinancedatabase.Accounts
+import com.twoup.personalfinance.utils.DateTimeUtil.formatTimeForAccountFirst
+import com.twoup.personalfinance.utils.DateTimeUtil.formatTimeForAccountLast
+import io.github.aakira.napier.Napier
 
 class ListTransactionForAccount(
-    private val listTransaction: List<TransactionLocalModel>,
+    // query from sql file
+    private val allTransaction: List<TransactionLocalModel>,
     private val account: AccountLocalModel
 ) : Screen {
+
+    private fun getAccountTransactions(account: AccountLocalModel): List<TransactionLocalModel> {
+        return allTransaction.filter {
+            it.transaction_account == account.account_name
+                    || it.transaction_accountFrom == account.account_name
+                    || it.transaction_accountTo == account.account_name
+        }
+    }
+
     @Composable
     override fun Content() {
         val viewModel = rememberScreenModel { AccountListViewModel() }
         val navigator = LocalNavigator.currentOrThrow
+        val listTransactions = getAccountTransactions(account)
 
+        Napier.d("list transaction ${listTransactions.size}", tag = "test list")
         Scaffold(
             topBar = {
                 TopAppBarListAccount(
@@ -75,39 +84,64 @@ class ListTransactionForAccount(
                 )
             },
             content = {
-                Column {
-                    GroupTopBar()
-                    Divider(thickness = 0.5.dp, color = Color.LightGray)
-                    ElementAccount(listTransaction)
-                    ListTransaction(
-                        navigator, viewModel, listTransaction
-                    )
+                Column(
+                    modifier = Modifier.padding(bottom = 56.dp), // Adjust the bottom padding to match BottomAppBar height
+                ) {
+                    val firstTransaction = listTransactions.firstOrNull()
+                    if (firstTransaction != null) {
+                        GroupTopBar(firstTransaction)
+                        Divider(thickness = 0.5.dp, color = Color.LightGray)
+                        ElementAccount(listTransactions, allTransaction, account)
+                        ListTransaction(
+                            navigator, viewModel, listTransactions
+                        )
+                    } else {
+                        // Handle the case when listTransactions is empty
+                        // You can show a message or UI accordingly
+                    }
                 }
             }
         )
-
     }
 }
 
 @Composable
-fun ElementAccount(listTransaction: List<TransactionLocalModel>) {
+fun ElementAccount(
+    listTransaction: List<TransactionLocalModel>,
+    allTransaction: List<TransactionLocalModel>,
+    account: AccountLocalModel,
+) {
     val income = listTransaction.filter { it.transaction_income > 0 }.sumOf { it.transaction_income }
     val expenses = listTransaction.filter { it.transaction_expenses > 0 }.sumOf { it.transaction_expenses }
-    val total = income - expenses
+    val transferFrom = listTransaction.filter { it.transaction_accountFrom == account.account_name }.sumOf { it.transaction_transfer }
+    val transferTo = listTransaction.filter { it.transaction_accountTo == account.account_name }.sumOf { it.transaction_transfer }
+    val total = income - expenses - transferFrom + transferTo
 
-    Row (
+    val totalAccountIncome = allTransaction.filter { it.transaction_income > 0 }.sumOf { it.transaction_income }
+    val totalAccountExpenses = allTransaction.filter { it.transaction_expenses > 0 }.sumOf { it.transaction_expenses }
+    val totalAccountTransferFrom = allTransaction.filter { it.transaction_accountFrom == account.account_name }.sumOf { it.transaction_transfer }
+    val totalAccountTransferTo = allTransaction.filter { it.transaction_accountTo == account.account_name }.sumOf { it.transaction_transfer }
+    val totalAccount = totalAccountIncome - totalAccountExpenses + totalAccountTransferTo - totalAccountTransferFrom
+
+    val colorText = when {
+        total > 0 || totalAccount > 0 -> Color.Blue
+        total < 0 || totalAccount < 0 -> Color.Red
+        else -> Color.Black
+    }
+
+    Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 20.dp, end = 20.dp),
+            .padding(start = 20.dp, end = 20.dp, top = 4.dp, bottom = 4.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         ElementRow("Deposit", income, Color.Blue)
         ElementRow("Withdrawal", expenses, Color.Red)
-        ElementRow("Total", total, Color.Gray)
-        ElementRow("Balance", total, Color.Gray)
+        ElementRow("Total", total, colorText)
+        ElementRow("Balance", totalAccount, colorText)
     }
-
 }
+
 
 @Composable
 fun ElementRow(
@@ -122,12 +156,12 @@ fun ElementRow(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(text, fontWeight = FontWeight.Bold, fontSize = 14.sp)
-        Text(number.toString(),fontSize = 12.sp, color = color)
+        Text(number.toString(), fontSize = 12.sp, color = color)
     }
 }
 
 @Composable
-fun GroupTopBar() {
+fun GroupTopBar(transaction: TransactionLocalModel) {
     Row(
         modifier = Modifier.fillMaxWidth().padding(4.dp).padding(start = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -135,7 +169,13 @@ fun GroupTopBar() {
     ) {
         Column {
             Text("Statement", color = Color.Gray)
-            Text("9.1.23 ~ 9.30.23")
+            Text(
+                "${formatTimeForAccountFirst(transaction.transaction_created)} ~ ${
+                    formatTimeForAccountLast(
+                        transaction.transaction_created
+                    )
+                }"
+            )
         }
         Row {
             IconButton(
@@ -167,6 +207,8 @@ fun ListTransaction(
     viewModel: AccountListViewModel,
     listTransaction: List<TransactionLocalModel>
 ) {
+    val distinctTransactions = listTransaction.distinctBy { it.transaction_created.date.dayOfMonth }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -178,10 +220,9 @@ fun ListTransaction(
                 exit = fadeOut() + slideOutVertically()
             ) {
                 LazyColumn {
-                    items(listTransaction) { dateDistinct ->
+                    items(distinctTransactions) { dateDistinct ->
                         val transactions =
                             listTransaction.filter { it.transaction_created.date.dayOfMonth == dateDistinct.transaction_created.date.dayOfMonth }
-
                         Column(
                             modifier = Modifier
                                 .fillMaxWidth()

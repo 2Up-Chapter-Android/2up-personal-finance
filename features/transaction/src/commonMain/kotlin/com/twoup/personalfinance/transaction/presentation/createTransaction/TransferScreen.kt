@@ -18,7 +18,6 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
@@ -28,9 +27,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import com.twoup.personalfinance.domain.model.transaction.account.AccountLocalModel
 import com.twoup.personalfinance.domain.model.transaction.createTrans.TransactionLocalModel
 import com.twoup.personalfinance.transaction.presentation.theme.buttonHeight_transaction_buttonNextAction
 import com.twoup.personalfinance.transaction.presentation.theme.create_transaction_padding_horizontal
@@ -62,7 +59,7 @@ fun TransferScreen(
     CompositionLocalProvider(
         LocalTextInputService provides null
     ) {
-        LineTransInfor(
+        LineTransInformation(
             text = DateTimeUtil.formatNoteDate(createTransUiState.value.date),
             textLabel = MR.strings.createTrans_inputLabel_date.desc().localized(),
             onTextChange = { viewModel.onDateChange(createTransUiState.value.date) },
@@ -74,7 +71,7 @@ fun TransferScreen(
             }
         )
 
-        LineTransInfor(
+        LineTransInformation(
             text = createTransUiState.value.accountFrom,
             textLabel = MR.strings.createTrans_inputLabel_from.desc().localized(),
             keyboardOption = KeyboardOptions(imeAction = ImeAction.Next),
@@ -84,7 +81,7 @@ fun TransferScreen(
             }
         )
 
-        LineTransInfor(
+        LineTransInformation(
             text = createTransUiState.value.accountTo,
             textLabel = MR.strings.createTrans_inputLabel_to.desc().localized(),
             keyboardOption = KeyboardOptions(imeAction = ImeAction.Next),
@@ -94,7 +91,7 @@ fun TransferScreen(
             }
         )
     }
-    LineTransInfor(
+    LineTransInformation(
         text = createTransUiState.value.transferBalance.toString(),
         textLabel = MR.strings.createTrans_inputLabel_amount.desc().localized(),
         keyboardOption = KeyboardOptions(
@@ -104,11 +101,19 @@ fun TransferScreen(
         onTextChange = { viewModel.onTransferChange(it) },
     )
 
-    LineTransInfor(
+    LineTransInformation(
         text = createTransUiState.value.note,
         textLabel = MR.strings.createTrans_inputLabel_note.desc().localized(),
         onTextChange = { viewModel.onNoteChange(it) },
         keyboardOption = KeyboardOptions(imeAction = ImeAction.Next),
+    )
+
+    LineTransInformation(
+        text = createTransUiState.value.description,
+        textLabel = MR.strings.createTrans_inputLabel_description.desc().localized(),
+        onTextChange = { viewModel.onNoteChange(it) },
+        keyboardOption = KeyboardOptions(imeAction = ImeAction.Next),
+        singleLine = false
     )
 
     Spacer(
@@ -137,9 +142,9 @@ fun TransferScreen(
                         transaction_id = createTransUiState.value.id,
                         transaction_income = 0,
                         transaction_expenses = 0,
-                        transaction_note = "",
                         transaction_transfer = createTransUiState.value.transferBalance,
-                        transaction_description = createTransUiState.value.note,
+                        transaction_description = createTransUiState.value.description,
+                        transaction_note = createTransUiState.value.note,
                         transaction_created = createTransUiState.value.date,
                         transaction_category = createTransUiState.value.category,
                         transaction_account = createTransUiState.value.account,

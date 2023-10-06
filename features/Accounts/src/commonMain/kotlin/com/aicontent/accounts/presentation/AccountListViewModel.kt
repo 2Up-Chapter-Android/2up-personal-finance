@@ -4,6 +4,7 @@ import cafe.adriel.voyager.core.model.ScreenModel
 import com.twoup.personalfinance.domain.model.transaction.account.AccountLocalModel
 import com.twoup.personalfinance.domain.model.transaction.createTrans.TransactionLocalModel
 import com.twoup.personalfinance.domain.usecase.localTransaction.UseCaseDeleteAccountById
+import com.twoup.personalfinance.domain.usecase.localTransaction.UseCaseFilterTransactionByMonth
 import com.twoup.personalfinance.domain.usecase.localTransaction.UseCaseGetAllAccount
 import com.twoup.personalfinance.domain.usecase.localTransaction.UseCaseGetAllTransaction
 import com.twoup.personalfinance.domain.usecase.localTransaction.UseCaseInsertAccount
@@ -21,7 +22,7 @@ class AccountListViewModel : ScreenModel, KoinComponent {
     private val useCaseInsertAccount: UseCaseInsertAccount by inject()
     private val useCaseDeleteAccountById: UseCaseDeleteAccountById by inject()
     private val useCaseGetAllTransaction : UseCaseGetAllTransaction by inject()
-
+    private val useCaseFilterTransactionByMonth : UseCaseFilterTransactionByMonth by inject()
     val accounts: StateFlow<List<AccountLocalModel>> get() = useCaseGetAllAccount.accountState.asStateFlow()
     val transactions : StateFlow<List<TransactionLocalModel>> get() = useCaseGetAllTransaction.transactionState.asStateFlow()
 
@@ -41,7 +42,9 @@ class AccountListViewModel : ScreenModel, KoinComponent {
     fun updateAccount(account: AccountLocalModel) {
         useCaseUpdateAccountById.updateAccount(account, loadAccount())
     }
-
+//    fun filterTransactionByMonth(transactions : List<TransactionLocalModel>){
+//        useCaseFilterTransactionByMonth.filterTransactionByMonth(transactions)
+//    }
     fun deleteAccount(id: Long) {
         useCaseDeleteAccountById.deleteAccountById(id, loadAccount())
     }
