@@ -146,6 +146,8 @@ fun TransferScreen(
                         transaction_description = createTransUiState.value.description,
                         transaction_note = createTransUiState.value.note,
                         transaction_created = createTransUiState.value.date,
+                        transaction_month = createTransUiState.value.date.monthNumber.toLong(),
+                        transaction_year = createTransUiState.value.date.year.toLong(),
                         transaction_category = createTransUiState.value.category,
                         transaction_account = createTransUiState.value.account,
                         transaction_selectIndex = selectIndex.value,

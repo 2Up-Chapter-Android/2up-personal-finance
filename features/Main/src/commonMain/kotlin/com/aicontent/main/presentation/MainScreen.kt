@@ -48,9 +48,11 @@ class MainScreen() : Screen {
         val transactionScreen = rememberScreen(TransactionSharedScreen.CreateTransactionScreen)
         val listTransactionState = viewModel.getListTransactionState.collectAsState()
         val listTransaction = remember { mutableStateOf(mutableListOf<TransactionEntity>()) }
-        val transactions = viewModel.transaction.collectAsState().value
+        val monthYear = viewModel.currentMonthYear
 
-        LaunchedEffect(navigator) {
+        val transactionByMonth = viewModel.transactionByMonth.collectAsState().value
+
+        LaunchedEffect(Unit) {
             viewModel.loadNotes()
         }
 
@@ -99,7 +101,7 @@ class MainScreen() : Screen {
                             verticalArrangement = Arrangement.Top
                         ) {
                             when (viewModel.selectedTabIndex.value) {
-                                0 -> DailyScreen(viewModelDailyScreen)
+                                0 -> DailyScreen(viewModelDailyScreen,transactionByMonth)
                                 1 -> CalenderScreen()
                                 4 -> MonthlyScreen()
                                 3 -> TotalScreen()

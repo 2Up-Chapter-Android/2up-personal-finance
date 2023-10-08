@@ -36,13 +36,13 @@ import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.aicontent.main.theme.padding_end_text_daily_item
 import com.twoup.personalfinance.domain.model.transaction.createTrans.TransactionLocalModel
+import com.twoup.personalfinance.domain.usecase.localTransaction.UseCaseFilterTransactionByMonth
 import com.twoup.personalfinance.navigation.MainScreenSharedScreen
 import com.twoup.personalfinance.utils.DateTimeUtil
 @Composable
-fun DailyScreen(viewModel: DailyScreenViewModel) {
+fun DailyScreen(viewModel: DailyScreenViewModel, transactionByMonth : List<TransactionLocalModel>) {
     val navigator = LocalNavigator.currentOrThrow
-    val listTransaction =
-        viewModel.transaction.value.sortedByDescending { it.transaction_created }
+    val listTransaction = transactionByMonth.sortedByDescending { it.transaction_created }
     val distinctTransactions = listTransaction.distinctBy { it.transaction_created.date.dayOfMonth }
 
     LaunchedEffect(Unit) {

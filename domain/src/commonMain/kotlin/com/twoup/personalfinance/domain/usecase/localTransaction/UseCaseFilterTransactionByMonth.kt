@@ -9,6 +9,8 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.Month
 
 class UseCaseFilterTransactionByMonth(private val dataSource: TransactionLocalDataSource) {
 
@@ -16,13 +18,12 @@ class UseCaseFilterTransactionByMonth(private val dataSource: TransactionLocalDa
         MutableStateFlow(listOf())
 
     @OptIn(DelicateCoroutinesApi::class)
-    fun filterTransactionByMonth(monthNumber: Number, yearNumber: Number) {
+    fun filterTransactionByMonth(month: Long, year: Long) {
         GlobalScope.launch {
             val transaction = withContext(Dispatchers.Default) {
-                dataSource.getAllTransaction()
+                dataSource.filterTransactionByMonth(month,year)
             }
             listTransactionState.value = transaction
-                .filter { it.transaction_created.monthNumber == monthNumber && it.transaction_created.year == yearNumber }
         }
     }
 }

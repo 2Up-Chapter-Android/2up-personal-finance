@@ -4,6 +4,7 @@ import com.twoup.personalfinance.domain.model.transaction.account.AccountLocalMo
 import com.twoup.personalfinance.domain.model.transaction.category.CategoryLocalModel
 import com.twoup.personalfinance.domain.model.transaction.createTrans.TransactionLocalModel
 import com.twoup.personalfinance.domain.model.transaction.note.NoteTransactionEntity
+import kotlinx.datetime.LocalDateTime
 
 interface TransactionLocalDataSource {
 //    suspend fun insertSubCategory(subCategories: SubCategoriesLocalModel)
@@ -33,7 +34,7 @@ interface TransactionLocalDataSource {
     suspend fun updateAccount(account: AccountLocalModel)
     suspend fun updateTransaction(transaction: TransactionLocalModel)
     suspend fun updateNote(note: NoteTransactionEntity)
-//    suspend fun filterTransactionByMonth(yearMonth : String): List<TransactionLocalModel>
+    suspend fun filterTransactionByMonth(month: Long, year : Long): List<TransactionLocalModel>
 
     // ném vào database
 }

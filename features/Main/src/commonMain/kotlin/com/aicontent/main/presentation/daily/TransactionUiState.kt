@@ -9,6 +9,8 @@ data class TransactionUiState(
     val id : Long = 0,
     val date: LocalDateTime = Instant.fromEpochMilliseconds(DateTimeUtil.toEpochMillis(DateTimeUtil.now()))
         .toLocalDateTime(kotlinx.datetime.TimeZone.currentSystemDefault()),
+    val month : Long = 0,
+    val year : Long = 0,
     val category: String = "",
     val account: String = "",
     val note: String = "",

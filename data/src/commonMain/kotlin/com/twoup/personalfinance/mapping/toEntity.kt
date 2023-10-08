@@ -44,6 +44,8 @@ fun Transactions.toTransaction(): TransactionLocalModel{
         transaction_description = transaction_description,
         transaction_note = transaction_note,
         transaction_created = Instant.fromEpochMilliseconds(transaction_created).toLocalDateTime(kotlinx.datetime.TimeZone.currentSystemDefault()),
+        transaction_month = transaction_month,
+        transaction_year = transaction_year,
         transaction_category = transaction_category,
         transaction_account = transaction_account,
         transaction_selectIndex = transaction_selectIndex.toInt(),

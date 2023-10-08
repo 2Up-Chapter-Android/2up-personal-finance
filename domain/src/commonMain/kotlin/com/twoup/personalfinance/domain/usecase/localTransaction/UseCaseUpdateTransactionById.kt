@@ -22,6 +22,8 @@ class UseCaseUpdateTransactionById(private val dataSource: TransactionLocalDataS
                         transaction_description = transaction.transaction_description,
                         transaction_note = transaction.transaction_note,
                         transaction_created = transaction.transaction_created,
+                        transaction_month = transaction.transaction_month,
+                        transaction_year = transaction.transaction_year,
                         transaction_category = transaction.transaction_category,
                         transaction_account = transaction.transaction_account,
                         transaction_selectIndex = transaction.transaction_selectIndex,

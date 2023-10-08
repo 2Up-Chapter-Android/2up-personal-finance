@@ -36,12 +36,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.sp
+import com.twoup.personalfinance.domain.model.transaction.createTrans.TransactionLocalModel
 import com.twoup.personalfinance.utils.DateTimeUtil
 import dev.icerock.moko.resources.compose.localized
 import dev.icerock.moko.resources.desc.desc
-
-//val lightBrown = Color(0xFFD2B48C) // You can adjust the color code as needed
-//val lightBrown = Color(0xFF8B4513) // You can adjust the color code as needed
 
 @Composable
 fun TopAppBar(
@@ -50,15 +53,10 @@ fun TopAppBar(
     onAnalysis: () -> Unit,
     viewModel: MainScreenViewModel,
 ) {
-    var selectedTabIndex by remember { mutableStateOf(0) }
-    viewModel.selectedTabIndex.value = selectedTabIndex
-
-    Column(
-//        modifier = Modifier.background(color = lightBrown)
-    ) {
-        FirstRow(onBookMark, onSearchClicked, onAnalysis, viewModel )
-        TabRowWithTabs(selectedTabIndex) { newIndex ->
-            selectedTabIndex = newIndex
+    Column {
+        FirstRow(onBookMark, onSearchClicked, onAnalysis, viewModel)
+        TabRowWithTabs(viewModel.selectedTabIndex.value) { newIndex ->
+            viewModel.selectedTabIndex.value = newIndex
         }
     }
 }
@@ -70,21 +68,11 @@ private fun FirstRow(
     onAnalysis: () -> Unit,
     viewModel: MainScreenViewModel,
 ) {
-
-    LaunchedEffect(Unit){
-        viewModel.currentMonth
-        viewModel.currentYear
-    }
-
-    val listTransByMonth = viewModel.transactionByMonth.collectAsState().value
-    val currentMonth = viewModel.currentMonth
-    val currentYear = viewModel.currentYear
-    viewModel.filterTransactionByMonth(currentMonth, currentYear)
+    val currentMonthYear = viewModel.currentMonthYear
 
     Row(
         modifier = Modifier
             .fillMaxWidth(),
-//            .background(color = lightBrown),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Row(
@@ -93,16 +81,13 @@ private fun FirstRow(
                 .height(height_row_top_bar)
                 .background(
                     color = MaterialTheme.colors.surface,
-                    RoundedCornerShape(rounded_corner_shape)
+                    shape = RoundedCornerShape(rounded_corner_shape)
                 ),
-
             verticalAlignment = Alignment.CenterVertically
         ) {
             IconButton(
                 onClick = {
                     viewModel.decrementMonth() // Decrease the month and year
-                    viewModel.currentMonth
-
                 },
                 content = {
                     Icon(
@@ -112,18 +97,11 @@ private fun FirstRow(
                 }
             )
 
-            val (currentMonthToo, currentYearToo) = viewModel.getCurrentMonthAndYear()
-
-            Text(
-                text = "$currentMonth/$currentYear", // Display current month and year
-                color = MaterialTheme.colors.onPrimary,
-                modifier = Modifier.padding(horizontal = padding_text_top_bar)
-            )
+            BoldMonthText(viewModel.getAbbreviatedMonth(currentMonthYear.value.month), currentMonthYear.value.year)
 
             IconButton(
                 onClick = {
                     viewModel.incrementMonth() // Increase the month and year
-                    viewModel.currentMonth
                 },
                 content = {
                     Icon(
@@ -139,11 +117,9 @@ private fun FirstRow(
             modifier = Modifier
                 .height(height_row_top_bar)
                 .background(
-                    color = MaterialTheme.colors.surface, RoundedCornerShape(
-                        rounded_corner_shape
-                    )
+                    color = MaterialTheme.colors.surface,
+                    shape = RoundedCornerShape(rounded_corner_shape)
                 ),
-//                .background(color = lightBrown),
             horizontalArrangement = Arrangement.End,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -180,6 +156,7 @@ private fun FirstRow(
     }
 }
 
+
 @Composable
 private fun TabRowWithTabs(selectedTabIndex: Int, onTabSelected: (Int) -> Unit) {
     TabRow(
@@ -187,7 +164,6 @@ private fun TabRowWithTabs(selectedTabIndex: Int, onTabSelected: (Int) -> Unit) 
         modifier = Modifier
             .fillMaxWidth()
             .background(MaterialTheme.colors.surface)
-//            .background(color = lightBrown),
 
     ) {
         val tabs = listOf(
@@ -210,10 +186,27 @@ private fun TabRowWithTabs(selectedTabIndex: Int, onTabSelected: (Int) -> Unit) 
                         fontSize = font_size_text_tab
                     )
                 },
-//                modifier = Modifier.background(color = lightBrown),
             )
         }
     }
+}
+
+@Composable
+fun BoldMonthText(month: String, year: Int) {
+    val text = buildAnnotatedString {
+        withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+            append(month)
+        }
+        append(".")
+        append(year.toString())
+    }
+
+    Text(
+        text = text,
+        color = Color.Black, // Change the color as needed
+        modifier = Modifier.padding(horizontal = padding_text_top_bar),
+        fontSize = 16.sp // Change the font size as needed
+    )
 }
 
 data class TabInfo(val title: String, val index: Int)
