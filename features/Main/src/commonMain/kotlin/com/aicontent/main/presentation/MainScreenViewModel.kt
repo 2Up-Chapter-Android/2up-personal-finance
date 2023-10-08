@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.datetime.LocalDateTime
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -27,17 +28,18 @@ class MainScreenViewModel : ScreenModel, KoinComponent {
     private val _getListTransactionState =
         MutableStateFlow<Resource<GetAllTransactionsResponseModel>>(Resource.loading())
 
-    var currentMonth: Int = DateTimeUtil.now().monthNumber
-    var currentYear: Int = DateTimeUtil.now().year
-
     val getListTransactionState = _getListTransactionState.asStateFlow()
     var selectedTabIndex: MutableState<Int> = mutableStateOf(0)
     val transaction: StateFlow<List<TransactionLocalModel>> get() = useCaseGetAllTransaction.transactionState.asStateFlow()
     val transactionByMonth: StateFlow<List<TransactionLocalModel>> get() = useCaseFilterTransactionByMonth.listTransactionState.asStateFlow()
 
+    // Encapsulate current month and year
+    val currentMonthYear = mutableStateOf(MonthYear(DateTimeUtil.now().monthNumber, DateTimeUtil.now().year))
+
     init {
         loadNotes()
         getListTransaction()
+        filterTransactionByMonth(currentMonthYear.value.month, currentMonthYear.value.year)
     }
 
     fun loadNotes() {
@@ -53,30 +55,53 @@ class MainScreenViewModel : ScreenModel, KoinComponent {
         }
     }
 
-    fun filterTransactionByMonth(currentMonth: Number, currentYear: Number) {
-        useCaseFilterTransactionByMonth.filterTransactionByMonth(currentMonth, currentYear)
+    private fun filterTransactionByMonth(month: Int, year: Int) {
+        useCaseFilterTransactionByMonth.filterTransactionByMonth(month.toLong(), year.toLong())
     }
 
-    fun getCurrentMonthAndYear(): Pair<Int, Int> {
-        return Pair(currentMonth, currentYear)
-    }
-
-    // Function to decrement the month and year
     fun decrementMonth() {
-        currentMonth--
-        if (currentMonth < 1) {
-            currentMonth = 12 // Wrap around to December
-            currentYear--
+        val newMonth = currentMonthYear.value.month - 1
+        val newYear = currentMonthYear.value.year
+
+        if (newMonth >= 1) {
+            currentMonthYear.value = currentMonthYear.value.copy(month = newMonth)
+        } else {
+            // If the month is less than 1, wrap around to December of the previous year
+            currentMonthYear.value = currentMonthYear.value.copy(month = 12, year = newYear - 1)
+        }
+        filterTransactionByMonth(currentMonthYear.value.month, currentMonthYear.value.year)
+    }
+
+    fun incrementMonth() {
+        val newMonth = currentMonthYear.value.month + 1
+        val newYear = currentMonthYear.value.year
+
+        if (newMonth <= 12) {
+            currentMonthYear.value = currentMonthYear.value.copy(month = newMonth)
+        } else {
+            // If the month is greater than 12, wrap around to January of the next year
+            currentMonthYear.value = currentMonthYear.value.copy(month = 1, year = newYear + 1)
+        }
+        filterTransactionByMonth(currentMonthYear.value.month, currentMonthYear.value.year)
+    }
+    fun getAbbreviatedMonth(monthNumber: Int): String {
+        return when (monthNumber) {
+            1 -> "Jan"
+            2 -> "Feb"
+            3 -> "Mar"
+            4 -> "Apr"
+            5 -> "May"
+            6 -> "Jun"
+            7 -> "Jul"
+            8 -> "Aug"
+            9 -> "Sep"
+            10 -> "Oct"
+            11 -> "Nov"
+            12 -> "Dec"
+            else -> "Invalid Month"
         }
     }
 
-    // Function to increment the month and year
-    fun incrementMonth() {
-        currentMonth++
-        if (currentMonth > 12) {
-            currentMonth = 1 // Wrap around to January
-            currentYear++
-        }
-    }
 }
 
+data class MonthYear(val month: Int, val year: Int)

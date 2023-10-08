@@ -371,6 +371,8 @@ fun TransactionScreen(
                         transaction_description = transactionUiState.description,
                         transaction_note = transactionUiState.note,
                         transaction_created = transactionUiState.date,
+                        transaction_month = transaction.transaction_month,
+                        transaction_year = transaction.transaction_year,
                         transaction_category = transactionUiState.category,
                         transaction_account = transactionUiState.account,
                         transaction_selectIndex = transactionUiState.selectIndex,

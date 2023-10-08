@@ -9,6 +9,8 @@ data class CreateTransUiState(
     val id: Long = 0L,
     val date: LocalDateTime = Instant.fromEpochMilliseconds(DateTimeUtil.toEpochMillis(DateTimeUtil.now()))
         .toLocalDateTime(kotlinx.datetime.TimeZone.currentSystemDefault()),
+    val month : Long = 0,
+    val year : Long = 0,
     val income: Long = 0,
     val expenses: Long = 0,
     val transferBalance : Long = 0,

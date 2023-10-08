@@ -10,6 +10,8 @@ data class TransactionLocalModel(
     val transaction_description: String,
     val transaction_note : String,
     val transaction_created: LocalDateTime,
+    val transaction_month: Long,
+    val transaction_year: Long,
     val transaction_category : String,
     val transaction_account : String,
     val transaction_selectIndex : Int,

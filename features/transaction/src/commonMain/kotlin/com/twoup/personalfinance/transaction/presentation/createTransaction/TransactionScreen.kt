@@ -40,6 +40,7 @@ import com.twoup.personalfinance.utils.DateTimeUtil
 import dev.icerock.moko.resources.compose.colorResource
 import dev.icerock.moko.resources.compose.localized
 import dev.icerock.moko.resources.desc.desc
+import io.github.aakira.napier.Napier
 
 @Composable
 fun TransactionScreen(
@@ -167,14 +168,16 @@ fun TransactionScreen(
                             transaction_description = createTransUiState.value.description,
                             transaction_note = createTransUiState.value.note,
                             transaction_created = createTransUiState.value.date,
+                            transaction_month = createTransUiState.value.date.month.ordinal.toLong()+1,
+                            transaction_year = createTransUiState.value.date.year.toLong(),
                             transaction_category = createTransUiState.value.category,
                             transaction_account = createTransUiState.value.account,
                             transaction_selectIndex = selectIndex.value,
                             transaction_accountFrom = "",
                             transaction_accountTo = ""
                         )
-                    }
 
+                    }
                     TransactionType.Income -> {
                         TransactionLocalModel(
                             transaction_id = createTransUiState.value.id,
@@ -184,6 +187,8 @@ fun TransactionScreen(
                             transaction_note = createTransUiState.value.note,
                             transaction_description = createTransUiState.value.description,
                             transaction_created = createTransUiState.value.date,
+                            transaction_month = createTransUiState.value.date.month.ordinal.toLong()+1,
+                            transaction_year = createTransUiState.value.date.year.toLong(),
                             transaction_category = createTransUiState.value.category,
                             transaction_account = createTransUiState.value.account,
                             transaction_selectIndex = selectIndex.value,
@@ -201,6 +206,8 @@ fun TransactionScreen(
                             transaction_transfer = createTransUiState.value.transferBalance,
                             transaction_description = createTransUiState.value.description,
                             transaction_created = createTransUiState.value.date,
+                            transaction_month = createTransUiState.value.date.monthNumber.toLong()+1,
+                            transaction_year = createTransUiState.value.date.year.toLong(),
                             transaction_category = createTransUiState.value.category,
                             transaction_account = createTransUiState.value.account,
                             transaction_selectIndex = selectIndex.value,
@@ -209,6 +216,12 @@ fun TransactionScreen(
                         )
                     }
                 }
+
+
+                Napier.d(
+                    message = "${createTransUiState.value.date.month.ordinal} and ${createTransUiState.value.date.month}",
+                    tag = "month"
+                )
                 viewModel.insertTransaction(transaction)
                 navigator.pop()
                 viewModel.loadTransaction()

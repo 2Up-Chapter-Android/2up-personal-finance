@@ -13,9 +13,11 @@ import com.twoup.personalfinance.mapping.toCategoryIncome
 import com.twoup.personalfinance.mapping.toNote
 import com.twoup.personalfinance.mapping.toTransaction
 import com.twoup.personalfinance.utils.DateTimeUtil
+import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
- class TransactionLocalDataSourceImpl(transactionDatabaseWrapper: PersonalFinanceDatabaseWrapper) :
+
+class TransactionLocalDataSourceImpl(transactionDatabaseWrapper: PersonalFinanceDatabaseWrapper) :
     TransactionLocalDataSource {
     private val database = transactionDatabaseWrapper.instance
     private val dbQuery = database.personalFinanceDatabaseQueries
@@ -49,6 +51,8 @@ import kotlinx.datetime.toInstant
             transaction.transaction_description,
             transaction.transaction_note,
             DateTimeUtil.toEpochMillis(transaction.transaction_created),
+            transaction.transaction_month,
+            transaction.transaction_year,
             transaction.transaction_category,
             transaction.transaction_account,
             transaction.transaction_selectIndex.toLong(),
@@ -155,10 +159,11 @@ import kotlinx.datetime.toInstant
                 transaction_category = transaction.transaction_category,
                 transaction_created = transaction.transaction_created.toInstant(TimeZone.currentSystemDefault())
                     .toEpochMilliseconds(),
+                transaction_month = transaction.transaction_month,
+                transaction_year = transaction.transaction_year,
                 transaction_note = transaction.transaction_note,
                 transaction_selectIndex = transaction.transaction_selectIndex.toLong(),
                 transaction_transfer = transaction.transaction_transfer
-
             )
         }
     }
@@ -167,12 +172,7 @@ import kotlinx.datetime.toInstant
         TODO("Not yet implemented")
     }
 
-//    override suspend fun filterTransactionByMonth(yearMonth: String): List<TransactionLocalModel> {
-//        val formattedYearMonth = "%$yearMonth%" // Add '%' for pattern matching
-//        return dbQuery.filterTransaction(formattedYearMonth)
-//            .executeAsList()
-//            .map { it.toTransaction() }
-//        return dbQuery.filterTransaction(formattedYearMonth).executeAsList().map { it.toTransaction() }
-//    }
-
+    override suspend fun filterTransactionByMonth(month: Long, year: Long): List<TransactionLocalModel> {
+        return dbQuery.filterTransaction(month, year).executeAsList().map { it.toTransaction() }
+    }
 }
