@@ -83,6 +83,10 @@ WHERE account_id = ?;
 getAllAccount:
 SELECT * FROM Accounts;
 
+getAccountById:
+SELECT * FROM Accounts
+WHERE account_id = ?;
+
 deleteAllAccount:
 DELETE FROM Accounts;
 
@@ -190,6 +194,15 @@ SELECT * FROM CategorieIncome;
 getAllCategoryExpenses:
 SELECT * FROM CategorieExpense;
 
+getCategoryIncomeById:
+SELECT * FROM CategorieIncome
+WHERE category_id = ?;
+
+getCategoryExpensesById:
+SELECT * FROM CategorieExpense
+WHERE category_id = ?;
+
+
 -- Table for recording income transactions
 CREATE TABLE Transactions (
     transaction_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -212,16 +225,6 @@ insertTransaction:
 INSERT INTO Transactions(transaction_income, transaction_expenses, transaction_transfer, transaction_description, transaction_note, transaction_created,transaction_month,transaction_year, transaction_category, transaction_account, transaction_selectIndex, transaction_accountFrom, transaction_accountTo)
 VALUES (?, ?, ?, ?, ?, ?, ?,?, ?, ?,?, ?, ?);
 
--- Sample inserts:
--- INSERT INTO Transactions(transaction_income, transaction_expenses, transaction_transfer, transaction_description, transaction_note, transaction_created,transaction_month,transaction_year, transaction_category, transaction_account, transaction_selectIndex, transaction_accountFrom, transaction_accountTo)
--- VALUES (50000, 0, 0, 'i hate this job but i need do it if i want to live ', 'salary', 1634567890,01 ,1970,'salary', 'Bank account', 0, '', '');
---
--- INSERT INTO Transactions(transaction_income, transaction_expenses, transaction_transfer, transaction_description, transaction_note, transaction_created,transaction_month,transaction_year, transaction_category, transaction_account, transaction_selectIndex, transaction_accountFrom, transaction_accountTo)
--- VALUES (0, 50000, 0, 'Dinner with friends', 'why i do that', 1734567930, 01,1970,'Food$Drink', 'Bank account', 1, '', '');
---
--- INSERT INTO Transactions(transaction_income, transaction_expenses, transaction_transfer, transaction_description, transaction_note, transaction_created,transaction_month,transaction_year, transaction_category, transaction_account, transaction_selectIndex, transaction_accountFrom, transaction_accountTo)
--- VALUES (0, 0, 50000, 'transfer to another bank', 'i think it will work', 1834567930, 01,1970,'', 'Bank account', 2, 'Bank account', 'Cash account');
-
 updateTransactionById:
 UPDATE Transactions
 SET transaction_income =?, transaction_expenses = ?, transaction_transfer = ?, transaction_description = ?, transaction_note = ?, transaction_created = ?,transaction_month =?,transaction_year =?, transaction_category = ?, transaction_account = ?, transaction_selectIndex = ?, transaction_accountFrom = ?, transaction_accountTo = ?
@@ -236,6 +239,10 @@ DELETE FROM Transactions;
 
 getAllTransaction:
 SELECT * FROM Transactions;
+
+getTransactionById:
+SELECT * FROM Transactions
+WHERE transaction_id = ?;
 
 filterTransaction:
 SELECT * FROM Transactions
@@ -267,6 +274,10 @@ DELETE FROM notes;
 
 getAllNote:
 SELECT * FROM notes;
+
+getNoteById:
+SELECT * FROM notes
+WHERE note_id = ?;
 
 getAllInfoTransaction:
 SELECT

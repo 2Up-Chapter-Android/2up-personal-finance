@@ -69,7 +69,6 @@ kotlin {
                 @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
                 implementation(compose.components.resources)
 
-
                 api(libs.kotlinx.coroutines.core)
 
                 implementation(libs.koin.core)

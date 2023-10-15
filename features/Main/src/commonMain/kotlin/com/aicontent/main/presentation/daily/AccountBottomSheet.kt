@@ -48,10 +48,8 @@ import dev.icerock.moko.resources.desc.desc
 
 @Composable
 fun AccountBottomSheet(
-//    focusManager: FocusManager,
     accounts: List<AccountLocalModel>,
     viewModel: DailyScreenViewModel,
-//    onAccountChange: () -> Unit,
     interactionSource: MutableInteractionSource
 ) {
     val focusManager = LocalFocusManager.current
@@ -128,7 +126,7 @@ fun AccountBottomSheet(
 
 @Composable
 fun CategoryBottomSheet(
-    categorys: List<CategoryLocalModel>,
+    category: List<CategoryLocalModel>,
     viewModel: DailyScreenViewModel,
     interactionSource: MutableInteractionSource
 ) {
@@ -158,7 +156,7 @@ fun CategoryBottomSheet(
                 columns = GridCells.Fixed(1),
                 modifier = Modifier.fillMaxWidth(0.5f)
             ) {
-                items(categorys) { category ->
+                items(category) { category ->
                     Box(
                         modifier = Modifier
                             .border(
@@ -197,10 +195,7 @@ fun CategoryBottomSheet(
 @Composable
 fun AmountBottomSheet(
     focusManager: FocusManager,
-//    categorys : List<CategoryLocalModel>,
-    viewModel: DailyScreenViewModel,
     interactionSource: MutableInteractionSource,
-    onNumberClicked: (Int) -> Unit
 ) {
     var inputText by remember { mutableStateOf("") }
 

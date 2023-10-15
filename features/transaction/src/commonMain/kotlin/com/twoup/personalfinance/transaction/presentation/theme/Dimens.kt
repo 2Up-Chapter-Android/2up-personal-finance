@@ -6,7 +6,7 @@ import androidx.compose.ui.unit.sp
 
 val create_transaction_spacer_padding_top = 16.dp
 val create_transaction_spacer_padding_bottom = 16.dp
-val create_transaction_spacer_padding_horizontal = 10.dp
+val create_transaction_spacer_padding_horizontal = 16.dp
 val create_transaction_padding_row = 8.dp
 val create_transaction_padding_vertical = 8.dp
 val create_transaction_padding_horizontal = 24.dp

@@ -94,6 +94,26 @@ class TransactionLocalDataSourceImpl(transactionDatabaseWrapper: PersonalFinance
         return dbQuery.getAllNote().executeAsList().map { it.toNote() }
     }
 
+    override suspend fun getAccountById(id: Long): AccountLocalModel {
+        return dbQuery.getAccountById(id).executeAsOne().toAccount()
+    }
+
+    override suspend fun getTransactionById(id: Long): TransactionLocalModel {
+        return dbQuery.getTransactionById(id).executeAsOne().toTransaction()
+    }
+
+    override suspend fun getCategoryIncomeById(id: Long): CategoryLocalModel {
+        return dbQuery.getCategoryIncomeById(id).executeAsOne().toCategoryIncome()
+    }
+
+    override suspend fun getCategoryExpensesById(id: Long): CategoryLocalModel {
+        return dbQuery.getCategoryExpensesById(id).executeAsOne().toCategoryExpenses()
+    }
+
+    override suspend fun getNoteById(id: Long): NoteTransactionEntity {
+        return dbQuery.getNoteById(id).executeAsOne().toNote()
+    }
+
     override suspend fun deleteCategoryExpenseById(id: Long) {
         dbQuery.deleteCategoryExpensesById(id)
     }

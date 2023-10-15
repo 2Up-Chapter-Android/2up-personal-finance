@@ -6,32 +6,24 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.graphics.Color
-import com.aicontent.main.presentation.daily.calculateTotalExpenses
-import com.aicontent.main.presentation.daily.calculateTotalIncome
 import com.aicontent.main.theme.font_size_text_item_budge
 import com.aicontent.main.theme.padding_budge_box
 import com.aicontent.main.theme.padding_budge_item
-import com.twoup.personalfinance.domain.model.transaction.TransactionType
+import com.twoup.personalfinance.utils.presentation.adjustFontSize
 
 @Composable
 fun BudgetBox(viewModel: MainScreenViewModel) {
-    val incomes = viewModel.transaction.value
-    val totalIncome = calculateTotalIncome(incomes)
-    val totalExpenses = calculateTotalExpenses(incomes)
+    val transaction = viewModel.transaction.value
+    val totalIncome = viewModel.calculateTotalIncome(transaction)
+    val totalExpenses = viewModel.calculateTotalExpenses(transaction)
 
     Row(
         modifier = Modifier
@@ -60,7 +52,8 @@ fun BudgetItem(name: String, amount: Long, textColor: Color) {
         Text(name, fontSize = font_size_text_item_budge)
         Text(
             text = "$amount",
-            color = textColor
+            color = textColor,
+            fontSize = adjustFontSize(amount.toString()).sp
         )
     }
 }

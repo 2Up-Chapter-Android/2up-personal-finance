@@ -5,8 +5,8 @@ import androidx.compose.runtime.mutableStateOf
 import cafe.adriel.voyager.core.model.ScreenModel
 import com.twoup.personalfinance.domain.model.transaction.createTrans.TransactionLocalModel
 import com.twoup.personalfinance.domain.model.transaction.getTransaction.GetAllTransactionsResponseModel
-import com.twoup.personalfinance.domain.usecase.localTransaction.UseCaseFilterTransactionByMonth
-import com.twoup.personalfinance.domain.usecase.localTransaction.UseCaseGetAllTransaction
+import com.twoup.personalfinance.domain.usecase.localTransaction.transaction.UseCaseFilterTransactionByMonth
+import com.twoup.personalfinance.domain.usecase.localTransaction.transaction.UseCaseGetAllTransaction
 import com.twoup.personalfinance.domain.usecase.transaction.GetListTransactionUseCase
 import com.twoup.personalfinance.utils.DateTimeUtil
 import com.twoup.personalfinance.utils.data.Resource
@@ -16,7 +16,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.datetime.LocalDateTime
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -37,12 +36,12 @@ class MainScreenViewModel : ScreenModel, KoinComponent {
     val currentMonthYear = mutableStateOf(MonthYear(DateTimeUtil.now().monthNumber, DateTimeUtil.now().year))
 
     init {
-        loadNotes()
+        loadTransaction()
         getListTransaction()
         filterTransactionByMonth(currentMonthYear.value.month, currentMonthYear.value.year)
     }
 
-    fun loadNotes() {
+    fun loadTransaction() {
         useCaseGetAllTransaction.getAllTransaction()
     }
 
@@ -55,7 +54,7 @@ class MainScreenViewModel : ScreenModel, KoinComponent {
         }
     }
 
-    private fun filterTransactionByMonth(month: Int, year: Int) {
+    fun filterTransactionByMonth(month: Int, year: Int) {
         useCaseFilterTransactionByMonth.filterTransactionByMonth(month.toLong(), year.toLong())
     }
 
@@ -101,7 +100,13 @@ class MainScreenViewModel : ScreenModel, KoinComponent {
             else -> "Invalid Month"
         }
     }
+    fun calculateTotalIncome(transactions: List<TransactionLocalModel>): Long {
+        return transactions.filter { it.transaction_income > 0 }.sumOf { it.transaction_income }
+    }
 
+    fun calculateTotalExpenses(transactions: List<TransactionLocalModel>): Long {
+        return transactions.filter { it.transaction_expenses > 0 }.sumOf { it.transaction_expenses }
+    }
 }
 
 data class MonthYear(val month: Int, val year: Int)

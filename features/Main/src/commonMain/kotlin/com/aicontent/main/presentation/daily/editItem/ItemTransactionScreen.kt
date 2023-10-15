@@ -2,14 +2,19 @@ package com.aicontent.main.presentation.daily.editItem
 
 import PersonalFinance.features.Main.MR
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
@@ -30,6 +35,9 @@ import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Create
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DisplayMode
@@ -52,6 +60,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.model.rememberScreenModel
+import cafe.adriel.voyager.core.registry.rememberScreen
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
@@ -65,6 +74,8 @@ import com.aicontent.main.theme.marginStart_createTrans_actionBar_tabName
 import com.aicontent.main.theme.textSize_transaction_textField
 import com.aicontent.main.theme.thickness_transaction_borderStroke
 import com.twoup.personalfinance.domain.model.transaction.createTrans.TransactionLocalModel
+import com.twoup.personalfinance.navigation.MainScreenSharedScreen
+import com.twoup.personalfinance.navigation.TransactionSharedScreen
 import com.twoup.personalfinance.utils.DateTimeUtil
 import dev.icerock.moko.resources.compose.colorResource
 import dev.icerock.moko.resources.compose.localized
@@ -127,14 +138,18 @@ class ItemTransactionScreen(private val transaction: TransactionLocalModel) : Sc
                         .weight(weight = 1f, fill = false)
                 ) {
 
-                    TabRow(selectedTabIndex = selectedTabIndex.value,
+                    TabRow(
+                        selectedTabIndex = selectedTabIndex.value,
                         contentColor = Color.Transparent,
                         backgroundColor = MaterialTheme.colors.surface,
                         divider = { /*remove underline*/ },
                         indicator = { /*remove indicator*/ }) {
                         tabList.forEachIndexed { index, tabName ->
                             tabLayoutTrans(
-                                index = index, value = tabName, selectedTabIndex = selectedTabIndex
+                                index = index,
+                                value = tabName,
+                                selectedTabIndex = selectedTabIndex,
+                                viewModel = viewModel
                             )
                             Napier.d(
                                 "the number is ${selectedTabIndex.value}",
@@ -173,6 +188,96 @@ class ItemTransactionScreen(private val transaction: TransactionLocalModel) : Sc
                             transactionType = TransactionType.TRANSFER
                         )
                     }
+
+                    // Common UI components shared across all transaction types
+
+                    Spacer(
+                        modifier = Modifier
+                            .height(8.dp)
+//            .padding(
+//                start = create_transaction_spacer_padding_horizontal,
+//                end = create_transaction_spacer_padding_horizontal,
+//                top = create_transaction_spacer_padding_top,
+//                bottom = create_transaction_spacer_padding_bottom
+//            )
+                            .fillMaxWidth()
+                            .background(colorResource(MR.colors.createTrans_line_break)),
+                    )
+                    // AnimatedVisibility for the remaining buttons
+                    AnimatedVisibility(
+                        visible = !transactionUiState.showSaveButton,
+                        enter = fadeIn(),
+                        exit = fadeOut()
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            modifier = Modifier.fillMaxWidth()
+                                .padding(16.dp)
+                        ) {
+                            // Delete Button
+                            TransactionButton(
+                                text = "Delete",
+                                icon = Icons.Default.Delete
+                            ) {
+                                transactionUiState.id.let { viewModel.deleteTransactionById(it) }
+                                navigator.pop()
+                            }
+                            val itemTransactionScreen = rememberScreen(TransactionSharedScreen.CreateTransactionScreen(transaction.transaction_id))
+
+                            // Copy Button
+                            TransactionButton(
+                                text = "Copy",
+                                icon = Icons.Default.Create
+                            ) {
+                                navigator.push(itemTransactionScreen)
+                            }
+
+                            // Bookmark Button
+                            TransactionButton(
+                                text = "Bookmark",
+                                icon = Icons.Default.Star
+                            ) {
+                                // Handle bookmark button click
+                            }
+                        }
+                    }
+                    // Save Button
+                    AnimatedVisibility(
+                        visible = transactionUiState.showSaveButton,
+                        enter = fadeIn(),
+                        exit = fadeOut()
+                    ) {
+                        Button(
+                            onClick = {
+                                viewModel.updateTransaction(
+                                    TransactionLocalModel(
+                                        transaction_id = transactionUiState.id,
+                                        transaction_income = transactionUiState.income,
+                                        transaction_expenses = transactionUiState.expenses,
+                                        transaction_transfer = transactionUiState.transfer,
+                                        transaction_description = transactionUiState.description,
+                                        transaction_note = transactionUiState.note,
+                                        transaction_created = transactionUiState.date,
+                                        transaction_month = transaction.transaction_month,
+                                        transaction_year = transaction.transaction_year,
+                                        transaction_category = transactionUiState.category,
+                                        transaction_account = transactionUiState.account,
+                                        transaction_selectIndex = transactionUiState.selectIndex,
+                                        transaction_accountFrom = transactionUiState.accountFrom,
+                                        transaction_accountTo = transactionUiState.accountTo
+                                    )
+                                )
+                                viewModel.loadTransaction()
+                                navigator.pop()
+                            },
+                            modifier = Modifier.fillMaxWidth()
+                                .padding(16.dp),
+                            colors = ButtonDefaults.buttonColors(backgroundColor = colorResource(MR.colors.createTrans_tab_expense))
+                        ) {
+                            Text("Save", color = Color.White)
+                        }
+                    }
                 }
                 Napier.d(
                     "is open choose wallet ${transactionUiState.isOpenChooseWallet}",
@@ -189,7 +294,7 @@ class ItemTransactionScreen(private val transaction: TransactionLocalModel) : Sc
 
                 AnimatedVisibility(visible = transactionUiState.isOpenChooseCategory) {
                     CategoryBottomSheet(
-                        categorys = if (selectedTabIndex.value == 1) {
+                        category = if (selectedTabIndex.value == 1) {
                             categoryExpenses
                         } else {
                             categoryIncome
@@ -294,7 +399,12 @@ fun LineTransInfor(
 }
 
 @Composable
-fun tabLayoutTrans(index: Int, value: String, selectedTabIndex: MutableState<Int>) {
+fun tabLayoutTrans(
+    index: Int,
+    value: String,
+    selectedTabIndex: MutableState<Int>,
+    viewModel: DailyScreenViewModel
+) {
     Tab(
         selected = selectedTabIndex.value == index,
         onClick = { selectedTabIndex.value = index },
@@ -303,6 +413,7 @@ fun tabLayoutTrans(index: Int, value: String, selectedTabIndex: MutableState<Int
         Button(
             onClick = {
                 selectedTabIndex.value = index
+                viewModel.updateShowSaveButton()
             },
             modifier = Modifier.padding(vertical = create_transaction_padding_row),
             shape = RoundedCornerShape(20),

@@ -1,4 +1,4 @@
-package com.twoup.personalfinance.domain.usecase.localTransaction
+package com.twoup.personalfinance.domain.usecase.localTransaction.category
 
 import com.twoup.personalfinance.domain.model.transaction.category.CategoryLocalModel
 import com.twoup.personalfinance.domain.repository.transaction.TransactionLocalDataSource
@@ -9,15 +9,17 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class UseCaseGetAllCategoryExpenses(private val dataSource: TransactionLocalDataSource) {
-    val categoryExpenseState: MutableStateFlow<List<CategoryLocalModel>> = MutableStateFlow(listOf())
+class UseCaseGetAllCategoryIncome(private val dataSource: TransactionLocalDataSource) {
+    val categoryIncomeState: MutableStateFlow<List<CategoryLocalModel>> =
+        MutableStateFlow(listOf())
+
     @OptIn(DelicateCoroutinesApi::class)
-    fun getAllCategoryExpenses() {
+    fun getAllCategoryIncome() {
         GlobalScope.launch {
             val category = withContext(Dispatchers.Default) {
-                dataSource.getAllCategoryExpense()
+                dataSource.getAllCategoryIncome()
             }
-            categoryExpenseState.value = category
+            categoryIncomeState.value = category
         }
     }
 }

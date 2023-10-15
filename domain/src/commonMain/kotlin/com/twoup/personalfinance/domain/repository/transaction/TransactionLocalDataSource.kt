@@ -21,7 +21,15 @@ interface TransactionLocalDataSource {
     suspend fun getAllTransaction(): List<TransactionLocalModel>
     suspend fun getAllNote(): List<NoteTransactionEntity>
 
-//    suspend fun deleteSubCategoriesById(id: Long)
+    suspend fun getAccountById(id: Long): AccountLocalModel
+    suspend fun getTransactionById(id: Long): TransactionLocalModel
+    suspend fun getCategoryIncomeById(id: Long): CategoryLocalModel
+    suspend fun getCategoryExpensesById(id: Long): CategoryLocalModel
+    suspend fun getNoteById(id: Long): NoteTransactionEntity
+
+
+
+    //    suspend fun deleteSubCategoriesById(id: Long)
     suspend fun deleteCategoryExpenseById(id: Long)
     suspend fun deleteCategoryIncomeById(id: Long)
     suspend fun deleteAccountById(id: Long)

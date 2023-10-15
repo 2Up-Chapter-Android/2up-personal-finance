@@ -1,4 +1,4 @@
-package com.twoup.personalfinance.domain.usecase.localTransaction
+package com.twoup.personalfinance.domain.usecase.localTransaction.account
 
 import com.twoup.personalfinance.domain.repository.transaction.TransactionLocalDataSource
 import kotlinx.coroutines.DelicateCoroutinesApi

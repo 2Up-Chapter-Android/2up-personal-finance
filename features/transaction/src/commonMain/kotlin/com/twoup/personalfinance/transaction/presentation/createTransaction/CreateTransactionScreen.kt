@@ -31,8 +31,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
-import androidx.compose.material3.DatePickerFormatter
-import androidx.compose.material3.DatePickerState
 import androidx.compose.material3.DisplayMode
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberDatePickerState
@@ -78,7 +76,7 @@ import kotlinx.datetime.TimeZone
 
 val VeryLightGray = Color(0xFFF5F5F5) // You can adjust the color code as needed
 
-class CreateTransactionScreen : Screen {
+class CreateTransactionScreen(private val id: Long) : Screen {
     @Composable
     override fun Content() {
         CreateTransactionScreen()
@@ -91,10 +89,7 @@ class CreateTransactionScreen : Screen {
         val focusManager = LocalFocusManager.current
         val interactionSource = remember { MutableInteractionSource() }
         val viewModel = rememberScreenModel { CreateTransViewModel() }
-        val addNoteScreen = rememberScreen(MainScreenSharedScreen.MainScreen)
-        val createTransUiState = viewModel.createTransUiState.collectAsState()
         val getListWalletState = viewModel.getListWalletState.collectAsState()
-        val selectedTabIndex = remember { mutableStateOf(0) }
         val tabList = listOf(
             MR.strings.createTrans_tab_income.desc().localized(),
             MR.strings.createTrans_tab_expense.desc().localized(),
@@ -104,6 +99,7 @@ class CreateTransactionScreen : Screen {
         val categoryExpenses by viewModel.categoryExpenses.collectAsState(emptyList())
         val categoryIncome by viewModel.categoryIncome.collectAsState(emptyList())
         val accounts by viewModel.accounts.collectAsState(emptyList())
+        val mainScreen = rememberScreen(MainScreenSharedScreen.MainScreen)
 
         //date picker
         val time = remember { mutableStateOf(DateTimeUtil.toEpochMillis(DateTimeUtil.now())) }
@@ -114,10 +110,31 @@ class CreateTransactionScreen : Screen {
             initialDisplayedMonthMillis = time.value
         )
         val openDialog = remember { mutableStateOf(true) }
+        val transactionById by viewModel.transactionById.collectAsState()
 
-        LaunchedEffect(navigator) {
-            viewModel.loadTransaction()
+        LaunchedEffect(Unit) {
+            if (id != -1L) {
+                // Editing an existing transaction
+                viewModel.loadTransaction()
+                viewModel.getTransactionById(id)
+                viewModel.updateCreateTransUiState(transactionById)
+                Napier.d(
+                    "what is transaction ${viewModel.transactionById}",
+                    tag = "transactionById"
+                )
+
+            } else {
+//                 Creating a new transaction
+                viewModel.loadTransaction()
+            }
         }
+        val createTransUiState = viewModel.createTransUiState.collectAsState()
+        val selectedTabIndex =
+            remember { mutableStateOf(createTransUiState.value.selectIndex) }
+
+        Napier.d("id = $id and $createTransUiState", tag = "id please")
+        Napier.d("id = $id and ${viewModel.transactionById.value}", tag = "id please")
+
 
         LaunchedEffect(getListWalletState.value) {
             getListWalletState.value.fold(onSuccess = { listWallet.value.addAll(it.data) },
@@ -128,7 +145,9 @@ class CreateTransactionScreen : Screen {
         Box(modifier = Modifier.fillMaxSize()) {
             Column(modifier = Modifier.fillMaxSize()) {
                 Row(modifier = Modifier.fillMaxWidth()) {
-                    IconButton(onClick = { navigator.pop() }) {
+                    IconButton(onClick = {
+                        navigator.pop()
+                    }) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
                             contentDescription = "",
@@ -148,7 +167,8 @@ class CreateTransactionScreen : Screen {
                     modifier = Modifier.verticalScroll(rememberScrollState())
                         .weight(weight = 1f, fill = false)
                 ) {
-                    TabRow(selectedTabIndex = selectedTabIndex.value,
+                    TabRow(
+                        selectedTabIndex = selectedTabIndex.value,
                         contentColor = Color.Transparent,
                         backgroundColor = MaterialTheme.colors.surface,
                         divider = { /*remove underline*/ },
@@ -164,27 +184,36 @@ class CreateTransactionScreen : Screen {
                         }
                     }
                     when (selectedTabIndex.value) {
-                        0 -> TransactionScreen(
-                            viewModel = viewModel,
-                            openDialog = openDialog,
-                            selectIndex = selectedTabIndex,
-                            transactionType = TransactionType.Income
-                        )
+                        0 ->
+                            TransactionScreen(
+                                viewModel = viewModel,
+                                openDialog = openDialog,
+                                selectIndex = selectedTabIndex,
+                                transactionType = TransactionType.Income,
+                                id = id.toInt(),
+                                createUiState = createTransUiState
+                            )
 
                         1 -> TransactionScreen(
                             viewModel = viewModel,
                             openDialog = openDialog,
                             selectIndex = selectedTabIndex,
-                            transactionType = TransactionType.Expense
+                            transactionType = TransactionType.Expense,
+                            id = id.toInt(),
+                            createUiState = createTransUiState
+
                         )
 
                         else -> TransferScreen(
                             viewModel = viewModel,
                             openDialog = openDialog,
-                            selectIndex = selectedTabIndex
+                            selectIndex = selectedTabIndex,
+                            id = id.toInt(),
+                            createTransUiState = createTransUiState
                         )
                     }
                 }
+
 
                 AnimatedVisibility(visible = createTransUiState.value.isOpenChooseWallet || createTransUiState.value.isOpenChooseAccountTo || createTransUiState.value.isOpenChooseAccountFrom) {
                     AccountBottomSheet(
