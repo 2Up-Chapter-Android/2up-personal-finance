@@ -21,6 +21,7 @@ import com.aicontent.accounts.theme.font_size_text_item_category
 import com.aicontent.accounts.theme.padding_end_text_daily_item
 import com.aicontent.accounts.theme.padding_vertical_text_daily_item
 import com.twoup.personalfinance.domain.model.transaction.createTrans.TransactionLocalModel
+import com.twoup.personalfinance.utils.presentation.adjustFontSize
 
 @Composable
 fun ItemDailyScreen(

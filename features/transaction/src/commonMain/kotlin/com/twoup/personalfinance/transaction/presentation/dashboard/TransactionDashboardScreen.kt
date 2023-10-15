@@ -33,14 +33,14 @@ class TransactionDashboardScreen: Screen {
     @Composable
     fun TransactionDashboardScreen() {
         val navigator = LocalNavigator.currentOrThrow
-        val createTransScreen = rememberScreen(TransactionSharedScreen.CreateTransactionScreen)
+//        val createTransScreen = rememberScreen(TransactionSharedScreen.CreateTransactionScreen())
         Box(modifier = Modifier.fillMaxSize().padding(10.dp)) {
             Column {
                 Text(text = "Hello Transaction Dashboard Screen", color = Color.Black, fontSize = 50.sp)
             }
             Button(
                 onClick = {
-                    navigator.push(createTransScreen)
+//                    navigator.push(createTransScreen)
                 },
                 shape = CircleShape,
                 modifier = Modifier.size(50.dp).align(Alignment.BottomEnd),

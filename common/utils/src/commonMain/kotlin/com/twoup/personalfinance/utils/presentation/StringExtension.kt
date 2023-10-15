@@ -1,6 +1,5 @@
 package com.twoup.personalfinance.utils.presentation
 
-
 fun String.isValidUsername(): Boolean {
     val usernamePattern = "^[A-Za-z0-9]+\$"
     val pattern = Regex(usernamePattern)

@@ -2,7 +2,6 @@ package com.aicontent.main.presentation
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.FabPosition
@@ -32,11 +31,7 @@ import com.aicontent.main.presentation.monthly.MonthlyScreen
 import com.aicontent.main.presentation.note.NoteScreen
 import com.aicontent.main.presentation.total.TotalScreen
 import com.twoup.personalfinance.domain.model.transaction.TransactionEntity
-import com.twoup.personalfinance.domain.model.transaction.TransactionType
 import com.twoup.personalfinance.navigation.TransactionSharedScreen
-import com.twoup.personalfinance.utils.DateTimeUtil
-import com.twoup.personalfinance.utils.data.fold
-import io.github.aakira.napier.Napier
 
 class MainScreen() : Screen {
     @Composable
@@ -45,36 +40,40 @@ class MainScreen() : Screen {
         val viewModel = rememberScreenModel { MainScreenViewModel() }
         val viewModelDailyScreen = rememberScreenModel { DailyScreenViewModel() }
         val navigator = LocalNavigator.currentOrThrow
-        val transactionScreen = rememberScreen(TransactionSharedScreen.CreateTransactionScreen)
+        val transactionScreen = rememberScreen(
+            TransactionSharedScreen.CreateTransactionScreen( id = -1)
+        )
+
         val listTransactionState = viewModel.getListTransactionState.collectAsState()
         val listTransaction = remember { mutableStateOf(mutableListOf<TransactionEntity>()) }
         val monthYear = viewModel.currentMonthYear
-
         val transactionByMonth = viewModel.transactionByMonth.collectAsState().value
 
+        // Trigger a LaunchedEffect to load and filter transactions based on the selected month and year.
         LaunchedEffect(Unit) {
-            viewModel.loadNotes()
+            viewModel.loadTransaction()
+            viewModel.filterTransactionByMonth(monthYear.value.month, monthYear.value.year)
         }
 
-        LaunchedEffect(listTransactionState.value) {
-            listTransactionState.value.fold(
-                onSuccess = {
-                    Napier.d(tag = "MainScreen", message = "Get list transaction success $it")
-                    listTransaction.value.clear()
-                    listTransaction.value.addAll(it.data)
-                },
-                onFailure = {
-                    Napier.d(tag = "MainScreen", message = "Get list transaction failed $it")
-                },
-                onLoading = {
-                    Napier.d(tag = "MainScreen", message = "Get list transaction loading $it")
-                    it?.data?.let { it1 ->
-                        listTransaction.value.clear()
-                        listTransaction.value.addAll(it1)
-                    }
-                }
-            )
-        }
+//        LaunchedEffect(listTransactionState.value) {
+//            listTransactionState.value.fold(
+//                onSuccess = {
+//                    Napier.d(tag = "MainScreen", message = "Get list transaction success $it")
+//                    listTransaction.value.clear()
+//                    listTransaction.value.addAll(it.data)
+//                },
+//                onFailure = {
+//                    Napier.d(tag = "MainScreen", message = "Get list transaction failed $it")
+//                },
+//                onLoading = {
+//                    Napier.d(tag = "MainScreen", message = "Get list transaction loading $it")
+//                    it?.data?.let { it1 ->
+//                        listTransaction.value.clear()
+//                        listTransaction.value.addAll(it1)
+//                    }
+//                }
+//            )
+//        }
 
         Scaffold(
             topBar = {
@@ -90,25 +89,23 @@ class MainScreen() : Screen {
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(bottom = 56.dp), // Adjust the bottom padding to match BottomAppBar height
-                    horizontalAlignment = Alignment.CenterHorizontally,
-//                    verticalArrangement = Arrangement.Top
-                )
-                    {
-                        BudgetBox(viewModel = viewModel)
-                        Column(
-                            modifier = Modifier.fillMaxSize(),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Top
-                        ) {
-                            when (viewModel.selectedTabIndex.value) {
-                                0 -> DailyScreen(viewModelDailyScreen,transactionByMonth)
-                                1 -> CalenderScreen()
-                                4 -> MonthlyScreen()
-                                3 -> TotalScreen()
-                                else -> NoteScreen()
-                            }
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    BudgetBox(viewModel = viewModel)
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Top
+                    ) {
+                        when (viewModel.selectedTabIndex.value) {
+                            0 -> DailyScreen(viewModelDailyScreen, transactionByMonth)
+                            1 -> CalenderScreen()
+                            4 -> MonthlyScreen()
+                            3 -> TotalScreen()
+                            else -> NoteScreen()
                         }
                     }
+                }
             },
             floatingActionButton = {
                 FloatingActionButton(

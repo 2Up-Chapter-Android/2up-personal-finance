@@ -24,6 +24,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -54,7 +55,6 @@ class AccountListScreen() : Screen {
     override fun Content() {
         val viewModel = rememberScreenModel { AccountListViewModel() }
         val accounts by viewModel.accounts.collectAsState(emptyList())
-
         AccountListScreen(accounts, viewModel)
     }
 }
@@ -110,15 +110,7 @@ fun AccountList(accounts: List<AccountLocalModel>, viewModel: AccountListViewMod
             return transactions.filter { transaction -> transaction.transaction_account == account.account_name }
         }
 
-        fun getAccountTransactions(account: AccountLocalModel): List<TransactionLocalModel> {
-            return transactions.filter {
-                it.transaction_account == account.account_name
-                        || it.transaction_accountFrom == account.account_name
-                        || it.transaction_accountTo == account.account_name
-            }
-        }
-
-// In your LazyColumn
+        // In your LazyColumn
         LazyColumn(
             modifier = Modifier.fillMaxSize()
         ) {

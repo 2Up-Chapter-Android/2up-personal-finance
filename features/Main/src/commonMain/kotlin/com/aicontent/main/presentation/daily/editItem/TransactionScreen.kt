@@ -204,7 +204,7 @@ fun TransactionScreen(
                     keyboardType = KeyboardType.Number
                 ),
                 onTextChange = {
-                    viewModel.onIncomeChange(it.toLong())
+                    viewModel.onIncomeChange(it)
                     viewModel.updateShowSaveButton()
                 },
             )
@@ -298,94 +298,6 @@ fun TransactionScreen(
                 },
                 keyboardOption = KeyboardOptions(imeAction = ImeAction.Next),
             )
-        }
-    }
-
-    // Common UI components shared across all transaction types
-
-    Spacer(
-        modifier = Modifier
-            .height(40.dp)
-            .padding(
-                start = create_transaction_spacer_padding_horizontal,
-                end = create_transaction_spacer_padding_horizontal,
-                top = create_transaction_spacer_padding_top,
-                bottom = create_transaction_spacer_padding_bottom
-            )
-            .fillMaxWidth()
-            .background(colorResource(MR.colors.createTrans_line_break)),
-    )
-// AnimatedVisibility for the remaining buttons
-    AnimatedVisibility(
-        visible = !transactionUiState.showSaveButton,
-        enter = fadeIn(),
-        exit = fadeOut()
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier.fillMaxWidth()
-                .padding(2.dp)
-        ) {
-            // Delete Button
-            TransactionButton(
-                text = "Delete",
-                icon = Icons.Default.Delete
-            ) {
-                transactionUiState.id.let { viewModel.deleteTransactionById(it) }
-                navigator.pop()
-            }
-
-            // Copy Button
-            TransactionButton(
-                text = "Copy",
-                icon = Icons.Default.Create
-            ) {
-                // Handle copy button click
-            }
-
-            // Bookmark Button
-            TransactionButton(
-                text = "Bookmark",
-                icon = Icons.Default.Star
-            ) {
-                // Handle bookmark button click
-            }
-        }
-    }
-
-// Save Button
-    AnimatedVisibility(
-        visible = transactionUiState.showSaveButton,
-        enter = fadeIn(),
-        exit = fadeOut()
-    ) {
-        Button(
-            onClick = {
-                viewModel.updateTransaction(
-                    TransactionLocalModel(
-                        transaction_id = transactionUiState.id,
-                        transaction_income = transactionUiState.income,
-                        transaction_expenses = transactionUiState.expenses,
-                        transaction_transfer = transactionUiState.transfer,
-                        transaction_description = transactionUiState.description,
-                        transaction_note = transactionUiState.note,
-                        transaction_created = transactionUiState.date,
-                        transaction_month = transaction.transaction_month,
-                        transaction_year = transaction.transaction_year,
-                        transaction_category = transactionUiState.category,
-                        transaction_account = transactionUiState.account,
-                        transaction_selectIndex = transactionUiState.selectIndex,
-                        transaction_accountFrom = transactionUiState.accountFrom,
-                        transaction_accountTo = transactionUiState.accountTo
-                    )
-                )
-                navigator.pop()
-            },
-            modifier = Modifier.fillMaxWidth(),
-            colors = ButtonDefaults.buttonColors(backgroundColor = colorResource(MR.colors.createTrans_tab_expense))
-        ) {
-            Text("Save", color = Color.White)
         }
     }
 }

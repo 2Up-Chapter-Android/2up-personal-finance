@@ -1,4 +1,4 @@
-package com.twoup.personalfinance.domain.usecase.localTransaction
+package com.twoup.personalfinance.domain.usecase.localTransaction.category
 
 import com.twoup.personalfinance.domain.repository.transaction.TransactionLocalDataSource
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -7,13 +7,13 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class UseCaseDeleteTransactionById(private val dataSource: TransactionLocalDataSource) {
+class UseCaseDeleteCategoryIncomeById(private val dataSource: TransactionLocalDataSource) {
 
     @OptIn(DelicateCoroutinesApi::class)
-    fun deleteTransactionById(id: Long, loadNote: Unit) {
+    fun deleteCategoryIncomeById(id: Long, loadNote: Unit) {
         GlobalScope.launch {
             withContext(Dispatchers.Main) {
-                dataSource.deleteTransactionById(id)
+                dataSource.deleteCategoryIncomeById(id)
                 loadNote
             }
         }

@@ -1,7 +1,6 @@
 package com.aicontent.main.presentation.daily
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
@@ -36,9 +35,10 @@ import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.aicontent.main.theme.padding_end_text_daily_item
 import com.twoup.personalfinance.domain.model.transaction.createTrans.TransactionLocalModel
-import com.twoup.personalfinance.domain.usecase.localTransaction.UseCaseFilterTransactionByMonth
 import com.twoup.personalfinance.navigation.MainScreenSharedScreen
 import com.twoup.personalfinance.utils.DateTimeUtil
+import com.twoup.personalfinance.utils.presentation.adjustFontSize
+
 @Composable
 fun DailyScreen(viewModel: DailyScreenViewModel, transactionByMonth : List<TransactionLocalModel>) {
     val navigator = LocalNavigator.currentOrThrow
@@ -70,9 +70,9 @@ fun DailyScreen(viewModel: DailyScreenViewModel, transactionByMonth : List<Trans
                                 .padding(vertical = 4.dp)
                         ) {
                             Divider(thickness = 0.5.dp, color = Color.LightGray)
-                            TitleTransaction(dateDistinct, transactions)
+                            TitleTransaction(dateDistinct, transactions, viewModel)
                             Divider(thickness = 0.5.dp, color = Color.LightGray)
-                            DateTransactionsGroup(transactions, navigator)
+                            DateTransactionsGroup(transactions, navigator, viewModel)
                             Divider(thickness = 0.5.dp, color = Color.LightGray)
                         }
                     }
@@ -92,7 +92,7 @@ fun DailyScreen(viewModel: DailyScreenViewModel, transactionByMonth : List<Trans
 }
 
 @Composable
-fun DateTransactionsGroup(transactions: List<TransactionLocalModel>, navigator: Navigator) {
+fun DateTransactionsGroup(transactions: List<TransactionLocalModel>, navigator: Navigator, viewModel: DailyScreenViewModel) {
     Column {
         transactions.forEach { transaction ->
             val itemTransactionScreen = rememberScreen(MainScreenSharedScreen.ItemTransaction(transaction))
@@ -101,7 +101,8 @@ fun DateTransactionsGroup(transactions: List<TransactionLocalModel>, navigator: 
             ItemDailyScreen(
                 transaction,
                 onNoteClick = { navigator.push(itemTransactionScreen) },
-                isTransfer = isTransfer
+                isTransfer = isTransfer,
+                viewModel = viewModel
             )
         }
     }
@@ -110,10 +111,11 @@ fun DateTransactionsGroup(transactions: List<TransactionLocalModel>, navigator: 
 @Composable
 fun TitleTransaction(
     dateDistinct: TransactionLocalModel,
-    transactions: List<TransactionLocalModel>
+    transactions: List<TransactionLocalModel>,
+    viewModel: DailyScreenViewModel
 ) {
-    val totalIncome = calculateTotalIncome(transactions)
-    val totalExpenses = calculateTotalExpenses(transactions)
+    val totalIncome = viewModel.calculateTotalIncome(transactions)
+    val totalExpenses = viewModel.calculateTotalExpenses(transactions)
     val boxColor = Color(0xFF336699) // Replace "336699" with your desired hex RGB value
 
     Row(
@@ -185,25 +187,3 @@ fun TitleTransaction(
     }
 }
 
-fun calculateTotalIncome(transactions: List<TransactionLocalModel>): Long {
-    return transactions.filter { it.transaction_income > 0 }.sumOf { it.transaction_income }
-}
-
-fun calculateTotalExpenses(transactions: List<TransactionLocalModel>): Long {
-    return transactions.filter { it.transaction_expenses > 0 }.sumOf { it.transaction_expenses }
-}
-
-fun adjustFontSize(text: String): Float {
-    val maxLength = 10 // Maximum character length before font size decrease
-    val fontSize10sp = 10f
-    val fontSize12sp = 12f
-    val fontSize14sp = 14f
-    val fontSize16sp = 16f
-
-    return when {
-        text.length <= maxLength -> fontSize14sp
-        text.length <= maxLength * 2 -> fontSize12sp
-        text.length <= maxLength * 3 -> fontSize10sp
-        else -> fontSize16sp
-    }
-}

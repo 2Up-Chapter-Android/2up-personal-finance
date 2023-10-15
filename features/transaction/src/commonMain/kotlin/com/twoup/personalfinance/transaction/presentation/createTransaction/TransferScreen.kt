@@ -17,7 +17,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
@@ -26,15 +28,14 @@ import androidx.compose.ui.platform.LocalTextInputService
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import cafe.adriel.voyager.core.registry.rememberScreen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.twoup.personalfinance.domain.model.transaction.createTrans.TransactionLocalModel
+import com.twoup.personalfinance.navigation.MainScreenSharedScreen
 import com.twoup.personalfinance.transaction.presentation.theme.buttonHeight_transaction_buttonNextAction
 import com.twoup.personalfinance.transaction.presentation.theme.create_transaction_padding_horizontal
 import com.twoup.personalfinance.transaction.presentation.theme.create_transaction_padding_row
-import com.twoup.personalfinance.transaction.presentation.theme.create_transaction_spacer_padding_bottom
-import com.twoup.personalfinance.transaction.presentation.theme.create_transaction_spacer_padding_horizontal
-import com.twoup.personalfinance.transaction.presentation.theme.create_transaction_spacer_padding_top
 import com.twoup.personalfinance.transaction.presentation.theme.thickness_transaction_borderStroke
 import com.twoup.personalfinance.utils.DateTimeUtil
 import dev.icerock.moko.resources.compose.colorResource
@@ -46,15 +47,30 @@ import io.github.aakira.napier.Napier
 fun TransferScreen(
     viewModel: CreateTransViewModel,
     openDialog: MutableState<Boolean>,
-    selectIndex: MutableState<Int>
+    selectIndex: MutableState<Int>,
+    createTransUiState: State<CreateTransUiState>,
+    id: Int
 ) {
-    val navigator = LocalNavigator.currentOrThrow
-    val createTransUiState = viewModel.createTransUiState.collectAsState()
-    val accounts = viewModel.accounts.value
+    val transactionById by viewModel.transactionById.collectAsState()
 
-    LaunchedEffect(navigator){
-        viewModel.loadTransaction()
+    LaunchedEffect(Unit) {
+        if (id != -1) {
+            // Editing an existing transaction
+            viewModel.loadTransaction()
+            viewModel.getTransactionById(id.toLong())
+            viewModel.updateCreateTransUiState(transactionById)
+            viewModel.getTransactionById(id.toLong())
+            viewModel.updateCreateTransUiState(transactionById)
+//            Napier.d("what is transaction ${viewModel.transactionById.value}", tag = "transactionById")
+
+        } else {
+            // Creating a new transaction
+            viewModel.loadTransaction()
+        }
     }
+    val navigator = LocalNavigator.currentOrThrow
+    val mainScreen = rememberScreen(MainScreenSharedScreen.MainScreen)
+//    val createTransUiState = viewModel.createTransUiState.collectAsState()
 
     CompositionLocalProvider(
         LocalTextInputService provides null
@@ -92,13 +108,18 @@ fun TransferScreen(
         )
     }
     LineTransInformation(
-        text = createTransUiState.value.transferBalance.toString(),
+        text = createTransUiState.value.transfer.toString(),
         textLabel = MR.strings.createTrans_inputLabel_amount.desc().localized(),
         keyboardOption = KeyboardOptions(
             imeAction = ImeAction.Next,
             keyboardType = KeyboardType.Number
         ),
-        onTextChange = { viewModel.onTransferChange(it) },
+        onTextChange = { newText ->
+            val regex = Regex("[0-9]*") // This regex allows only digits (0-9)
+            if (regex.matches(newText)) {
+                viewModel.onTransferChange(newText)
+            }
+        }
     )
 
     LineTransInformation(
@@ -111,20 +132,22 @@ fun TransferScreen(
     LineTransInformation(
         text = createTransUiState.value.description,
         textLabel = MR.strings.createTrans_inputLabel_description.desc().localized(),
-        onTextChange = { viewModel.onNoteChange(it) },
+        onTextChange = { viewModel.onDescriptionChange(it) },
         keyboardOption = KeyboardOptions(imeAction = ImeAction.Next),
         singleLine = false
     )
 
+    Spacer(modifier = Modifier.padding(8.dp))
+
     Spacer(
         modifier = Modifier
-            .height(40.dp)
-            .padding(
-                start = create_transaction_spacer_padding_horizontal,
-                end = create_transaction_spacer_padding_horizontal,
-                top = create_transaction_spacer_padding_top,
-                bottom = create_transaction_spacer_padding_bottom
-            )
+            .height(8.dp)
+//            .padding(
+//                start = create_transaction_spacer_padding_horizontal,
+//                end = create_transaction_spacer_padding_horizontal,
+//                top = create_transaction_spacer_padding_top,
+//                bottom = create_transaction_spacer_padding_bottom
+//            )
             .fillMaxWidth()
             .background(colorResource(MR.colors.createTrans_line_break)),
     )
@@ -142,7 +165,7 @@ fun TransferScreen(
                         transaction_id = createTransUiState.value.id,
                         transaction_income = 0,
                         transaction_expenses = 0,
-                        transaction_transfer = createTransUiState.value.transferBalance,
+                        transaction_transfer = createTransUiState.value.transfer,
                         transaction_description = createTransUiState.value.description,
                         transaction_note = createTransUiState.value.note,
                         transaction_created = createTransUiState.value.date,
@@ -159,6 +182,7 @@ fun TransferScreen(
                     "the number selected in transfer is  ${selectIndex.value}",
                     tag = "selectedTabIndex"
                 )
+//                navigator.push(mainScreen)
                 navigator.pop()
                 viewModel.loadTransaction()
 

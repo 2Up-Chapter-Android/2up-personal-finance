@@ -6,6 +6,7 @@ import org.koin.dsl.module
 import platform.Foundation.NSBundle
 import platform.Foundation.NSUserDefaults
 
+//@OptIn(ExperimentalSettingsApi::class)
 fun initKoinIos(
     userDefaults: NSUserDefaults
 ): KoinApplication = initKoin{

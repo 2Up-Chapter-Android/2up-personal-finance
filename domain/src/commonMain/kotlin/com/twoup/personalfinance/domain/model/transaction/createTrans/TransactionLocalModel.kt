@@ -3,7 +3,7 @@ package com.twoup.personalfinance.domain.model.transaction.createTrans
 import kotlinx.datetime.LocalDateTime
 
 data class TransactionLocalModel(
-    val transaction_id: Long?,
+    val transaction_id: Long,
     val transaction_income: Long,
     val transaction_expenses : Long,
     val transaction_transfer : Long,
