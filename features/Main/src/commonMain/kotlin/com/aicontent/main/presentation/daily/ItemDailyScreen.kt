@@ -11,21 +11,28 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.aicontent.main.theme.*
 import com.twoup.personalfinance.domain.model.transaction.createTrans.TransactionLocalModel
+import com.twoup.personalfinance.utils.presentation.adjustFontSize
 
 @Composable
 fun ItemDailyScreen(
     transaction: TransactionLocalModel,
     onNoteClick: () -> Unit,
-    isTransfer: Boolean = false
+    isTransfer: Boolean = false,
+    viewModel : DailyScreenViewModel
 ) {
+    LaunchedEffect(Unit) {
+        viewModel.loadTransaction()
+    }
     Column {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -58,16 +65,9 @@ fun ItemDailyScreen(
             }
             Spacer(Modifier.padding(1.dp))
 
-            val colorText = when {
-                transaction.transaction_income - transaction.transaction_expenses > 0 -> Color.Blue
-                transaction.transaction_expenses - transaction.transaction_income > 0 -> Color.Red
-                else -> Color.Black
-            }
-            val incomeOrExpenses = when {
-                transaction.transaction_income - transaction.transaction_expenses > 0 -> transaction.transaction_income
-                transaction.transaction_expenses - transaction.transaction_income > 0 -> transaction.transaction_expenses
-                else -> 0
-            }
+            val colorText = viewModel.calculateColorText(transaction)
+            val incomeOrExpenses = viewModel.calculateIncomeOrExpenses(transaction)
+
             Text(
                 modifier = Modifier.padding(end = padding_end_text_daily_item),
                 text = if(isTransfer) "${transaction.transaction_transfer} đ" else "$incomeOrExpenses đ",

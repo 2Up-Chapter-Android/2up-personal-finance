@@ -5,6 +5,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,11 +35,18 @@ import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.model.rememberScreenModel
@@ -47,87 +55,80 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import com.aicontent.accounts.theme.height_row_top_bar
 import com.aicontent.accounts.theme.padding_end_text_daily_item
+import com.aicontent.accounts.theme.padding_text_top_bar
+import com.aicontent.accounts.theme.rounded_corner_shape
 import com.twoup.personalfinance.domain.model.transaction.account.AccountLocalModel
 import com.twoup.personalfinance.domain.model.transaction.createTrans.TransactionLocalModel
 import com.twoup.personalfinance.navigation.MainScreenSharedScreen
 import com.twoup.personalfinance.utils.DateTimeUtil
 import com.twoup.personalfinance.utils.DateTimeUtil.formatTimeForAccountFirst
 import com.twoup.personalfinance.utils.DateTimeUtil.formatTimeForAccountLast
+import com.twoup.personalfinance.utils.presentation.adjustFontSize
 import io.github.aakira.napier.Napier
 
 class ListTransactionForAccount(
-    // query from sql file
     private val allTransaction: List<TransactionLocalModel>,
     private val account: AccountLocalModel
 ) : Screen {
-
-    private fun getAccountTransactions(account: AccountLocalModel): List<TransactionLocalModel> {
-        return allTransaction.filter {
-            it.transaction_account == account.account_name
-                    || it.transaction_accountFrom == account.account_name
-                    || it.transaction_accountTo == account.account_name
-        }
-    }
 
     @Composable
     override fun Content() {
         val viewModel = rememberScreenModel { AccountListViewModel() }
         val navigator = LocalNavigator.currentOrThrow
-        val listTransactions = getAccountTransactions(account)
+        val transactionByMonth = viewModel.getAccountTransactions(
+            viewModel.transactionByMonth.collectAsState().value,
+            account
+        )
+
+        val listTransactions = viewModel.getAccountTransactions(allTransaction, account)
+        val monthYear = viewModel.currentMonthYear
+
+        LaunchedEffect(Unit) {
+            viewModel.loadAccount()
+            viewModel.filterTransactionByMonth(monthYear.value.month, monthYear.value.year)
+        }
 
         Napier.d("list transaction ${listTransactions.size}", tag = "test list")
         Scaffold(
             topBar = {
                 TopAppBarListAccount(
-                    navigator, account
+                    navigator, account, viewModel
                 )
             },
             content = {
                 Column(
                     modifier = Modifier.padding(bottom = 56.dp), // Adjust the bottom padding to match BottomAppBar height
                 ) {
-                    val firstTransaction = listTransactions.firstOrNull()
-                    if (firstTransaction != null) {
-                        GroupTopBar(firstTransaction)
-                        Divider(thickness = 0.5.dp, color = Color.LightGray)
-                        ElementAccount(listTransactions, allTransaction, account)
-                        ListTransaction(
-                            navigator, viewModel, listTransactions
-                        )
-                    } else {
-                        // Handle the case when listTransactions is empty
-                        // You can show a message or UI accordingly
-                    }
+                    val firstTransaction = listTransactions.firstOrNull() ?: viewModel.getDefaultTransaction()
+                    GroupTopBar(firstTransaction)
+                    Divider(thickness = 0.5.dp, color = Color.LightGray)
+                    ElementAccount(viewModel, transactionByMonth, listTransactions, account)
+                    ListTransaction(
+                        navigator, viewModel, transactionByMonth
+                    )
                 }
             }
         )
     }
 }
 
+
 @Composable
 fun ElementAccount(
+    viewModel: AccountListViewModel,
     listTransaction: List<TransactionLocalModel>,
     allTransaction: List<TransactionLocalModel>,
     account: AccountLocalModel,
 ) {
-    val income = listTransaction.filter { it.transaction_income > 0 }.sumOf { it.transaction_income }
-    val expenses = listTransaction.filter { it.transaction_expenses > 0 }.sumOf { it.transaction_expenses }
-    val transferFrom = listTransaction.filter { it.transaction_accountFrom == account.account_name }.sumOf { it.transaction_transfer }
-    val transferTo = listTransaction.filter { it.transaction_accountTo == account.account_name }.sumOf { it.transaction_transfer }
-    val total = income - expenses - transferFrom + transferTo
+    viewModel.updateData(listTransaction, allTransaction, account)
 
-    val totalAccountIncome = allTransaction.filter { it.transaction_income > 0 }.sumOf { it.transaction_income }
-    val totalAccountExpenses = allTransaction.filter { it.transaction_expenses > 0 }.sumOf { it.transaction_expenses }
-    val totalAccountTransferFrom = allTransaction.filter { it.transaction_accountFrom == account.account_name }.sumOf { it.transaction_transfer }
-    val totalAccountTransferTo = allTransaction.filter { it.transaction_accountTo == account.account_name }.sumOf { it.transaction_transfer }
-    val totalAccount = totalAccountIncome - totalAccountExpenses + totalAccountTransferTo - totalAccountTransferFrom
-
-    val colorText = when {
-        total > 0 || totalAccount > 0 -> Color.Blue
-        total < 0 || totalAccount < 0 -> Color.Red
-        else -> Color.Black
-    }
+    val income by viewModel.income.collectAsState()
+    val expenses by viewModel.expenses.collectAsState()
+    val total by viewModel.total.collectAsState()
+    val totalAccount by viewModel.totalAccountValue.collectAsState()
+    val colorText by viewModel.colorText.collectAsState()
 
     Row(
         modifier = Modifier
@@ -229,7 +230,7 @@ fun ListTransaction(
                                 .padding(vertical = 4.dp)
                         ) {
                             Divider(thickness = 0.5.dp, color = Color.LightGray)
-                            TitleTransaction(dateDistinct, transactions)
+                            TitleTransaction(dateDistinct, transactions, viewModel)
                             Divider(thickness = 0.5.dp, color = Color.LightGray)
                             DateTransactionsGroup(transactions, navigator)
                             Divider(thickness = 0.5.dp, color = Color.LightGray)
@@ -272,10 +273,11 @@ fun DateTransactionsGroup(transactions: List<TransactionLocalModel>, navigator: 
 @Composable
 fun TitleTransaction(
     dateDistinct: TransactionLocalModel,
-    transactions: List<TransactionLocalModel>
+    transactions: List<TransactionLocalModel>,
+    viewModel : AccountListViewModel
 ) {
-    val totalIncome = calculateTotalIncome(transactions)
-    val totalExpenses = calculateTotalExpenses(transactions)
+    val totalIncome = viewModel.calculateTotalIncome(transactions)
+    val totalExpenses = viewModel.calculateTotalExpenses(transactions)
     val boxColor = Color(0xFF336699) // Replace "336699" with your desired hex RGB value
 
     Row(
@@ -350,34 +352,11 @@ fun TitleTransaction(
         }
     }
 }
-
-fun calculateTotalIncome(transactions: List<TransactionLocalModel>): Long {
-    return transactions.filter { it.transaction_income > 0 }.sumOf { it.transaction_income }
-}
-
-fun calculateTotalExpenses(transactions: List<TransactionLocalModel>): Long {
-    return transactions.filter { it.transaction_expenses > 0 }.sumOf { it.transaction_expenses }
-}
-
-fun adjustFontSize(text: String): Float {
-    val maxLength = 10 // Maximum character length before font size decrease
-    val fontSize10sp = 10f
-    val fontSize12sp = 12f
-    val fontSize14sp = 14f
-    val fontSize16sp = 16f
-
-    return when {
-        text.length <= maxLength -> fontSize14sp
-        text.length <= maxLength * 2 -> fontSize12sp
-        text.length <= maxLength * 3 -> fontSize10sp
-        else -> fontSize16sp
-    }
-}
-
 @Composable
 fun TopAppBarListAccount(
     navigator: Navigator,
-    account: AccountLocalModel
+    account: AccountLocalModel,
+    viewModel: AccountListViewModel
 ) {
     TopAppBar(
         title = {
@@ -385,7 +364,7 @@ fun TopAppBarListAccount(
                 text = account.account_name,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color.Black
+                color = Color.Black,
             )
         },
         navigationIcon = {
@@ -404,43 +383,58 @@ fun TopAppBarListAccount(
         actions = {
             Row(
                 modifier = Modifier
-                    .fillMaxHeight()
-                    .padding(horizontal = 8.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
+                    .fillMaxHeight() // Use fillMaxHeight to set the height
+                    .background(
+                        color = MaterialTheme.colors.surface,
+                    ),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                IconButton(
-                    onClick = {},
-                    modifier = Modifier.align(Alignment.CenterVertically)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.KeyboardArrowLeft,
-                        contentDescription = null,
-                        tint = Color.Black
-                    )
+                MonthButton(Icons.Default.KeyboardArrowLeft) {
+                    viewModel.decrementMonth()
                 }
 
-                Text(
-                    text = "Jun 2023", // Replace with dynamic content
-                    color = Color.Black,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 16.sp,
-//                    modifier = Modifier.padding(horizontal = 4.dp)
+                BoldMonthText(
+                    month = viewModel.getAbbreviatedMonth(viewModel.currentMonthYear.value.month),
+                    year = viewModel.currentMonthYear.value.year
                 )
 
-                IconButton(
-                    onClick = {},
-                    modifier = Modifier.align(Alignment.CenterVertically)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.KeyboardArrowRight,
-                        contentDescription = null,
-                        tint = Color.Black
-                    )
+                MonthButton(Icons.Default.KeyboardArrowRight) {
+                    viewModel.incrementMonth()
                 }
             }
         },
         backgroundColor = MaterialTheme.colors.background,
         elevation = AppBarDefaults.TopAppBarElevation
+    )
+}
+
+@Composable
+fun MonthButton(icon: ImageVector, onClick: () -> Unit) {
+    IconButton(
+        onClick = onClick,
+        content = {
+            Icon(
+                imageVector = icon,
+                contentDescription = null
+            )
+        }
+    )
+}
+
+@Composable
+fun BoldMonthText(month: String, year: Int) {
+    val text = buildAnnotatedString {
+        withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+            append(month)
+        }
+        append(".")
+        append(year.toString())
+    }
+
+    Text(
+        text = text,
+        color = Color.Black, // Change the color as needed
+        modifier = Modifier.padding(horizontal = padding_text_top_bar),
+        fontSize = 16.sp // Change the font size as needed
     )
 }

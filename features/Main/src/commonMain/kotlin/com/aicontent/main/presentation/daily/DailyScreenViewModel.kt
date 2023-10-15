@@ -2,23 +2,23 @@ package com.aicontent.main.presentation.daily
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.graphics.Color
 import cafe.adriel.voyager.core.model.ScreenModel
 import com.twoup.personalfinance.domain.model.transaction.account.AccountLocalModel
 import com.twoup.personalfinance.domain.model.transaction.category.CategoryLocalModel
 import com.twoup.personalfinance.domain.model.transaction.createTrans.TransactionLocalModel
-import com.twoup.personalfinance.domain.usecase.localTransaction.UseCaseDeleteTransactionById
-import com.twoup.personalfinance.domain.usecase.localTransaction.UseCaseGetAllAccount
-import com.twoup.personalfinance.domain.usecase.localTransaction.UseCaseGetAllCategoryExpenses
-import com.twoup.personalfinance.domain.usecase.localTransaction.UseCaseGetAllCategoryIncome
-import com.twoup.personalfinance.domain.usecase.localTransaction.UseCaseGetAllTransaction
-import com.twoup.personalfinance.domain.usecase.localTransaction.UseCaseInsertTransaction
-import com.twoup.personalfinance.domain.usecase.localTransaction.UseCaseUpdateAccountById
-import com.twoup.personalfinance.domain.usecase.localTransaction.UseCaseUpdateTransactionById
+import com.twoup.personalfinance.domain.usecase.localTransaction.transaction.UseCaseDeleteTransactionById
+import com.twoup.personalfinance.domain.usecase.localTransaction.account.UseCaseGetAllAccount
+import com.twoup.personalfinance.domain.usecase.localTransaction.category.UseCaseGetAllCategoryExpenses
+import com.twoup.personalfinance.domain.usecase.localTransaction.category.UseCaseGetAllCategoryIncome
+import com.twoup.personalfinance.domain.usecase.localTransaction.transaction.UseCaseGetAllTransaction
+import com.twoup.personalfinance.domain.usecase.localTransaction.transaction.UseCaseInsertTransaction
+import com.twoup.personalfinance.domain.usecase.localTransaction.account.UseCaseUpdateAccountById
+import com.twoup.personalfinance.domain.usecase.localTransaction.transaction.UseCaseUpdateTransactionById
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.datetime.LocalDateTime
-import kotlinx.datetime.LocalTime
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -63,7 +63,7 @@ class DailyScreenViewModel : ScreenModel, KoinComponent {
     // Function to update transactionUiState with a selected transaction
     fun updateTransactionUiState(transaction: TransactionLocalModel) {
         _transactionUiState.value = transactionUiState.value.copy(
-            id = transaction.transaction_id!!,
+            id = transaction.transaction_id,
             date = transaction.transaction_created,
             category = transaction.transaction_category,
             account = transaction.transaction_account,
@@ -95,105 +95,120 @@ class DailyScreenViewModel : ScreenModel, KoinComponent {
     fun onDateChange(text: LocalDateTime) {
         _transactionUiState.value = transactionUiState.value.copy(
             date = text,
-//            showSaveButton = true
         )
     }
 
     fun onCategoryChange(text: String) {
         _transactionUiState.value = transactionUiState.value.copy(
             category = text,
-//            showSaveButton = true
         )
     }
 
     fun onAccountChange(text: String) {
         _transactionUiState.value = transactionUiState.value.copy(
             account = text,
-//            showSaveButton = true
         )
     }
 
     fun onAccountFromChange(text: String) {
         _transactionUiState.value = transactionUiState.value.copy(
             accountFrom = text,
-//            showSaveButton = true
         )
     }
 
     fun onAccountToChange(text: String) {
         _transactionUiState.value = transactionUiState.value.copy(
             accountTo = text,
-//            showSaveButton = true
         )
     }
 
     fun onNoteChange(text: String) {
         _transactionUiState.value = transactionUiState.value.copy(
             note = text,
-//            showSaveButton = true
         )
     }
 
     fun onDescriptionChange(text: String) {
         _transactionUiState.value = transactionUiState.value.copy(
             description = text,
-//            showSaveButton = true
         )
     }
 
-    fun onIncomeChange(text: Long) {
-        _transactionUiState.value = transactionUiState.value.copy(
-            income = text,
-//            showSaveButton = true
-        )
+    fun onIncomeChange(text: String) {
+        try {
+            val income = if (text.isBlank()) 0L else text.toLong()
+            _transactionUiState.value = _transactionUiState.value.copy(income = income)
+        } catch (e: NumberFormatException) {
+            // Handle the case where text is not a valid long (non-numeric input)
+            // For example, you can set a validation error state in your UI
+        }
     }
-
     fun onExpensesChange(text: String) {
-        _transactionUiState.value = transactionUiState.value.copy(
-            expenses = text.toLong(),
-//            showSaveButton = true
-        )
+        try {
+            val expenses = if (text.isBlank()) 0L else text.toLong()
+            _transactionUiState.value = _transactionUiState.value.copy(expenses = expenses)
+        } catch (e: NumberFormatException) {
+            // Handle the case where text is not a valid long (non-numeric input)
+        }
     }
-
     fun onTransferChange(text: String) {
-        _transactionUiState.value = transactionUiState.value.copy(
-            transfer = text.toLong(),
-//            showSaveButton = true
-        )
+        try {
+            val transferBalance = if (text.isBlank()) 0L else text.toLong()
+            _transactionUiState.value = _transactionUiState.value.copy(transfer = transferBalance)
+        } catch (e: NumberFormatException) {
+            // Handle the case where text is not a valid long (non-numeric input)
+        }
     }
-
     fun openCloseDatePicker(isOpen: Boolean) {
         _transactionUiState.value = transactionUiState.value.copy(
             isOpenDatePicker = isOpen,
-//            showSaveButton = isOpen
         )
     }
 
     fun openCloseChooseWallet(isOpen: Boolean) {
         _transactionUiState.value = transactionUiState.value.copy(
             isOpenChooseWallet = isOpen,
-//            showSaveButton = isOpen
         )
     }
 
     fun openCloseChooseCategory(isOpen: Boolean) {
         _transactionUiState.value = transactionUiState.value.copy(
             isOpenChooseCategory = isOpen,
-//            showSaveButton = isOpen
         )
     }
 
     fun openCloseChooseCategoryAccountTo(isOpen: Boolean) {
         _transactionUiState.value = transactionUiState.value.copy(
             isOpenChooseAccountTo = isOpen,
-//            showSaveButton = isOpen
         )
     }
 
     fun openCloseChooseCategoryAccountFrom(isOpen: Boolean) {
         _transactionUiState.value = transactionUiState.value.copy(
             isOpenChooseAccountFrom = isOpen,
-//            showSaveButton = isOpen
         )
     }
+    fun calculateTotalIncome(transactions: List<TransactionLocalModel>): Long {
+        return transactions.filter { it.transaction_income > 0 }.sumOf { it.transaction_income }
+    }
+
+    fun calculateTotalExpenses(transactions: List<TransactionLocalModel>): Long {
+        return transactions.filter { it.transaction_expenses > 0 }.sumOf { it.transaction_expenses }
+    }
+    fun calculateColorText(transaction: TransactionLocalModel): Color {
+        return when {
+            transaction.transaction_income - transaction.transaction_expenses > 0 -> Color.Blue
+            transaction.transaction_expenses - transaction.transaction_income > 0 -> Color.Red
+            else -> Color.Black
+        }
+    }
+
+    fun calculateIncomeOrExpenses(transaction: TransactionLocalModel): Long {
+        return when {
+            transaction.transaction_income - transaction.transaction_expenses > 0 -> transaction.transaction_income
+            transaction.transaction_expenses - transaction.transaction_income > 0 -> transaction.transaction_expenses
+            else -> 0
+        }
+    }
+
 }

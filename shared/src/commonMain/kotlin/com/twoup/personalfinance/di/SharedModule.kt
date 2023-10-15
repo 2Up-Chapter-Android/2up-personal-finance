@@ -6,6 +6,7 @@ import com.aicontent.main.di.mainScreenNavigationModule
 import com.twoup.personalfinance.authentication.di.authenticationNavigationModule
 import com.twoup.personalfinance.domain.di.domainModule
 import com.twoup.personalfinance.transaction.di.transactionNavigationModule
+import org.koin.core.KoinApplication
 import org.koin.core.context.startKoin
 import org.koin.dsl.KoinAppDeclaration
 
@@ -24,8 +25,8 @@ fun initKoin(enableNetworkLogs: Boolean = true, appDeclaration: KoinAppDeclarati
     }
 
 // called by iOS etc
-// fun initKoin() = initKoin(enableNetworkLogs = false) {}
-
+ fun initKoin() = initKoin(enableNetworkLogs = false) {}
+fun KoinApplication.Companion.start(): KoinApplication = initKoin { }
 //val sharedModule = module {
 //
 //}

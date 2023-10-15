@@ -49,10 +49,8 @@ import dev.icerock.moko.resources.desc.desc
 
 @Composable
 fun AccountBottomSheet(
-//    focusManager: FocusManager,
     accounts: List<AccountLocalModel>,
     viewModel: CreateTransViewModel,
-//    onAccountChange: () -> Unit,
     interactionSource: MutableInteractionSource
 ) {
     val focusManager = LocalFocusManager.current

@@ -6,22 +6,25 @@ import com.twoup.personalfinance.domain.usecase.authentication.RegisterUseCase
 import com.twoup.personalfinance.domain.usecase.authentication.SendOtpUseCase
 import com.twoup.personalfinance.domain.usecase.category.CategoryUseCase
 import com.twoup.personalfinance.domain.usecase.transaction.GetListTransactionUseCase
-import com.twoup.personalfinance.domain.usecase.localTransaction.UseCaseDeleteAccountById
-import com.twoup.personalfinance.domain.usecase.localTransaction.UseCaseDeleteCategoryExpenseById
-import com.twoup.personalfinance.domain.usecase.localTransaction.UseCaseDeleteCategoryIncomeById
-import com.twoup.personalfinance.domain.usecase.localTransaction.UseCaseDeleteTransactionById
-import com.twoup.personalfinance.domain.usecase.localTransaction.UseCaseFilterTransactionByMonth
-import com.twoup.personalfinance.domain.usecase.localTransaction.UseCaseGetAllAccount
-import com.twoup.personalfinance.domain.usecase.localTransaction.UseCaseGetAllCategoryExpenses
-import com.twoup.personalfinance.domain.usecase.localTransaction.UseCaseGetAllCategoryIncome
-import com.twoup.personalfinance.domain.usecase.localTransaction.UseCaseGetAllTransaction
-import com.twoup.personalfinance.domain.usecase.localTransaction.UseCaseInsertAccount
-import com.twoup.personalfinance.domain.usecase.localTransaction.UseCaseInsertCategoryIncome
-import com.twoup.personalfinance.domain.usecase.localTransaction.UseCaseInsertTransaction
-import com.twoup.personalfinance.domain.usecase.localTransaction.UseCaseUpdateAccountById
-import com.twoup.personalfinance.domain.usecase.localTransaction.UseCaseUpdateCategoryExpensesById
-import com.twoup.personalfinance.domain.usecase.localTransaction.UseCaseUpdateCategoryIncomeById
-import com.twoup.personalfinance.domain.usecase.localTransaction.UseCaseUpdateTransactionById
+import com.twoup.personalfinance.domain.usecase.localTransaction.account.UseCaseDeleteAccountById
+import com.twoup.personalfinance.domain.usecase.localTransaction.account.UseCaseGetAccountById
+import com.twoup.personalfinance.domain.usecase.localTransaction.category.UseCaseDeleteCategoryExpenseById
+import com.twoup.personalfinance.domain.usecase.localTransaction.category.UseCaseDeleteCategoryIncomeById
+import com.twoup.personalfinance.domain.usecase.localTransaction.transaction.UseCaseDeleteTransactionById
+import com.twoup.personalfinance.domain.usecase.localTransaction.transaction.UseCaseFilterTransactionByMonth
+import com.twoup.personalfinance.domain.usecase.localTransaction.account.UseCaseGetAllAccount
+import com.twoup.personalfinance.domain.usecase.localTransaction.category.UseCaseGetAllCategoryExpenses
+import com.twoup.personalfinance.domain.usecase.localTransaction.category.UseCaseGetAllCategoryIncome
+import com.twoup.personalfinance.domain.usecase.localTransaction.transaction.UseCaseGetAllTransaction
+import com.twoup.personalfinance.domain.usecase.localTransaction.account.UseCaseInsertAccount
+import com.twoup.personalfinance.domain.usecase.localTransaction.category.UseCaseInsertCategoryIncome
+import com.twoup.personalfinance.domain.usecase.localTransaction.transaction.UseCaseInsertTransaction
+import com.twoup.personalfinance.domain.usecase.localTransaction.account.UseCaseUpdateAccountById
+import com.twoup.personalfinance.domain.usecase.localTransaction.category.UseCaseUpdateCategoryExpensesById
+import com.twoup.personalfinance.domain.usecase.localTransaction.category.UseCaseUpdateCategoryIncomeById
+import com.twoup.personalfinance.domain.usecase.localTransaction.note.UseCaseGetNoteById
+import com.twoup.personalfinance.domain.usecase.localTransaction.transaction.UseCaseGetTransactionById
+import com.twoup.personalfinance.domain.usecase.localTransaction.transaction.UseCaseUpdateTransactionById
 import com.twoup.personalfinance.domain.usecase.transaction.GetListWalletsUseCase
 import org.koin.dsl.module
 
@@ -69,4 +72,11 @@ private fun localTransactionDomainModule() = module {
     single { UseCaseUpdateCategoryIncomeById(get()) }
     single { UseCaseUpdateCategoryExpensesById(get()) }
     single { UseCaseFilterTransactionByMonth(get()) }
+    single { UseCaseGetAccountById(get())}
+    single { UseCaseGetTransactionById(get())}
+    single { UseCaseDeleteCategoryIncomeById(get())}
+    single { UseCaseDeleteCategoryExpenseById(get())}
+    single { UseCaseGetNoteById(get())}
+
+
 }

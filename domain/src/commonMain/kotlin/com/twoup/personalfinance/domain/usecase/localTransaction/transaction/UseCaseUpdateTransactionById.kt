@@ -1,4 +1,4 @@
-package com.twoup.personalfinance.domain.usecase.localTransaction
+package com.twoup.personalfinance.domain.usecase.localTransaction.transaction
 
 import com.twoup.personalfinance.domain.model.transaction.createTrans.TransactionLocalModel
 import com.twoup.personalfinance.domain.repository.transaction.TransactionLocalDataSource

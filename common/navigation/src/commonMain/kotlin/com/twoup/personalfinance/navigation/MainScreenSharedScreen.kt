@@ -1,6 +1,7 @@
 package com.twoup.personalfinance.navigation
 
 import cafe.adriel.voyager.core.registry.ScreenProvider
+import cafe.adriel.voyager.core.screen.Screen
 import com.twoup.personalfinance.domain.model.transaction.createTrans.TransactionLocalModel
 
 sealed class MainScreenSharedScreen : ScreenProvider {
