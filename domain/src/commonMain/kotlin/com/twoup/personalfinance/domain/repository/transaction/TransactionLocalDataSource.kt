@@ -41,8 +41,9 @@ interface TransactionLocalDataSource {
     suspend fun updateCategoryIncome(category: CategoryLocalModel)
     suspend fun updateAccount(account: AccountLocalModel)
     suspend fun updateTransaction(transaction: TransactionLocalModel)
-    suspend fun updateNote(note: NoteTransactionEntity)
+//    suspend fun updateNote(note: NoteTransactionEntity)
     suspend fun filterTransactionByMonth(month: Long, year : Long): List<TransactionLocalModel>
-
+    suspend fun filterTransactionByYear(year: Long): List<TransactionLocalModel>
+    suspend fun searchTransaction(note: String, description: String): List<TransactionLocalModel>
     // ném vào database
 }

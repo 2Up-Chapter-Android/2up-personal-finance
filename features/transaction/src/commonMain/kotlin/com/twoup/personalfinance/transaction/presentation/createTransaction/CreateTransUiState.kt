@@ -15,6 +15,7 @@ data class CreateTransUiState(
     val account: String = "",
     val note: String = "",
     val description : String = "",
+    val amount: String = "",
     val income : Long = 0,
     val expenses : Long = 0,
     val transfer : Long = 0,

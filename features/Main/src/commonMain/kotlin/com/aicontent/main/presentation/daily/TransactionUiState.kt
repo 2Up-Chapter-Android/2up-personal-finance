@@ -18,6 +18,7 @@ data class TransactionUiState(
     val income : Long = 0,
     val expenses : Long = 0,
     val transfer : Long = 0,
+    val amount: String ="",
     val accountFrom : String = "",
     val accountTo : String = "",
     val isOpenDatePicker: Boolean = false,

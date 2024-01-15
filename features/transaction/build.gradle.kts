@@ -10,7 +10,8 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
 }
 
 kotlin {
-    android()
+    androidTarget()
+//    android()
 
     jvm("desktop")
 
@@ -57,6 +58,7 @@ kotlin {
         }
         val androidMain by getting {
             kotlin.srcDirs("src/jvmMain/kotlin")
+            dependsOn(commonMain)
             dependencies {
             }
         }
@@ -75,6 +77,7 @@ kotlin {
 
         val desktopMain by getting {
             kotlin.srcDirs("src/jvmMain/kotlin")
+            dependsOn(commonMain)
             dependencies {
             }
         }

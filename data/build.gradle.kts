@@ -2,7 +2,7 @@ plugins {
     kotlin("multiplatform")
     id("com.android.library")
     id("kotlinx-serialization")
-    id("com.google.devtools.ksp") version "1.8.20-1.0.11"
+    id("com.google.devtools.ksp") version "1.9.20-1.0.14"
     id("de.jensklingenberg.ktorfit") version "1.0.0"
     id("com.squareup.sqldelight")
 }

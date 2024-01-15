@@ -1,6 +1,7 @@
 package com.twoup.personalfinance.local
 
 import kotlinx.cinterop.ByteVar
+import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.addressOf
 import kotlinx.cinterop.alloc
 import kotlinx.cinterop.convert
@@ -66,6 +67,7 @@ actual class SecureStorageWrapperImpl: SecureStorageWrapper {
      */
     fun string(forKey: String): String? = value(forKey)?.string()
 
+    @OptIn(ExperimentalForeignApi::class)
     private fun existsObject(forKey: String): Boolean = context(forKey) { (account) ->
         val query = query(
             kSecClass to kSecClassGenericPassword,
@@ -85,6 +87,7 @@ actual class SecureStorageWrapperImpl: SecureStorageWrapper {
         }
     }
 
+    @OptIn(ExperimentalForeignApi::class)
     private fun add(key: String, value: NSData?): Boolean = context(key, value) { (account, data) ->
         val query = query(
             kSecClass to kSecClassGenericPassword,
@@ -96,6 +99,7 @@ actual class SecureStorageWrapperImpl: SecureStorageWrapper {
             .validate()
     }
 
+    @OptIn(ExperimentalForeignApi::class)
     private fun update(key: String, value: Any?): Boolean = context(key, value) { (account, data) ->
         val query = query(
             kSecClass to kSecClassGenericPassword,
@@ -111,6 +115,7 @@ actual class SecureStorageWrapperImpl: SecureStorageWrapper {
             .validate()
     }
 
+    @OptIn(ExperimentalForeignApi::class)
     private fun value(forKey: String): NSData? = context(forKey) { (account) ->
         val query = query(
             kSecClass to kSecClassGenericPassword,
@@ -126,7 +131,8 @@ actual class SecureStorageWrapperImpl: SecureStorageWrapper {
         }
     }
 
-    private class Context(val refs: Map<CFStringRef?, CFTypeRef?>) {
+    private class Context @OptIn(ExperimentalForeignApi::class) constructor(val refs: Map<CFStringRef?, CFTypeRef?>) {
+        @OptIn(ExperimentalForeignApi::class)
         fun query(vararg pairs: Pair<CFStringRef?, CFTypeRef?>): CFDictionaryRef? {
             val map = mapOf(*pairs).plus(refs.filter { it.value != null })
             return CFDictionaryCreateMutable(
@@ -139,6 +145,7 @@ actual class SecureStorageWrapperImpl: SecureStorageWrapper {
         }
     }
 
+    @OptIn(ExperimentalForeignApi::class)
     private fun <T> context(vararg values: Any?, block: Context.(List<CFTypeRef?>) -> T): T {
         val standard = mapOf(
             kSecAttrService to CFBridgingRetain(serviceName)
@@ -160,6 +167,7 @@ internal fun String.toNSData(): NSData? =
 
 //private fun String.toNSData(): NSData = this.encodeToByteArray().toNSData()
 
+@OptIn(ExperimentalForeignApi::class)
 private fun ByteArray.toNSData(): NSData = NSMutableData().apply {
     this@toNSData.usePinned { pinned ->
         appendBytes(pinned.addressOf(0), (sizeOf<ByteVar>() * size).toULong())

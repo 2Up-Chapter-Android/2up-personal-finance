@@ -14,6 +14,7 @@ val font_size_text_tab = 10.sp
 val padding_budge_box = 8.dp
 val padding_budge_item = 8.dp
 val font_size_text_item_category = 10.sp
+val font_size_text_item_month = 14.sp
 val font_size_text_item_budge  = 12.sp
 // daily screen
 val padding_vertical_lazy_column = 8.dp

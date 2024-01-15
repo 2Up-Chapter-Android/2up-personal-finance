@@ -1,6 +1,6 @@
 package com.aicontent.main.presentation.daily.editItem
 
-import PersonalFinance.features.Main.MR
+//import PersonalFinance.features.Main.MR
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -16,9 +16,9 @@ import androidx.compose.ui.unit.dp
 import com.aicontent.main.theme.create_transaction_spacer_padding_bottom
 import com.aicontent.main.theme.create_transaction_spacer_padding_horizontal
 import com.aicontent.main.theme.create_transaction_spacer_padding_top
-import dev.icerock.moko.resources.compose.colorResource
-import dev.icerock.moko.resources.compose.localized
-import dev.icerock.moko.resources.desc.desc
+//import dev.icerock.moko.resources.compose.colorResource
+//import dev.icerock.moko.resources.compose.localized
+//import dev.icerock.moko.resources.desc.desc
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -86,7 +86,8 @@ fun TransactionScreen(
             ) {
                 LineTransInfor(
                     text = DateTimeUtil.formatNoteDate(transactionUiState.date),
-                    textLabel = MR.strings.createTrans_inputLabel_date.desc().localized(),
+//                    textLabel = MR.strings.createTrans_inputLabel_date.desc().localized(),
+                    textLabel = "Date",
                     onTextChange = {
                         viewModel.onDateChange(transactionUiState.date)
                     },
@@ -104,7 +105,8 @@ fun TransactionScreen(
 
                 LineTransInfor(
                     text = transactionUiState.account,
-                    textLabel = MR.strings.createTrans_inputLabel_account.desc().localized(),
+//                    textLabel = MR.strings.createTrans_inputLabel_account.desc().localized(),
+                    textLabel = "Account",
                     keyboardOption = KeyboardOptions(imeAction = ImeAction.Next),
                     readOnly = true,
                     textFieldModifier = Modifier.onFocusChanged {
@@ -116,7 +118,8 @@ fun TransactionScreen(
 
                 LineTransInfor(
                     text = transactionUiState.category,
-                    textLabel = MR.strings.createTrans_inputLabel_category.desc().localized(),
+//                    textLabel = MR.strings.createTrans_inputLabel_category.desc().localized(),
+                    textLabel = "Category",
                     keyboardOption = KeyboardOptions(imeAction = ImeAction.Next),
                     readOnly = true,
                     textFieldModifier = Modifier.onFocusChanged {
@@ -127,7 +130,8 @@ fun TransactionScreen(
 
             LineTransInfor(
                 text = transactionUiState.expenses.toString(),
-                textLabel = MR.strings.createTrans_inputLabel_amount.desc().localized(),
+//                textLabel = MR.strings.createTrans_inputLabel_amount.desc().localized(),
+                textLabel = "Amount",
                 keyboardOption = KeyboardOptions(
                     imeAction = ImeAction.Next,
                     keyboardType = KeyboardType.Number
@@ -141,7 +145,8 @@ fun TransactionScreen(
 
             LineTransInfor(
                 text = transactionUiState.note,
-                textLabel = MR.strings.createTrans_inputLabel_note.desc().localized(),
+//                textLabel = MR.strings.createTrans_inputLabel_note.desc().localized(),
+                textLabel = "Note",
                 onTextChange = {
                     viewModel.onNoteChange(it)
                     viewModel.updateShowSaveButton()
@@ -151,7 +156,8 @@ fun TransactionScreen(
 
             LineTransInfor(
                 text = transactionUiState.description,
-                textLabel = MR.strings.createTrans_inputLabel_description.desc().localized(),
+//                textLabel = MR.strings.createTrans_inputLabel_description.desc().localized(),
+                textLabel = "Description",
                 onTextChange = {
                     viewModel.onDescriptionChange(it)
                     viewModel.updateShowSaveButton()
@@ -166,7 +172,8 @@ fun TransactionScreen(
             ) {
                 LineTransInfor(
                     text = DateTimeUtil.formatNoteDate(transactionUiState.date),
-                    textLabel = MR.strings.createTrans_inputLabel_date.desc().localized(),
+//                    textLabel = MR.strings.createTrans_inputLabel_date.desc().localized(),
+                    textLabel = "Date",
                     onTextChange = { viewModel.onDateChange(transactionUiState.date) },
                     keyboardOption = KeyboardOptions(imeAction = ImeAction.Next),
                     readOnly = true,
@@ -178,7 +185,8 @@ fun TransactionScreen(
 
                 LineTransInfor(
                     text = transactionUiState.account,
-                    textLabel = MR.strings.createTrans_inputLabel_account.desc().localized(),
+//                    textLabel = MR.strings.createTrans_inputLabel_account.desc().localized(),
+                    textLabel = "Account",
                     keyboardOption = KeyboardOptions(imeAction = ImeAction.Next),
                     readOnly = true,
                     textFieldModifier = Modifier.onFocusChanged {
@@ -188,7 +196,8 @@ fun TransactionScreen(
 
                 LineTransInfor(
                     text = transactionUiState.category,
-                    textLabel = MR.strings.createTrans_inputLabel_category.desc().localized(),
+//                    textLabel = MR.strings.createTrans_inputLabel_category.desc().localized(),
+                    textLabel = "Category",
                     keyboardOption = KeyboardOptions(imeAction = ImeAction.Next),
                     readOnly = true,
                     textFieldModifier = Modifier.onFocusChanged {
@@ -198,7 +207,8 @@ fun TransactionScreen(
             }
             LineTransInfor(
                 text = "${transactionUiState.income}",
-                textLabel = MR.strings.createTrans_inputLabel_amount.desc().localized(),
+//                textLabel = MR.strings.createTrans_inputLabel_amount.desc().localized(),
+                textLabel = "Amount",
                 keyboardOption = KeyboardOptions(
                     imeAction = ImeAction.Next,
                     keyboardType = KeyboardType.Number
@@ -211,7 +221,8 @@ fun TransactionScreen(
 
             LineTransInfor(
                 text = transactionUiState.note,
-                textLabel = MR.strings.createTrans_inputLabel_note.desc().localized(),
+//                textLabel = MR.strings.createTrans_inputLabel_note.desc().localized(),
+                textLabel = "Note",
                 onTextChange = {
                     viewModel.onNoteChange(it)
                     viewModel.updateShowSaveButton()
@@ -221,7 +232,8 @@ fun TransactionScreen(
 
             LineTransInfor(
                 text = transactionUiState.description,
-                textLabel = MR.strings.createTrans_inputLabel_description.desc().localized(),
+//                textLabel = MR.strings.createTrans_inputLabel_description.desc().localized(),
+                textLabel = "Description",
                 onTextChange = {
                     viewModel.onDescriptionChange(it)
                     viewModel.updateShowSaveButton()
@@ -236,7 +248,8 @@ fun TransactionScreen(
             ) {
                 LineTransInfor(
                     text = DateTimeUtil.formatNoteDate(transactionUiState.date),
-                    textLabel = MR.strings.createTrans_inputLabel_date.desc().localized(),
+//                    textLabel = MR.strings.createTrans_inputLabel_date.desc().localized(),
+                    textLabel = "Date",
                     onTextChange = { viewModel.onDateChange(transactionUiState.date) },
                     keyboardOption = KeyboardOptions(imeAction = ImeAction.Next),
                     readOnly = true,
@@ -248,7 +261,8 @@ fun TransactionScreen(
 
                 LineTransInfor(
                     text = transactionUiState.accountFrom,
-                    textLabel = MR.strings.createTrans_inputLabel_from.desc().localized(),
+//                    textLabel = MR.strings.createTrans_inputLabel_from.desc().localized(),
+                    textLabel = "From",
                     keyboardOption = KeyboardOptions(imeAction = ImeAction.Next),
                     readOnly = true,
                     textFieldModifier = Modifier.onFocusChanged {
@@ -258,7 +272,8 @@ fun TransactionScreen(
 
                 LineTransInfor(
                     text = transactionUiState.accountTo,
-                    textLabel = MR.strings.createTrans_inputLabel_to.desc().localized(),
+//                    textLabel = MR.strings.createTrans_inputLabel_to.desc().localized(),
+                    textLabel = "To",
                     keyboardOption = KeyboardOptions(imeAction = ImeAction.Next),
                     readOnly = true,
                     textFieldModifier = Modifier.onFocusChanged {
@@ -268,7 +283,8 @@ fun TransactionScreen(
             }
             LineTransInfor(
                 text = transactionUiState.transfer.toString(),
-                textLabel = MR.strings.createTrans_inputLabel_amount.desc().localized(),
+//                textLabel = MR.strings.createTrans_inputLabel_amount.desc().localized(),
+                textLabel = "Amount",
                 keyboardOption = KeyboardOptions(
                     imeAction = ImeAction.Next,
                     keyboardType = KeyboardType.Number
@@ -281,7 +297,8 @@ fun TransactionScreen(
 
             LineTransInfor(
                 text = transactionUiState.note,
-                textLabel = MR.strings.createTrans_inputLabel_note.desc().localized(),
+//                textLabel = MR.strings.createTrans_inputLabel_note.desc().localized(),
+                textLabel = "Note",
                 onTextChange = {
                     viewModel.onNoteChange(it)
                     viewModel.updateShowSaveButton()
@@ -291,7 +308,8 @@ fun TransactionScreen(
 
             LineTransInfor(
                 text = transactionUiState.description,
-                textLabel = MR.strings.createTrans_inputLabel_description.desc().localized(),
+//                textLabel = MR.strings.createTrans_inputLabel_description.desc().localized(),
+                textLabel = "Description",
                 onTextChange = {
                     viewModel.onDescriptionChange(it)
                     viewModel.updateShowSaveButton()

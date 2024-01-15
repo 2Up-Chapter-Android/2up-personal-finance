@@ -21,7 +21,6 @@ import org.koin.core.component.inject
 class RegisterViewModel : ScreenModel, KoinComponent {
     private val registerUseCase: RegisterUseCase by inject()
 
-
     private val _registerState = MutableStateFlow<Resource<RegisterResponseModel>>(Resource.loading())
     val registerState = _registerState.asStateFlow()
 

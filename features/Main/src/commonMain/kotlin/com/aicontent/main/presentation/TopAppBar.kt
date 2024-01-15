@@ -1,7 +1,12 @@
+@file:OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3Api::class)
+
 package com.aicontent.main.presentation
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,13 +19,23 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Tab
 import androidx.compose.material.TabRow
 import androidx.compose.material.Text
+import androidx.compose.material.TextButton
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
 import androidx.compose.runtime.Composable
+import androidx.compose.material3.rememberDatePickerState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -29,22 +44,25 @@ import com.aicontent.main.theme.height_row_top_bar
 import com.aicontent.main.theme.padding_tab_item
 import com.aicontent.main.theme.padding_text_top_bar
 import com.aicontent.main.theme.rounded_corner_shape
-import PersonalFinance.features.Main.MR
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.dp
+import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.DatePickerState
+import androidx.compose.material3.DisplayMode
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.rememberDatePickerState
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.sp
-import com.twoup.personalfinance.domain.model.transaction.createTrans.TransactionLocalModel
+import androidx.compose.ui.window.DialogProperties
 import com.twoup.personalfinance.utils.DateTimeUtil
-import dev.icerock.moko.resources.compose.localized
-import dev.icerock.moko.resources.desc.desc
+import io.github.aakira.napier.Napier
+import kotlinx.datetime.Instant
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 
 @Composable
 fun TopAppBar(
@@ -52,6 +70,7 @@ fun TopAppBar(
     onBookMark: () -> Unit,
     onAnalysis: () -> Unit,
     viewModel: MainScreenViewModel,
+//    openDialog: () -> Unit
 ) {
     Column {
         FirstRow(onBookMark, onSearchClicked, onAnalysis, viewModel)
@@ -61,6 +80,7 @@ fun TopAppBar(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun FirstRow(
     onBookMark: () -> Unit,
@@ -69,6 +89,7 @@ private fun FirstRow(
     viewModel: MainScreenViewModel,
 ) {
     val currentMonthYear = viewModel.currentMonthYear
+    var openDialog = viewModel.openDiaLog.value
 
     Row(
         modifier = Modifier
@@ -85,33 +106,75 @@ private fun FirstRow(
                 ),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            IconButton(
-                onClick = {
-                    viewModel.decrementMonth() // Decrease the month and year
-                },
-                content = {
-                    Icon(
-                        Icons.Default.KeyboardArrowLeft,
-                        contentDescription = null
-                    )
-                }
-            )
 
-            BoldMonthText(viewModel.getAbbreviatedMonth(currentMonthYear.value.month), currentMonthYear.value.year)
+            if (viewModel.selectedTabIndex.value == 2) {
+                IconButton(
+                    onClick = {
+                        viewModel.decrementYear() // Decrease the month and year
+                    },
+                    content = {
+                        Icon(
+                            Icons.Default.KeyboardArrowLeft,
+                            contentDescription = null
+                        )
+                    }
+                )
 
-            IconButton(
-                onClick = {
-                    viewModel.incrementMonth() // Increase the month and year
-                },
-                content = {
-                    Icon(
-                        Icons.Default.KeyboardArrowRight,
-                        contentDescription = null
-                    )
-                }
-            )
+                Text(
+                    text = currentMonthYear.value.year.toString(),
+                    color = Color.Black, // Change the color as needed
+                    modifier = Modifier.padding(horizontal = padding_text_top_bar).clickable {
+                        viewModel.openCloseDatePicker(true)
+                    },
+                    fontSize = 16.sp // Change the font size as needed
+                )
+
+//
+                IconButton(
+                    onClick = {
+                        viewModel.incrementYear() // Increase the month and year
+                    },
+                    content = {
+                        Icon(
+                            Icons.Default.KeyboardArrowRight,
+                            contentDescription = null
+                        )
+                    }
+                )
+            } else {
+                IconButton(
+                    onClick = {
+                        viewModel.decrementMonth() // Decrease the month and year
+                    },
+                    content = {
+                        Icon(
+                            Icons.Default.KeyboardArrowLeft,
+                            contentDescription = null
+                        )
+                    }
+                )
+
+                BoldMonthText(
+                    viewModel.getAbbreviatedMonth(currentMonthYear.value.month),
+                    currentMonthYear.value.year,
+                    modifier = Modifier.clickable {
+                        viewModel.openCloseDatePicker(true)
+                    }
+                )
+
+                IconButton(
+                    onClick = {
+                        viewModel.incrementMonth() // Increase the month and year
+                    },
+                    content = {
+                        Icon(
+                            Icons.Default.KeyboardArrowRight,
+                            contentDescription = null
+                        )
+                    }
+                )
+            }
         }
-
         // Second row
         Row(
             modifier = Modifier
@@ -167,11 +230,11 @@ private fun TabRowWithTabs(selectedTabIndex: Int, onTabSelected: (Int) -> Unit) 
 
     ) {
         val tabs = listOf(
-            TabInfo(MR.strings.daily.desc().localized(), 0),
-            TabInfo(MR.strings.calendar.desc().localized(), 1),
-            TabInfo(MR.strings.monthly.desc().localized(), 2),
-            TabInfo(MR.strings.total.desc().localized(), 3),
-            TabInfo(MR.strings.note.desc().localized(), 4)
+            TabInfo("Daily", 0),
+            TabInfo("Calendar", 1),
+            TabInfo("Monthly", 2),
+            TabInfo("Total", 3),
+            TabInfo("Note", 4)
         )
 
         tabs.forEach { tabIndex ->
@@ -192,7 +255,7 @@ private fun TabRowWithTabs(selectedTabIndex: Int, onTabSelected: (Int) -> Unit) 
 }
 
 @Composable
-fun BoldMonthText(month: String, year: Int) {
+fun BoldMonthText(month: String, year: Int, modifier: Modifier) {
     val text = buildAnnotatedString {
         withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
             append(month)
@@ -204,7 +267,7 @@ fun BoldMonthText(month: String, year: Int) {
     Text(
         text = text,
         color = Color.Black, // Change the color as needed
-        modifier = Modifier.padding(horizontal = padding_text_top_bar),
+        modifier = modifier.padding(horizontal = padding_text_top_bar),
         fontSize = 16.sp // Change the font size as needed
     )
 }

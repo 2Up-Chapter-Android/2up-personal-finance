@@ -2,17 +2,22 @@ plugins {
     kotlin("multiplatform")
     id("com.android.library")
     id("org.jetbrains.compose")
-    id("dev.icerock.mobile.multiplatform-resources")
+//    id("dev.icerock.mobile.multiplatform-resources")
+}
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+    kotlinOptions.jvmTarget = "1.8"
 }
 
 kotlin {
-    android {
-        compilations.all {
-            kotlinOptions {
-                jvmTarget = "1.8"
-            }
-        }
-    }
+//    android {
+//        compilations.all {
+//            kotlinOptions {
+//                jvmTarget = "1.8"
+//            }
+//        }
+//    }
+    android()
 
     jvm("desktop")
 
@@ -58,6 +63,32 @@ kotlin {
                 implementation(kotlin("test"))
             }
         }
+//        val androidMain by getting {
+//            kotlin.srcDirs("src/jvmMain/kotlin")
+//            dependsOn(commonMain)
+//            dependencies {
+//            }
+//        }
+//        val androidUnitTest by getting
+//        val iosX64Main by getting
+//        val iosArm64Main by getting
+//        val iosSimulatorArm64Main by getting
+//        val iosMain by creating {
+//            dependsOn(commonMain)
+//            iosX64Main.dependsOn(this)
+//            iosArm64Main.dependsOn(this)
+//            iosSimulatorArm64Main.dependsOn(this)
+//            dependencies {
+//            }
+//        }
+//
+//        val desktopMain by getting {
+//            kotlin.srcDirs("src/jvmMain/kotlin")
+//            dependsOn(commonMain)
+//            dependencies {
+//            }
+//        }
+
         val androidMain by getting
         val androidUnitTest by getting
         val iosX64Main by getting
@@ -98,4 +129,7 @@ android {
     defaultConfig {
         minSdk = androidMinSdk.toInt()
     }
+}
+dependencies {
+    implementation(libs.filament.android)
 }

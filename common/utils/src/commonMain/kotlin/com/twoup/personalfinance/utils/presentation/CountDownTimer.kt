@@ -1,5 +1,6 @@
 package com.twoup.personalfinance.utils.presentation
 
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
@@ -14,6 +15,7 @@ abstract class CountDownTimer(
     abstract fun onTick(millisUntilFinished: Long)
 
     private var scope: Job? = null
+    @OptIn(DelicateCoroutinesApi::class)
     fun start() {
         var remainingMillis = durationMillis
 
@@ -34,3 +36,4 @@ abstract class CountDownTimer(
     }
 
 }
+

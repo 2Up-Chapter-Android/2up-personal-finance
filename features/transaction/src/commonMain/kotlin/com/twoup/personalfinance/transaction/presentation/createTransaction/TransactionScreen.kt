@@ -182,59 +182,107 @@ fun TransactionScreen(
                 val transaction = when (transactionType) {
                     TransactionType.Expense -> {
                         TransactionLocalModel(
-                            transaction_id = createTransUiState.id,
-                            transaction_income = 0,
-                            transaction_expenses = createTransUiState.expenses!!,
-                            transaction_transfer = 0,
-                            transaction_description = createTransUiState.description,
-                            transaction_note = createTransUiState.note,
-                            transaction_created = createTransUiState.date,
-                            transaction_month = createTransUiState.date.month.ordinal.toLong() + 1,
-                            transaction_year = createTransUiState.date.year.toLong(),
-                            transaction_category = createTransUiState.category,
-                            transaction_account = createTransUiState.account,
-                            transaction_selectIndex = selectIndex.value,
-                            transaction_accountFrom = "",
-                            transaction_accountTo = ""
+                            transactionId = createTransUiState.id,
+                            transactionIncome = 0,
+                            transactionExpenses = createTransUiState.expenses,
+                            transactionTransfer = 0,
+                            transactionDescription = createTransUiState.description,
+                            transactionNote = createTransUiState.note,
+                            transactionCreated = createTransUiState.date,
+                            transactionMonth = createTransUiState.date.month.ordinal.toLong() + 1,
+                            transactionYear = createTransUiState.date.year.toLong(),
+                            transactionCategory = createTransUiState.category,
+                            transactionAccount = createTransUiState.account,
+                            transactionSelectIndex = selectIndex.value,
+                            transactionAccountFrom = "",
+                            transactionAccountTo = ""
+//=======
+//                            transaction_id = createTransUiState.id,
+//                            transaction_income = 0,
+//                            transaction_expenses = createTransUiState.expenses!!,
+//                            transaction_transfer = 0,
+//                            transaction_description = createTransUiState.description,
+//                            transaction_note = createTransUiState.note,
+//                            transaction_created = createTransUiState.date,
+//                            transaction_month = createTransUiState.date.month.ordinal.toLong() + 1,
+//                            transaction_year = createTransUiState.date.year.toLong(),
+//                            transaction_category = createTransUiState.category,
+//                            transaction_account = createTransUiState.account,
+//                            transaction_selectIndex = selectIndex.value,
+//                            transaction_accountFrom = "",
+//                            transaction_accountTo = ""
+//>>>>>>> fd594fb534333d1d134a6821078b606b76c8c827
                         )
 
                     }
 
                     TransactionType.Income -> {
                         TransactionLocalModel(
-                            transaction_id = createTransUiState.id,
-                            transaction_income = createTransUiState.income,
-                            transaction_expenses = 0,
-                            transaction_transfer = 0,
-                            transaction_note = createTransUiState.note,
-                            transaction_description = createTransUiState.description,
-                            transaction_created = createTransUiState.date,
-                            transaction_month = createTransUiState.date.month.ordinal.toLong() + 1,
-                            transaction_year = createTransUiState.date.year.toLong(),
-                            transaction_category = createTransUiState.category,
-                            transaction_account = createTransUiState.account,
-                            transaction_selectIndex = selectIndex.value,
-                            transaction_accountFrom = "",
-                            transaction_accountTo = ""
+                            transactionId = createTransUiState.id,
+                            transactionIncome = createTransUiState.income,
+                            transactionExpenses = 0,
+                            transactionTransfer = 0,
+                            transactionNote = createTransUiState.note,
+                            transactionDescription = createTransUiState.description,
+                            transactionCreated = createTransUiState.date,
+                            transactionMonth = createTransUiState.date.month.ordinal.toLong() + 1,
+                            transactionYear = createTransUiState.date.year.toLong(),
+                            transactionCategory = createTransUiState.category,
+                            transactionAccount = createTransUiState.account,
+                            transactionSelectIndex = selectIndex.value,
+                            transactionAccountFrom = "",
+                            transactionAccountTo = ""
+//=======
+//                            transaction_id = createTransUiState.id,
+//                            transaction_income = createTransUiState.income,
+//                            transaction_expenses = 0,
+//                            transaction_transfer = 0,
+//                            transaction_note = createTransUiState.note,
+//                            transaction_description = createTransUiState.description,
+//                            transaction_created = createTransUiState.date,
+//                            transaction_month = createTransUiState.date.month.ordinal.toLong() + 1,
+//                            transaction_year = createTransUiState.date.year.toLong(),
+//                            transaction_category = createTransUiState.category,
+//                            transaction_account = createTransUiState.account,
+//                            transaction_selectIndex = selectIndex.value,
+//                            transaction_accountFrom = "",
+//                            transaction_accountTo = ""
+//>>>>>>> fd594fb534333d1d134a6821078b606b76c8c827
                         )
                     }
 
                     TransactionType.Transfer -> {
                         TransactionLocalModel(
-                            transaction_id = createTransUiState.id,
-                            transaction_income = 0,
-                            transaction_expenses = 0,
-                            transaction_note = createTransUiState.note,
-                            transaction_transfer = createTransUiState.transfer,
-                            transaction_description = createTransUiState.description,
-                            transaction_created = createTransUiState.date,
-                            transaction_month = createTransUiState.date.monthNumber.toLong() + 1,
-                            transaction_year = createTransUiState.date.year.toLong(),
-                            transaction_category = createTransUiState.category,
-                            transaction_account = createTransUiState.account,
-                            transaction_selectIndex = selectIndex.value,
-                            transaction_accountFrom = createTransUiState.accountFrom,
-                            transaction_accountTo = createTransUiState.accountTo
+                            transactionId = createTransUiState.id,
+                            transactionIncome = 0,
+                            transactionExpenses = 0,
+                            transactionNote = createTransUiState.note,
+                            transactionTransfer = createTransUiState.transfer,
+                            transactionDescription = createTransUiState.description,
+                            transactionCreated = createTransUiState.date,
+                            transactionMonth = createTransUiState.date.monthNumber.toLong() + 1,
+                            transactionYear = createTransUiState.date.year.toLong(),
+                            transactionCategory = createTransUiState.category,
+                            transactionAccount = createTransUiState.account,
+                            transactionSelectIndex = selectIndex.value,
+                            transactionAccountFrom = createTransUiState.accountFrom,
+                            transactionAccountTo = createTransUiState.accountTo
+//=======
+//                            transaction_id = createTransUiState.id,
+//                            transaction_income = 0,
+//                            transaction_expenses = 0,
+//                            transaction_note = createTransUiState.note,
+//                            transaction_transfer = createTransUiState.transfer,
+//                            transaction_description = createTransUiState.description,
+//                            transaction_created = createTransUiState.date,
+//                            transaction_month = createTransUiState.date.monthNumber.toLong() + 1,
+//                            transaction_year = createTransUiState.date.year.toLong(),
+//                            transaction_category = createTransUiState.category,
+//                            transaction_account = createTransUiState.account,
+//                            transaction_selectIndex = selectIndex.value,
+//                            transaction_accountFrom = createTransUiState.accountFrom,
+//                            transaction_accountTo = createTransUiState.accountTo
+//>>>>>>> fd594fb534333d1d134a6821078b606b76c8c827
                         )
                     }
                 }

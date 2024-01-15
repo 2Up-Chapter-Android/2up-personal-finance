@@ -246,7 +246,15 @@ WHERE transaction_id = ?;
 
 filterTransaction:
 SELECT * FROM Transactions
-WHERE transaction_month = ? AND transaction_year = ? ;
+WHERE transaction_month = ? AND transaction_year = ?;
+
+filterTransactionByYear:
+SELECT * FROM Transactions
+WHERE transaction_year = ?;
+
+searchTransaction:
+SELECT * FROM Transactions
+WHERE transaction_note = ? AND transaction_description =?;
 
 -- -- Table for additional notes for transactions
 CREATE TABLE notes (

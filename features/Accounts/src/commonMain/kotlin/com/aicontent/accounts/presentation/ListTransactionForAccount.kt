@@ -58,7 +58,6 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import com.aicontent.accounts.theme.height_row_top_bar
 import com.aicontent.accounts.theme.padding_end_text_daily_item
 import com.aicontent.accounts.theme.padding_text_top_bar
-import com.aicontent.accounts.theme.rounded_corner_shape
 import com.twoup.personalfinance.domain.model.transaction.account.AccountLocalModel
 import com.twoup.personalfinance.domain.model.transaction.createTrans.TransactionLocalModel
 import com.twoup.personalfinance.navigation.MainScreenSharedScreen
@@ -66,6 +65,7 @@ import com.twoup.personalfinance.utils.DateTimeUtil
 import com.twoup.personalfinance.utils.DateTimeUtil.formatTimeForAccountFirst
 import com.twoup.personalfinance.utils.DateTimeUtil.formatTimeForAccountLast
 import com.twoup.personalfinance.utils.presentation.adjustFontSize
+import com.twoup.personalfinance.utils.presentation.getAbbreviatedMonth
 import io.github.aakira.napier.Napier
 
 class ListTransactionForAccount(
@@ -81,7 +81,6 @@ class ListTransactionForAccount(
             viewModel.transactionByMonth.collectAsState().value,
             account
         )
-
         val listTransactions = viewModel.getAccountTransactions(allTransaction, account)
         val monthYear = viewModel.currentMonthYear
 
@@ -101,7 +100,8 @@ class ListTransactionForAccount(
                 Column(
                     modifier = Modifier.padding(bottom = 56.dp), // Adjust the bottom padding to match BottomAppBar height
                 ) {
-                    val firstTransaction = listTransactions.firstOrNull() ?: viewModel.getDefaultTransaction()
+                    val firstTransaction = transactionByMonth.firstOrNull() ?: viewModel.getDefaultTransaction()
+//                    val firstTransaction = listTransactions.firstOrNull() ?: viewModel.getDefaultTransaction()
                     GroupTopBar(firstTransaction)
                     Divider(thickness = 0.5.dp, color = Color.LightGray)
                     ElementAccount(viewModel, transactionByMonth, listTransactions, account)
@@ -136,13 +136,13 @@ fun ElementAccount(
             .padding(start = 20.dp, end = 20.dp, top = 4.dp, bottom = 4.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
+
         ElementRow("Deposit", income, Color.Blue)
         ElementRow("Withdrawal", expenses, Color.Red)
         ElementRow("Total", total, colorText)
         ElementRow("Balance", totalAccount, colorText)
     }
 }
-
 
 @Composable
 fun ElementRow(
@@ -171,9 +171,9 @@ fun GroupTopBar(transaction: TransactionLocalModel) {
         Column {
             Text("Statement", color = Color.Gray)
             Text(
-                "${formatTimeForAccountFirst(transaction.transaction_created)} ~ ${
+                "${formatTimeForAccountFirst(transaction.transactionCreated)} ~ ${
                     formatTimeForAccountLast(
-                        transaction.transaction_created
+                        transaction.transactionCreated
                     )
                 }"
             )
@@ -208,7 +208,7 @@ fun ListTransaction(
     viewModel: AccountListViewModel,
     listTransaction: List<TransactionLocalModel>
 ) {
-    val distinctTransactions = listTransaction.distinctBy { it.transaction_created.date.dayOfMonth }
+    val distinctTransactions = listTransaction.distinctBy { it.transactionCreated.date.dayOfMonth }
 
     Column(
         modifier = Modifier
@@ -223,7 +223,7 @@ fun ListTransaction(
                 LazyColumn {
                     items(distinctTransactions) { dateDistinct ->
                         val transactions =
-                            listTransaction.filter { it.transaction_created.date.dayOfMonth == dateDistinct.transaction_created.date.dayOfMonth }
+                            listTransaction.filter { it.transactionCreated.date.dayOfMonth == dateDistinct.transactionCreated.date.dayOfMonth }
                         Column(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -259,7 +259,7 @@ fun DateTransactionsGroup(transactions: List<TransactionLocalModel>, navigator: 
         transactions.forEach { transaction ->
             val itemTransactionScreen =
                 rememberScreen(MainScreenSharedScreen.ItemTransaction(transaction))
-            val isTransfer = transaction.transaction_transfer > 0
+            val isTransfer = transaction.transactionTransfer > 0
 
             ItemDailyScreen(
                 transaction,
@@ -287,7 +287,7 @@ fun TitleTransaction(
     ) {
         Row(modifier = Modifier.weight(1.2f)) {
             Text(
-                text = DateTimeUtil.formatDateTransDays(dateDistinct.transaction_created),
+                text = DateTimeUtil.formatDateTransDays(dateDistinct.transactionCreated),
                 fontWeight = FontWeight.Bold,
                 color = Color.Black,
                 fontSize = 24.sp,
@@ -310,7 +310,7 @@ fun TitleTransaction(
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = DateTimeUtil.formatDateTransMonth(dateDistinct.transaction_created),
+                        text = DateTimeUtil.formatDateTransMonth(dateDistinct.transactionCreated),
                         color = Color.Black,
                         fontSize = 12.sp,
                     )
@@ -318,7 +318,7 @@ fun TitleTransaction(
             }
 
             Text(
-                text = DateTimeUtil.formatDateTrans(dateDistinct.transaction_created),
+                text = DateTimeUtil.formatDateTrans(dateDistinct.transactionCreated),
                 fontWeight = FontWeight.Thin,
                 color = Color.DarkGray,
                 fontSize = 14.sp,
@@ -394,7 +394,8 @@ fun TopAppBarListAccount(
                 }
 
                 BoldMonthText(
-                    month = viewModel.getAbbreviatedMonth(viewModel.currentMonthYear.value.month),
+                    month = getAbbreviatedMonth(viewModel.currentMonthYear.value.month),
+//                    month = viewModel.getAbbreviatedMonth(viewModel.currentMonthYear.value.month),
                     year = viewModel.currentMonthYear.value.year
                 )
 
