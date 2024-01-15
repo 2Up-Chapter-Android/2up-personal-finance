@@ -162,6 +162,7 @@ fun TransferScreen(
             onClick = {
                 viewModel.insertTransaction(
                     TransactionLocalModel(
+<<<<<<< HEAD
                         transactionId = createTransUiState.value.id,
                         transactionIncome = 0,
                         transactionExpenses = 0,
@@ -176,6 +177,22 @@ fun TransferScreen(
                         transactionSelectIndex = selectIndex.value,
                         transactionAccountFrom = createTransUiState.value.accountFrom,
                         transactionAccountTo = createTransUiState.value.accountTo,
+=======
+                        transaction_id = createTransUiState.value.id,
+                        transaction_income = 0,
+                        transaction_expenses = 0,
+                        transaction_transfer = createTransUiState.value.transfer,
+                        transaction_description = createTransUiState.value.description,
+                        transaction_note = createTransUiState.value.note,
+                        transaction_created = createTransUiState.value.date,
+                        transaction_month = createTransUiState.value.date.monthNumber.toLong(),
+                        transaction_year = createTransUiState.value.date.year.toLong(),
+                        transaction_category = createTransUiState.value.category,
+                        transaction_account = createTransUiState.value.account,
+                        transaction_selectIndex = selectIndex.value,
+                        transaction_accountFrom = createTransUiState.value.accountFrom,
+                        transaction_accountTo = createTransUiState.value.accountTo
+>>>>>>> fd594fb534333d1d134a6821078b606b76c8c827
                     )
                 )
                 Napier.d(

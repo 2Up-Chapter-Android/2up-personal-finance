@@ -13,6 +13,7 @@ fun adjustFontSize(text: String): Float {
         text.length <= maxLength * 3 -> fontSize10sp
         else -> fontSize16sp
     }
+<<<<<<< HEAD
 }
 
 fun getAbbreviatedMonth(monthNumber: Int): String {
@@ -31,4 +32,6 @@ fun getAbbreviatedMonth(monthNumber: Int): String {
         12 -> "Dec"
         else -> "Invalid Month"
     }
+=======
+>>>>>>> fd594fb534333d1d134a6821078b606b76c8c827
 }

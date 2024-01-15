@@ -203,11 +203,15 @@ class ItemTransactionScreen(private val transaction: TransactionLocalModel) : Sc
 //                bottom = create_transaction_spacer_padding_bottom
 //            )
                             .fillMaxWidth()
+<<<<<<< HEAD
 //                            .background(colorResource(MR.colors.createTrans_line_break)),
                             .background(
 //                                Color.Red
                                 Color(0xdedee1)
                             )
+=======
+                            .background(colorResource(MR.colors.createTrans_line_break)),
+>>>>>>> fd594fb534333d1d134a6821078b606b76c8c827
                     )
                     // AnimatedVisibility for the remaining buttons
                     AnimatedVisibility(
@@ -229,9 +233,13 @@ class ItemTransactionScreen(private val transaction: TransactionLocalModel) : Sc
                                 transactionUiState.id.let { viewModel.deleteTransactionById(it) }
                                 navigator.pop()
                             }
+<<<<<<< HEAD
                             val itemTransactionScreen = rememberScreen(
                                 TransactionSharedScreen.CreateTransactionScreen(transaction.transactionId)
                             )
+=======
+                            val itemTransactionScreen = rememberScreen(TransactionSharedScreen.CreateTransactionScreen(transaction.transaction_id))
+>>>>>>> fd594fb534333d1d134a6821078b606b76c8c827
 
                             // Copy Button
                             TransactionButton(
@@ -260,6 +268,7 @@ class ItemTransactionScreen(private val transaction: TransactionLocalModel) : Sc
                             onClick = {
                                 viewModel.updateTransaction(
                                     TransactionLocalModel(
+<<<<<<< HEAD
                                         transactionId = transactionUiState.id,
                                         transactionIncome = transactionUiState.income,
                                         transactionExpenses = transactionUiState.expenses,
@@ -274,6 +283,22 @@ class ItemTransactionScreen(private val transaction: TransactionLocalModel) : Sc
                                         transactionSelectIndex = transactionUiState.selectIndex,
                                         transactionAccountFrom = transactionUiState.accountFrom,
                                         transactionAccountTo = transactionUiState.accountTo
+=======
+                                        transaction_id = transactionUiState.id,
+                                        transaction_income = transactionUiState.income,
+                                        transaction_expenses = transactionUiState.expenses,
+                                        transaction_transfer = transactionUiState.transfer,
+                                        transaction_description = transactionUiState.description,
+                                        transaction_note = transactionUiState.note,
+                                        transaction_created = transactionUiState.date,
+                                        transaction_month = transaction.transaction_month,
+                                        transaction_year = transaction.transaction_year,
+                                        transaction_category = transactionUiState.category,
+                                        transaction_account = transactionUiState.account,
+                                        transaction_selectIndex = transactionUiState.selectIndex,
+                                        transaction_accountFrom = transactionUiState.accountFrom,
+                                        transaction_accountTo = transactionUiState.accountTo
+>>>>>>> fd594fb534333d1d134a6821078b606b76c8c827
                                     )
                                 )
                                 viewModel.loadTransaction()
@@ -281,11 +306,15 @@ class ItemTransactionScreen(private val transaction: TransactionLocalModel) : Sc
                             },
                             modifier = Modifier.fillMaxWidth()
                                 .padding(16.dp),
+<<<<<<< HEAD
                             colors = ButtonDefaults.buttonColors(
 //                                backgroundColor = colorResource(MR.colors.createTrans_tab_expense)
                                 backgroundColor = Color.Red
 
                             )
+=======
+                            colors = ButtonDefaults.buttonColors(backgroundColor = colorResource(MR.colors.createTrans_tab_expense))
+>>>>>>> fd594fb534333d1d134a6821078b606b76c8c827
                         ) {
                             Text("Save", color = Color.White)
                         }

@@ -70,6 +70,7 @@ class CreateTransViewModel : ScreenModel, KoinComponent {
     }
     fun updateCreateTransUiState(transaction: TransactionLocalModel) {
         val currentUiState = createTransUiState.value
+<<<<<<< HEAD
         if (currentUiState.id != transaction.transactionId) {
             _createTransUiState.value = currentUiState.copy(
                 id = transaction.transactionId,
@@ -86,6 +87,24 @@ class CreateTransViewModel : ScreenModel, KoinComponent {
                 selectIndex = transaction.transactionSelectIndex,
                 month = transaction.transactionMonth,
                 year = transaction.transactionYear
+=======
+        if (currentUiState.id != transaction.transaction_id) {
+            _createTransUiState.value = currentUiState.copy(
+                id = transaction.transaction_id,
+                date = transaction.transaction_created,
+                category = transaction.transaction_category,
+                account = transaction.transaction_account,
+                note = transaction.transaction_note,
+                description = transaction.transaction_description,
+                income = transaction.transaction_income,
+                expenses = transaction.transaction_expenses,
+                transfer = transaction.transaction_transfer,
+                accountFrom = transaction.transaction_accountFrom,
+                accountTo = transaction.transaction_accountTo,
+                selectIndex = transaction.transaction_selectIndex,
+                month = transaction.transaction_month,
+                year = transaction.transaction_year
+>>>>>>> fd594fb534333d1d134a6821078b606b76c8c827
             )
         }
     }

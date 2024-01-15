@@ -23,6 +23,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -100,7 +101,11 @@ fun AccountList(accounts: List<AccountLocalModel>, viewModel: AccountListViewMod
         )
 
         fun getSelectedTransactions(account: AccountLocalModel): List<TransactionLocalModel> {
+<<<<<<< HEAD
             return transactions.filter { transaction -> transaction.transactionAccount == account.account_name }
+=======
+            return transactions.filter { transaction -> transaction.transaction_account == account.account_name }
+>>>>>>> fd594fb534333d1d134a6821078b606b76c8c827
         }
 
         // In your LazyColumn

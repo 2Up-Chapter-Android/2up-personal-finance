@@ -19,6 +19,10 @@ import com.aicontent.accounts.theme.padding_end_text_daily_item
 import com.aicontent.accounts.theme.padding_vertical_text_daily_item
 import com.twoup.personalfinance.domain.model.transaction.createTrans.TransactionLocalModel
 import com.twoup.personalfinance.utils.presentation.adjustFontSize
+<<<<<<< HEAD
+=======
+
+>>>>>>> fd594fb534333d1d134a6821078b606b76c8c827
 @Composable
 fun ItemDailyScreen(
     transaction: TransactionLocalModel,

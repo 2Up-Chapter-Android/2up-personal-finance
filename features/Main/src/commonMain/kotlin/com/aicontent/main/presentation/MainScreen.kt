@@ -43,12 +43,16 @@ import com.aicontent.main.presentation.monthly.MonthlyScreenViewModel
 import com.aicontent.main.presentation.note.NoteScreen
 import com.aicontent.main.presentation.total.TotalScreen
 import com.twoup.personalfinance.domain.model.transaction.TransactionEntity
+<<<<<<< HEAD
 import com.twoup.personalfinance.navigation.MainScreenSharedScreen
 import com.twoup.personalfinance.navigation.TransactionSharedScreen
 import com.twoup.personalfinance.utils.DateTimeUtil
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
+=======
+import com.twoup.personalfinance.navigation.TransactionSharedScreen
+>>>>>>> fd594fb534333d1d134a6821078b606b76c8c827
 
 class MainScreen() : Screen {
     @OptIn(ExperimentalMaterial3Api::class)
@@ -60,14 +64,20 @@ class MainScreen() : Screen {
         val viewModelMonthLyScreen = rememberScreenModel { MonthlyScreenViewModel() }
         val navigator = LocalNavigator.currentOrThrow
         val transactionScreen = rememberScreen(
+<<<<<<< HEAD
             TransactionSharedScreen.CreateTransactionScreen(id = -1)
         )
         val searchScreen = rememberScreen(MainScreenSharedScreen.SearchScreen)
+=======
+            TransactionSharedScreen.CreateTransactionScreen( id = -1)
+        )
+>>>>>>> fd594fb534333d1d134a6821078b606b76c8c827
 
         val listTransactionState = viewModel.getListTransactionState.collectAsState()
         val listTransaction = remember { mutableStateOf(mutableListOf<TransactionEntity>()) }
         val monthYear = viewModel.currentMonthYear
         val transactionByMonth = viewModel.transactionByMonth.collectAsState().value
+<<<<<<< HEAD
         val transactionByYear = viewModel.transactionByYear.collectAsState().value
         var openDiaLog = viewModel.openDiaLog.value
         val time = remember { mutableStateOf(DateTimeUtil.toEpochMillis(DateTimeUtil.now())) }
@@ -83,6 +93,13 @@ class MainScreen() : Screen {
             viewModel.loadTransaction()
             viewModel.filterTransactionByMonth(monthYear.value.month, monthYear.value.year)
             viewModel.filterTransactionByYear(monthYear.value.year)
+=======
+
+        // Trigger a LaunchedEffect to load and filter transactions based on the selected month and year.
+        LaunchedEffect(Unit) {
+            viewModel.loadTransaction()
+            viewModel.filterTransactionByMonth(monthYear.value.month, monthYear.value.year)
+>>>>>>> fd594fb534333d1d134a6821078b606b76c8c827
         }
 
 //        LaunchedEffect(listTransactionState.value) {
@@ -128,6 +145,7 @@ class MainScreen() : Screen {
                         verticalArrangement = Arrangement.Top
                     ) {
                         when (viewModel.selectedTabIndex.value) {
+<<<<<<< HEAD
                             0 -> DailyScreen(viewModelDailyScreen, transactionByMonth, viewModel)
                             1 -> CalenderScreen()
                             2 -> MonthlyScreen(viewModelMonthLyScreen, transactionByYear, viewModel)
@@ -208,6 +226,15 @@ class MainScreen() : Screen {
                         }
                     }
 
+=======
+                            0 -> DailyScreen(viewModelDailyScreen, transactionByMonth)
+                            1 -> CalenderScreen()
+                            4 -> MonthlyScreen()
+                            3 -> TotalScreen()
+                            else -> NoteScreen()
+                        }
+                    }
+>>>>>>> fd594fb534333d1d134a6821078b606b76c8c827
                 }
             },
             floatingActionButton = {

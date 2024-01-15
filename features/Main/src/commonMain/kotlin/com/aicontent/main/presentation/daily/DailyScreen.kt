@@ -95,11 +95,15 @@ fun DailyScreen(viewModel: DailyScreenViewModel, transactionByMonth: List<Transa
 }
 
 @Composable
+<<<<<<< HEAD
 fun DateTransactionsGroup(
     transactions: List<TransactionLocalModel>,
     navigator: Navigator,
     viewModel: DailyScreenViewModel
 ) {
+=======
+fun DateTransactionsGroup(transactions: List<TransactionLocalModel>, navigator: Navigator, viewModel: DailyScreenViewModel) {
+>>>>>>> fd594fb534333d1d134a6821078b606b76c8c827
     Column {
         transactions.forEach { transaction ->
             val itemTransactionScreen =
