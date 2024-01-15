@@ -7,6 +7,7 @@ import com.twoup.personalfinance.domain.model.transaction.createTrans.Transactio
 sealed class MainScreenSharedScreen : ScreenProvider {
     object MainScreen : MainScreenSharedScreen()
     // daily screen
+    object SearchScreen : MainScreenSharedScreen()
     object DailyScreen : MainScreenSharedScreen()
     data class ItemTransaction(val transaction : TransactionLocalModel) : MainScreenSharedScreen()
     object CalendarScreen : MainScreenSharedScreen()

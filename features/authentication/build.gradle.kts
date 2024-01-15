@@ -54,6 +54,7 @@ kotlin {
         }
         val androidMain by getting {
             kotlin.srcDirs("src/jvmMain/kotlin")
+//            dependsOn(commonMain)
             dependencies {
             }
         }

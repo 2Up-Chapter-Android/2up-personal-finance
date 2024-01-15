@@ -13,7 +13,6 @@ import com.twoup.personalfinance.mapping.toCategoryIncome
 import com.twoup.personalfinance.mapping.toNote
 import com.twoup.personalfinance.mapping.toTransaction
 import com.twoup.personalfinance.utils.DateTimeUtil
-import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
 
@@ -45,19 +44,19 @@ class TransactionLocalDataSourceImpl(transactionDatabaseWrapper: PersonalFinance
 
     override suspend fun insertTransaction(transaction: TransactionLocalModel) {
         dbQuery.insertTransaction(
-            transaction.transaction_income,
-            transaction.transaction_expenses,
-            transaction.transaction_transfer,
-            transaction.transaction_description,
-            transaction.transaction_note,
-            DateTimeUtil.toEpochMillis(transaction.transaction_created),
-            transaction.transaction_month,
-            transaction.transaction_year,
-            transaction.transaction_category,
-            transaction.transaction_account,
-            transaction.transaction_selectIndex.toLong(),
-            transaction.transaction_accountFrom,
-            transaction.transaction_accountTo
+            transaction.transactionIncome,
+            transaction.transactionExpenses,
+            transaction.transactionTransfer,
+            transaction.transactionDescription,
+            transaction.transactionNote,
+            DateTimeUtil.toEpochMillis(transaction.transactionCreated),
+            transaction.transactionMonth,
+            transaction.transactionYear,
+            transaction.transactionCategory,
+            transaction.transactionAccount,
+            transaction.transactionSelectIndex.toLong(),
+            transaction.transactionAccountFrom,
+            transaction.transactionAccountTo
         )
     }
 
@@ -167,32 +166,37 @@ class TransactionLocalDataSourceImpl(transactionDatabaseWrapper: PersonalFinance
     }
 
     override suspend fun updateTransaction(transaction: TransactionLocalModel) {
-        transaction.transaction_id?.let {
+        transaction.transactionId.let {
             dbQuery.updateTransactionById(
-                transaction_income = transaction.transaction_income,
-                transaction_expenses = transaction.transaction_expenses,
-                transaction_description = transaction.transaction_description,
+                transaction_income = transaction.transactionIncome,
+                transaction_expenses = transaction.transactionExpenses,
+                transaction_description = transaction.transactionDescription,
                 transaction_id = it,
-                transaction_accountFrom = transaction.transaction_accountFrom,
-                transaction_account = transaction.transaction_account,
-                transaction_accountTo = transaction.transaction_accountTo,
-                transaction_category = transaction.transaction_category,
-                transaction_created = transaction.transaction_created.toInstant(TimeZone.currentSystemDefault())
+                transaction_accountFrom = transaction.transactionAccountFrom,
+                transaction_account = transaction.transactionAccount,
+                transaction_accountTo = transaction.transactionAccountTo,
+                transaction_category = transaction.transactionCategory,
+                transaction_created = transaction.transactionCreated.toInstant(TimeZone.currentSystemDefault())
                     .toEpochMilliseconds(),
-                transaction_month = transaction.transaction_month,
-                transaction_year = transaction.transaction_year,
-                transaction_note = transaction.transaction_note,
-                transaction_selectIndex = transaction.transaction_selectIndex.toLong(),
-                transaction_transfer = transaction.transaction_transfer
+                transaction_month = transaction.transactionMonth,
+                transaction_year = transaction.transactionYear,
+                transaction_note = transaction.transactionNote,
+                transaction_selectIndex = transaction.transactionSelectIndex.toLong(),
+                transaction_transfer = transaction.transactionTransfer
             )
         }
     }
 
-    override suspend fun updateNote(note: NoteTransactionEntity) {
-        TODO("Not yet implemented")
-    }
 
     override suspend fun filterTransactionByMonth(month: Long, year: Long): List<TransactionLocalModel> {
         return dbQuery.filterTransaction(month, year).executeAsList().map { it.toTransaction() }
+    }
+
+    override suspend fun filterTransactionByYear(year: Long): List<TransactionLocalModel> {
+        return dbQuery.filterTransactionByYear(year).executeAsList().map { it.toTransaction() }
+    }
+
+    override suspend fun searchTransaction(note: String, description: String): List<TransactionLocalModel> {
+        return dbQuery.searchTransaction(note, description).executeAsList().map { it.toTransaction() }
     }
 }

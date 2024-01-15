@@ -4,7 +4,6 @@ import com.twoup.personalfinance.domain.model.transaction.account.AccountLocalMo
 import com.twoup.personalfinance.domain.model.transaction.category.CategoryLocalModel
 import com.twoup.personalfinance.domain.model.transaction.createTrans.TransactionLocalModel
 import com.twoup.personalfinance.domain.model.transaction.note.NoteTransactionEntity
-import com.twoup.personalfinance.resources.MR
 import comtwouppersonalfinancedatabase.Accounts
 import comtwouppersonalfinancedatabase.CategorieExpense
 import comtwouppersonalfinancedatabase.CategorieIncome
@@ -37,20 +36,20 @@ fun CategorieIncome.toCategoryIncome(): CategoryLocalModel{
 }
 fun Transactions.toTransaction(): TransactionLocalModel{
     return TransactionLocalModel(
-        transaction_id = transaction_id,
-        transaction_income = transaction_income,
-        transaction_expenses = transaction_expenses,
-        transaction_transfer = transaction_transfer,
-        transaction_description = transaction_description,
-        transaction_note = transaction_note,
-        transaction_created = Instant.fromEpochMilliseconds(transaction_created).toLocalDateTime(kotlinx.datetime.TimeZone.currentSystemDefault()),
-        transaction_month = transaction_month,
-        transaction_year = transaction_year,
-        transaction_category = transaction_category,
-        transaction_account = transaction_account,
-        transaction_selectIndex = transaction_selectIndex.toInt(),
-        transaction_accountFrom = transaction_accountFrom,
-        transaction_accountTo = transaction_accountTo
+        transactionId = transaction_id,
+        transactionIncome = transaction_income,
+        transactionExpenses = transaction_expenses,
+        transactionTransfer = transaction_transfer,
+        transactionDescription = transaction_description,
+        transactionNote = transaction_note,
+        transactionCreated = Instant.fromEpochMilliseconds(transaction_created).toLocalDateTime(kotlinx.datetime.TimeZone.currentSystemDefault()),
+        transactionMonth = transaction_month,
+        transactionYear = transaction_year,
+        transactionCategory = transaction_category,
+        transactionAccount = transaction_account,
+        transactionSelectIndex = transaction_selectIndex.toInt(),
+        transactionAccountFrom = transaction_accountFrom,
+        transactionAccountTo = transaction_accountTo
     )
 }
 

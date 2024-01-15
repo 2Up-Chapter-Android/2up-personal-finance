@@ -70,22 +70,22 @@ class CreateTransViewModel : ScreenModel, KoinComponent {
     }
     fun updateCreateTransUiState(transaction: TransactionLocalModel) {
         val currentUiState = createTransUiState.value
-        if (currentUiState.id != transaction.transaction_id) {
+        if (currentUiState.id != transaction.transactionId) {
             _createTransUiState.value = currentUiState.copy(
-                id = transaction.transaction_id,
-                date = transaction.transaction_created,
-                category = transaction.transaction_category,
-                account = transaction.transaction_account,
-                note = transaction.transaction_note,
-                description = transaction.transaction_description,
-                income = transaction.transaction_income,
-                expenses = transaction.transaction_expenses,
-                transfer = transaction.transaction_transfer,
-                accountFrom = transaction.transaction_accountFrom,
-                accountTo = transaction.transaction_accountTo,
-                selectIndex = transaction.transaction_selectIndex,
-                month = transaction.transaction_month,
-                year = transaction.transaction_year
+                id = transaction.transactionId,
+                date = transaction.transactionCreated,
+                category = transaction.transactionCategory,
+                account = transaction.transactionAccount,
+                note = transaction.transactionNote,
+                description = transaction.transactionDescription,
+                income = transaction.transactionIncome,
+                expenses = transaction.transactionExpenses,
+                transfer = transaction.transactionTransfer,
+                accountFrom = transaction.transactionAccountFrom,
+                accountTo = transaction.transactionAccountTo,
+                selectIndex = transaction.transactionSelectIndex,
+                month = transaction.transactionMonth,
+                year = transaction.transactionYear
             )
         }
     }

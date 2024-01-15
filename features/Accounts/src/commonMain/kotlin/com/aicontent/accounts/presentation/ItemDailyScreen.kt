@@ -4,11 +4,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -22,7 +19,6 @@ import com.aicontent.accounts.theme.padding_end_text_daily_item
 import com.aicontent.accounts.theme.padding_vertical_text_daily_item
 import com.twoup.personalfinance.domain.model.transaction.createTrans.TransactionLocalModel
 import com.twoup.personalfinance.utils.presentation.adjustFontSize
-
 @Composable
 fun ItemDailyScreen(
     transaction: TransactionLocalModel,
@@ -36,7 +32,7 @@ fun ItemDailyScreen(
         ) {
             Text(
                 modifier = Modifier.padding(start = padding_end_text_daily_item).width(80.dp),
-                text = if (isTransfer) "Transfer" else transaction.transaction_category,
+                text = if (isTransfer) "Transfer" else transaction.transactionCategory,
                 fontSize = font_size_text_item_category,
                 color = Color.Gray,
                 maxLines = 1,
@@ -46,14 +42,14 @@ fun ItemDailyScreen(
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     modifier = Modifier.padding(vertical = padding_vertical_text_daily_item),
-                    text = transaction.transaction_description,
+                    text = transaction.transactionDescription,
                     color = Color.Black,
                     fontSize = 14.sp,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
                 Text(
-                    text = if (isTransfer) "${transaction.transaction_accountFrom} -> ${transaction.transaction_accountTo}" else transaction.transaction_account,
+                    text = if (isTransfer) "${transaction.transactionAccountFrom} -> ${transaction.transactionAccountTo}" else transaction.transactionAccount,
                     fontSize = font_size_text_item_category,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
@@ -62,18 +58,18 @@ fun ItemDailyScreen(
             Spacer(Modifier.padding(1.dp))
 
             val colorText = when {
-                transaction.transaction_income - transaction.transaction_expenses > 0 -> Color.Blue
-                transaction.transaction_expenses - transaction.transaction_income > 0 -> Color.Red
+                transaction.transactionIncome - transaction.transactionExpenses > 0 -> Color.Blue
+                transaction.transactionExpenses - transaction.transactionIncome > 0 -> Color.Red
                 else -> Color.Black
             }
             val incomeOrExpenses = when {
-                transaction.transaction_income - transaction.transaction_expenses > 0 -> transaction.transaction_income
-                transaction.transaction_expenses - transaction.transaction_income > 0 -> transaction.transaction_expenses
+                transaction.transactionIncome - transaction.transactionExpenses > 0 -> transaction.transactionIncome
+                transaction.transactionExpenses - transaction.transactionIncome > 0 -> transaction.transactionExpenses
                 else -> 0
             }
             Text(
                 modifier = Modifier.padding(end = padding_end_text_daily_item),
-                text = if(isTransfer) "${transaction.transaction_transfer} đ" else "$incomeOrExpenses đ",
+                text = if(isTransfer) "${transaction.transactionTransfer} đ" else "$incomeOrExpenses đ",
                 color = colorText,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,

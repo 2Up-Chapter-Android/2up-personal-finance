@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -24,12 +23,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -45,8 +40,6 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import com.twoup.personalfinance.domain.model.transaction.account.AccountLocalModel
 import com.twoup.personalfinance.domain.model.transaction.createTrans.TransactionLocalModel
 import com.twoup.personalfinance.navigation.AccountSharedScreen
-import com.twoup.personalfinance.navigation.MainScreenSharedScreen
-import io.github.aakira.napier.Napier
 
 val VeryLightGray = Color(0xFFF5F5F5) // You can adjust the color code as needed
 
@@ -88,9 +81,9 @@ fun AccountList(accounts: List<AccountLocalModel>, viewModel: AccountListViewMod
 
     val transactions = viewModel.transactions.value
     val totalAsset =
-        transactions.filter { it.transaction_income > 0 }.sumOf { it.transaction_income }
+        transactions.filter { it.transactionIncome > 0 }.sumOf { it.transactionIncome }
     val totalLiabilities =
-        transactions.filter { it.transaction_expenses > 0 }.sumOf { it.transaction_expenses }
+        transactions.filter { it.transactionExpenses > 0 }.sumOf { it.transactionExpenses }
     val totalBalance = totalAsset - totalLiabilities
     val navigator = LocalNavigator.currentOrThrow
 
@@ -107,7 +100,7 @@ fun AccountList(accounts: List<AccountLocalModel>, viewModel: AccountListViewMod
         )
 
         fun getSelectedTransactions(account: AccountLocalModel): List<TransactionLocalModel> {
-            return transactions.filter { transaction -> transaction.transaction_account == account.account_name }
+            return transactions.filter { transaction -> transaction.transactionAccount == account.account_name }
         }
 
         // In your LazyColumn
@@ -117,7 +110,7 @@ fun AccountList(accounts: List<AccountLocalModel>, viewModel: AccountListViewMod
             items(accounts) { account ->
                 val selectedTransactions = getSelectedTransactions(account)
                 val balance =
-                    calculateBalance(selectedTransactions, transactions, account)
+                    viewModel.calculateBalance(selectedTransactions, transactions, account)
                 val listTransactionForAccount = rememberScreen(
                     AccountSharedScreen.ListTransactionForAccountScreen(
                         transactions, account
@@ -169,40 +162,6 @@ fun TotalColumn(title: String, value: Long, color: Color) {
             modifier = Modifier.padding(top = 8.dp)
         )
     }
-}
-
-@Composable
-fun calculateBalance(
-    selectedTransactions: List<TransactionLocalModel>,
-    allTransactions: List<TransactionLocalModel>,
-    account: AccountLocalModel,
-): Long {
-    // Calculate the total income, expenses, transfers from, and transfers to in a single pass
-    var totalIncome = 0L
-    var totalExpense = 0L
-    var totalTransferFrom = 0L
-    var totalTransferTo = 0L
-
-    for (transaction in selectedTransactions) {
-        totalIncome += transaction.transaction_income
-        totalExpense += transaction.transaction_expenses
-    }
-    for (transaction in allTransactions.filter { it.transaction_transfer > 0 }) {
-        if (transaction.transaction_accountFrom == account.account_name) {
-            totalTransferFrom += transaction.transaction_transfer
-        }
-
-        if (transaction.transaction_accountTo == account.account_name) {
-            totalTransferTo += transaction.transaction_transfer
-        }
-        Napier.d("transaction = $transaction", tag = "total")
-        Napier.d("account = $account", tag = "total")
-
-    }
-    Napier.d("totalTransferFrom = $totalTransferFrom", tag = "total")
-    Napier.d("totalTransferTo = $totalTransferTo", tag = "total")
-
-    return totalIncome - totalExpense - totalTransferFrom + totalTransferTo
 }
 
 

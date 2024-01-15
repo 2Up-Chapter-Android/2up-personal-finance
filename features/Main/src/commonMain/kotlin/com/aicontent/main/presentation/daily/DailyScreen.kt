@@ -33,6 +33,7 @@ import cafe.adriel.voyager.core.registry.rememberScreen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import com.aicontent.main.presentation.MainScreenViewModel
 import com.aicontent.main.theme.padding_end_text_daily_item
 import com.twoup.personalfinance.domain.model.transaction.createTrans.TransactionLocalModel
 import com.twoup.personalfinance.navigation.MainScreenSharedScreen
@@ -40,13 +41,15 @@ import com.twoup.personalfinance.utils.DateTimeUtil
 import com.twoup.personalfinance.utils.presentation.adjustFontSize
 
 @Composable
-fun DailyScreen(viewModel: DailyScreenViewModel, transactionByMonth : List<TransactionLocalModel>) {
+fun DailyScreen(viewModel: DailyScreenViewModel, transactionByMonth: List<TransactionLocalModel>, mainScreenViewModel: MainScreenViewModel ) {
     val navigator = LocalNavigator.currentOrThrow
-    val listTransaction = transactionByMonth.sortedByDescending { it.transaction_created }
-    val distinctTransactions = listTransaction.distinctBy { it.transaction_created.date.dayOfMonth }
+    val listTransaction = transactionByMonth.sortedByDescending { it.transactionCreated }
+    val distinctTransactions = listTransaction.distinctBy { it.transactionCreated.date.dayOfMonth }
 
     LaunchedEffect(Unit) {
         viewModel.loadTransaction()
+        viewModel.filterTransactionByMonth(mainScreenViewModel.currentMonthYear.value.month, mainScreenViewModel.currentMonthYear.value.year)
+
     }
 
     Column(
@@ -62,7 +65,7 @@ fun DailyScreen(viewModel: DailyScreenViewModel, transactionByMonth : List<Trans
                 LazyColumn {
                     items(distinctTransactions) { dateDistinct ->
                         val transactions =
-                            listTransaction.filter { it.transaction_created.date.dayOfMonth == dateDistinct.transaction_created.date.dayOfMonth }
+                            listTransaction.filter { it.transactionCreated.date.dayOfMonth == dateDistinct.transactionCreated.date.dayOfMonth }
 
                         Column(
                             modifier = Modifier
@@ -92,11 +95,16 @@ fun DailyScreen(viewModel: DailyScreenViewModel, transactionByMonth : List<Trans
 }
 
 @Composable
-fun DateTransactionsGroup(transactions: List<TransactionLocalModel>, navigator: Navigator, viewModel: DailyScreenViewModel) {
+fun DateTransactionsGroup(
+    transactions: List<TransactionLocalModel>,
+    navigator: Navigator,
+    viewModel: DailyScreenViewModel
+) {
     Column {
         transactions.forEach { transaction ->
-            val itemTransactionScreen = rememberScreen(MainScreenSharedScreen.ItemTransaction(transaction))
-            val isTransfer = transaction.transaction_transfer > 0
+            val itemTransactionScreen =
+                rememberScreen(MainScreenSharedScreen.ItemTransaction(transaction))
+            val isTransfer = transaction.transactionTransfer > 0
 
             ItemDailyScreen(
                 transaction,
@@ -125,7 +133,7 @@ fun TitleTransaction(
     ) {
         Row(modifier = Modifier.weight(1.2f)) {
             Text(
-                text = DateTimeUtil.formatDateTransDays(dateDistinct.transaction_created),
+                text = DateTimeUtil.formatDateTransDays(dateDistinct.transactionCreated),
                 fontWeight = FontWeight.Bold,
                 color = Color.Black,
                 fontSize = 24.sp,
@@ -148,7 +156,7 @@ fun TitleTransaction(
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = DateTimeUtil.formatDateTransMonth(dateDistinct.transaction_created),
+                        text = DateTimeUtil.formatDateTransMonth(dateDistinct.transactionCreated),
                         color = Color.Black,
                         fontSize = 12.sp,
                     )
@@ -156,34 +164,34 @@ fun TitleTransaction(
             }
 
             Text(
-                text = DateTimeUtil.formatDateTrans(dateDistinct.transaction_created),
+                text = DateTimeUtil.formatDateTrans(dateDistinct.transactionCreated),
                 fontWeight = FontWeight.Thin,
                 color = Color.DarkGray,
                 fontSize = 14.sp,
                 modifier = Modifier.align(Alignment.Bottom).padding(4.dp)
             )
         }
-         Text(
-                text = buildString {
-                    append(totalIncome)
-                    append(" đ")
-                },
-                color = Color.Blue,
-                modifier = Modifier.weight(1f),
-                textAlign = TextAlign.End,
-                fontSize = adjustFontSize(totalIncome.toString()).sp
-            )
+        Text(
+            text = buildString {
+                append(totalIncome)
+                append(" đ")
+            },
+            color = Color.Blue,
+            modifier = Modifier.weight(1f),
+            textAlign = TextAlign.End,
+            fontSize = adjustFontSize(totalIncome.toString()).sp
+        )
 
-            Text(
-                text = buildString {
-                    append(totalExpenses)
-                    append(" đ")
-                },
-                color = Color.Red,
-                modifier = Modifier.padding(end = padding_end_text_daily_item).weight(1f),
-                textAlign = TextAlign.End,
-                fontSize = adjustFontSize(totalExpenses.toString()).sp
-            )
+        Text(
+            text = buildString {
+                append(totalExpenses)
+                append(" đ")
+            },
+            color = Color.Red,
+            modifier = Modifier.padding(end = padding_end_text_daily_item).weight(1f),
+            textAlign = TextAlign.End,
+            fontSize = adjustFontSize(totalExpenses.toString()).sp
+        )
     }
 }
 

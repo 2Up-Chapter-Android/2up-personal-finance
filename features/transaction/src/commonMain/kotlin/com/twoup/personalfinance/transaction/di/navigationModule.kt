@@ -14,7 +14,4 @@ fun transactionNavigationModule() = module {
     ScreenRegistry.register<TransactionSharedScreen.TransactionDashboardScreen> {
         TransactionDashboardScreen()
     }
-//    ScreenRegistry.register<MainScreenSharedScreen.MainView> {
-//        MainScreen()
-//    }
 }

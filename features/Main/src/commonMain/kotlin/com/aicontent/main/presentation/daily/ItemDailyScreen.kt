@@ -40,7 +40,7 @@ fun ItemDailyScreen(
         ) {
             Text(
                 modifier = Modifier.padding(start = padding_end_text_daily_item).width(80.dp),
-                text = if (isTransfer) "Transfer" else transaction.transaction_category,
+                text = if (isTransfer) "Transfer" else transaction.transactionCategory,
                 fontSize = font_size_text_item_category,
                 color = Color.Gray,
                 maxLines = 1,
@@ -50,14 +50,14 @@ fun ItemDailyScreen(
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     modifier = Modifier.padding(vertical = padding_vertical_text_daily_item),
-                    text = transaction.transaction_note,
+                    text = transaction.transactionNote,
                     color = Color.Black,
                     fontSize = 14.sp,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
                 Text(
-                    text = if (isTransfer) "${transaction.transaction_accountFrom} -> ${transaction.transaction_accountTo}" else transaction.transaction_account,
+                    text = if (isTransfer) "${transaction.transactionAccountFrom} -> ${transaction.transactionAccountTo}" else transaction.transactionAccount,
                     fontSize = font_size_text_item_category,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
@@ -65,16 +65,13 @@ fun ItemDailyScreen(
             }
             Spacer(Modifier.padding(1.dp))
 
-            val colorText = viewModel.calculateColorText(transaction)
-            val incomeOrExpenses = viewModel.calculateIncomeOrExpenses(transaction)
-
             Text(
                 modifier = Modifier.padding(end = padding_end_text_daily_item),
-                text = if(isTransfer) "${transaction.transaction_transfer} đ" else "$incomeOrExpenses đ",
-                color = colorText,
+                text = if(isTransfer) "${transaction.transactionTransfer} đ" else "${viewModel.calculateIncomeOrExpenses(transaction)} đ",
+                color = viewModel.calculateColorText(transaction),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
-                fontSize = adjustFontSize(incomeOrExpenses.toString()).sp
+                fontSize = adjustFontSize(viewModel.calculateIncomeOrExpenses(transaction).toString()).sp
             )
         }
     }

@@ -31,6 +31,7 @@ kotlin {
                 implementation(compose.foundation)
                 implementation(compose.material)
                 api(libs.moko.compose.resource)
+                implementation(libs.moko.resources)
             }
         }
         val commonTest by getting {
@@ -40,7 +41,7 @@ kotlin {
         }
         val androidMain by getting {
             kotlin.srcDirs("src/jvmMain/kotlin")
-//            dependsOn(commonMain)
+            dependsOn(commonMain)
             dependencies {
             }
         }
@@ -58,6 +59,7 @@ kotlin {
 
         val desktopMain by getting {
             kotlin.srcDirs("src/jvmMain/kotlin")
+            dependsOn(commonMain)
             dependencies {
             }
         }

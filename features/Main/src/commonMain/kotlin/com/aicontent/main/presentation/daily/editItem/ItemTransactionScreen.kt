@@ -1,6 +1,6 @@
 package com.aicontent.main.presentation.daily.editItem
 
-import PersonalFinance.features.Main.MR
+//import PersonalFinance.features.Main.MR
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -77,12 +77,13 @@ import com.twoup.personalfinance.domain.model.transaction.createTrans.Transactio
 import com.twoup.personalfinance.navigation.MainScreenSharedScreen
 import com.twoup.personalfinance.navigation.TransactionSharedScreen
 import com.twoup.personalfinance.utils.DateTimeUtil
-import dev.icerock.moko.resources.compose.colorResource
-import dev.icerock.moko.resources.compose.localized
-import dev.icerock.moko.resources.desc.desc
+//import dev.icerock.moko.resources.compose.colorResource
+//import dev.icerock.moko.resources.compose.localized
+//import dev.icerock.moko.resources.desc.desc
 import io.github.aakira.napier.Napier
 import kotlinx.datetime.Instant
 import kotlinx.datetime.toLocalDateTime
+
 
 class ItemTransactionScreen(private val transaction: TransactionLocalModel) : Screen {
     @OptIn(ExperimentalMaterial3Api::class)
@@ -95,7 +96,7 @@ class ItemTransactionScreen(private val transaction: TransactionLocalModel) : Sc
         val categoryExpenses by viewModel.categoryExpenses.collectAsState(emptyList())
         val categoryIncome by viewModel.categoryIncome.collectAsState(emptyList())
         val accounts by viewModel.accounts.collectAsState(emptyList())
-        val selectedTabIndex = remember { mutableStateOf(transaction.transaction_selectIndex) }
+        val selectedTabIndex = remember { mutableStateOf(transaction.transactionSelectIndex) }
         val interactionSource = remember { MutableInteractionSource() }
         val time = remember { mutableStateOf(DateTimeUtil.toEpochMillis(DateTimeUtil.now())) }
         val state = rememberDatePickerState(
@@ -103,9 +104,10 @@ class ItemTransactionScreen(private val transaction: TransactionLocalModel) : Sc
             initialSelectedDateMillis = time.value
         )
         val tabList = listOf(
-            MR.strings.createTrans_tab_income.desc().localized(),
-            MR.strings.createTrans_tab_expense.desc().localized(),
-            MR.strings.createTrans_tab_transfer.desc().localized()
+//            MR.strings.createTrans_tab_income.desc().localized(),
+//            MR.strings.createTrans_tab_expense.desc().localized(),
+//            MR.strings.createTrans_tab_transfer.desc().localized()
+            "Income", "Expense", "Transfer"
         )
 
         LaunchedEffect(Unit) {
@@ -201,7 +203,11 @@ class ItemTransactionScreen(private val transaction: TransactionLocalModel) : Sc
 //                bottom = create_transaction_spacer_padding_bottom
 //            )
                             .fillMaxWidth()
-                            .background(colorResource(MR.colors.createTrans_line_break)),
+//                            .background(colorResource(MR.colors.createTrans_line_break)),
+                            .background(
+//                                Color.Red
+                                Color(0xdedee1)
+                            )
                     )
                     // AnimatedVisibility for the remaining buttons
                     AnimatedVisibility(
@@ -223,7 +229,9 @@ class ItemTransactionScreen(private val transaction: TransactionLocalModel) : Sc
                                 transactionUiState.id.let { viewModel.deleteTransactionById(it) }
                                 navigator.pop()
                             }
-                            val itemTransactionScreen = rememberScreen(TransactionSharedScreen.CreateTransactionScreen(transaction.transaction_id))
+                            val itemTransactionScreen = rememberScreen(
+                                TransactionSharedScreen.CreateTransactionScreen(transaction.transactionId)
+                            )
 
                             // Copy Button
                             TransactionButton(
@@ -252,20 +260,20 @@ class ItemTransactionScreen(private val transaction: TransactionLocalModel) : Sc
                             onClick = {
                                 viewModel.updateTransaction(
                                     TransactionLocalModel(
-                                        transaction_id = transactionUiState.id,
-                                        transaction_income = transactionUiState.income,
-                                        transaction_expenses = transactionUiState.expenses,
-                                        transaction_transfer = transactionUiState.transfer,
-                                        transaction_description = transactionUiState.description,
-                                        transaction_note = transactionUiState.note,
-                                        transaction_created = transactionUiState.date,
-                                        transaction_month = transaction.transaction_month,
-                                        transaction_year = transaction.transaction_year,
-                                        transaction_category = transactionUiState.category,
-                                        transaction_account = transactionUiState.account,
-                                        transaction_selectIndex = transactionUiState.selectIndex,
-                                        transaction_accountFrom = transactionUiState.accountFrom,
-                                        transaction_accountTo = transactionUiState.accountTo
+                                        transactionId = transactionUiState.id,
+                                        transactionIncome = transactionUiState.income,
+                                        transactionExpenses = transactionUiState.expenses,
+                                        transactionTransfer = transactionUiState.transfer,
+                                        transactionDescription = transactionUiState.description,
+                                        transactionNote = transactionUiState.note,
+                                        transactionCreated = transactionUiState.date,
+                                        transactionMonth = transaction.transactionMonth,
+                                        transactionYear = transaction.transactionYear,
+                                        transactionCategory = transactionUiState.category,
+                                        transactionAccount = transactionUiState.account,
+                                        transactionSelectIndex = transactionUiState.selectIndex,
+                                        transactionAccountFrom = transactionUiState.accountFrom,
+                                        transactionAccountTo = transactionUiState.accountTo
                                     )
                                 )
                                 viewModel.loadTransaction()
@@ -273,7 +281,11 @@ class ItemTransactionScreen(private val transaction: TransactionLocalModel) : Sc
                             },
                             modifier = Modifier.fillMaxWidth()
                                 .padding(16.dp),
-                            colors = ButtonDefaults.buttonColors(backgroundColor = colorResource(MR.colors.createTrans_tab_expense))
+                            colors = ButtonDefaults.buttonColors(
+//                                backgroundColor = colorResource(MR.colors.createTrans_tab_expense)
+                                backgroundColor = Color.Red
+
+                            )
                         ) {
                             Text("Save", color = Color.White)
                         }
@@ -422,7 +434,11 @@ fun tabLayoutTrans(
                     0 -> BorderStroke(thickness_transaction_borderStroke, Color.Blue)
                     1 -> BorderStroke(
                         thickness_transaction_borderStroke,
-                        colorResource(MR.colors.createTrans_tab_expense)
+//                        colorResource(MR.colors.createTrans_tab_expense)
+//                        Color(0xff603b)
+                        Color.Blue
+
+
                     )
 
                     else -> BorderStroke(thickness_transaction_borderStroke, Color.Black)
@@ -437,8 +453,11 @@ fun tabLayoutTrans(
                     )
 
                     1 -> ButtonDefaults.outlinedButtonColors(
-                        contentColor = colorResource(MR.colors.createTrans_tab_expense),
-                        backgroundColor = Color.White
+                        contentColor = Color.Blue, backgroundColor = Color.White
+//                        contentColor =
+////                        colorResource(MR.colors.createTrans_tab_expense),
+//                        Color(0xff603b),
+//                        backgroundColor = Color.White
                     )
 
                     else -> ButtonDefaults.outlinedButtonColors(
@@ -448,7 +467,9 @@ fun tabLayoutTrans(
             } else {
                 ButtonDefaults.outlinedButtonColors(
                     contentColor = Color.Gray,
-                    backgroundColor = colorResource(MR.colors.createTrans_tab_unselected)
+                    backgroundColor = Color.White
+//                    Color(0xf3f6f4)
+//                    colorResource(MR.colors.createTrans_tab_unselected)
                 )
             }
         ) {
@@ -460,4 +481,3 @@ fun tabLayoutTrans(
         }
     }
 }
-

@@ -1,6 +1,6 @@
 package com.aicontent.main.presentation.daily
 
-import PersonalFinance.features.Main.MR
+//import PersonalFinance.features.Main.MR
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -42,9 +42,9 @@ import com.aicontent.main.theme.textSize_createTransaction_chooseWallet_actionBa
 import com.aicontent.main.theme.textSize_createTransaction_chooseWallet_walletITem_name
 import com.twoup.personalfinance.domain.model.transaction.account.AccountLocalModel
 import com.twoup.personalfinance.domain.model.transaction.category.CategoryLocalModel
-import dev.icerock.moko.resources.compose.colorResource
-import dev.icerock.moko.resources.compose.localized
-import dev.icerock.moko.resources.desc.desc
+
+//import dev.icerock.moko.resources.compose.localized
+//import dev.icerock.moko.resources.desc.desc
 
 @Composable
 fun AccountBottomSheet(
@@ -56,7 +56,8 @@ fun AccountBottomSheet(
 
     Column(
         modifier = Modifier.fillMaxHeight(0.5f).fillMaxWidth()
-            .background(color = colorResource(MR.colors.createTrans_chooseWallet_background))
+//            .background(color = colorResource(MR.colors.createTrans_chooseWallet_background))
+            .background(color = Color(0xf4f4f4))
     ) {
         Row(
             modifier = Modifier.background(Color.Black).fillMaxWidth()
@@ -65,7 +66,8 @@ fun AccountBottomSheet(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                MR.strings.createTrans_inputLabel_account.desc().localized(),
+//                MR.strings.createTrans_inputLabel_account.desc().localized(),
+                text = "Account",
                 color = Color.White,
                 fontSize = textSize_createTransaction_chooseWallet_actionBar
             )
@@ -81,7 +83,8 @@ fun AccountBottomSheet(
                     modifier = Modifier
                         .border(
                             width = Dp(0.5f),
-                            color = colorResource(MR.colors.createTrans_chooseWallet_walletItem_border)
+//                            color = colorResource(MR.colors.createTrans_chooseWallet_walletItem_border)
+                            color = Color(0xCCCCCC)
                         )
                         .background(Color.White)
                         .padding(
@@ -134,7 +137,9 @@ fun CategoryBottomSheet(
 
     Column(
         modifier = Modifier.fillMaxHeight(0.5f).fillMaxWidth()
-            .background(color = colorResource(MR.colors.createTrans_chooseWallet_background))
+//            .background(color = colorResource(MR.colors.createTrans_chooseWallet_background))
+            .background(color = Color(0xf4f4f4))
+
     ) {
         Row(
             modifier = Modifier.background(Color.Black).fillMaxWidth()
@@ -143,7 +148,8 @@ fun CategoryBottomSheet(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                MR.strings.createTrans_inputLabel_category.desc().localized(),
+//                MR.strings.createTrans_inputLabel_category.desc().localized(),
+                text = "Category",
                 color = Color.White,
                 fontSize = textSize_createTransaction_chooseWallet_actionBar
             )
@@ -161,32 +167,33 @@ fun CategoryBottomSheet(
                         modifier = Modifier
                             .border(
                                 width = Dp(0.5f),
-                                color = colorResource(MR.colors.createTrans_chooseWallet_walletItem_border)
+//                                color = colorResource(MR.colors.createTrans_chooseWallet_walletItem_border)
+                                color = Color(0xCCCCCC)
                             )
-                            .background(Color.White)
-                            .padding(
-                                horizontal = paddingHorizontal_createTrans_chooseWallet_walletItem,
-                                vertical = paddingVertical_createTrans_chooseWallet_walletItem
-                            )
-                            .clickable(
-                                interactionSource = interactionSource,
-                                indication = null
-                            ) {
-                                viewModel.updateShowSaveButton()
-                                viewModel.onCategoryChange(category.category_name)
-                                focusManager.clearFocus()
-                            },
-                        contentAlignment = Alignment.TopStart
-                    ) {
-                        Text(
-                            text = category.category_name,
-                            color = Color.Black,
-                            fontSize = textSize_createTransaction_chooseWallet_walletITem_name,
+                        .background(Color.White)
+                        .padding(
+                            horizontal = paddingHorizontal_createTrans_chooseWallet_walletItem,
+                            vertical = paddingVertical_createTrans_chooseWallet_walletItem
                         )
-                    }
+                        .clickable(
+                            interactionSource = interactionSource,
+                            indication = null
+                        ) {
+                            viewModel.updateShowSaveButton()
+                            viewModel.onCategoryChange(category.category_name)
+                            focusManager.clearFocus()
+                        },
+                    contentAlignment = Alignment.TopStart
+                    ) {
+                    Text(
+                        text = category.category_name,
+                        color = Color.Black,
+                        fontSize = textSize_createTransaction_chooseWallet_walletITem_name,
+                    )
+                }
                 }
             }
-            Spacer(modifier = Modifier.fillMaxHeight().background(Color.Gray).padding(0.25.dp) )
+            Spacer(modifier = Modifier.fillMaxHeight().background(Color.Gray).padding(0.25.dp))
         }
     }
 }
@@ -201,7 +208,9 @@ fun AmountBottomSheet(
 
     Column(
         modifier = Modifier.fillMaxHeight(0.5f).fillMaxWidth()
-            .background(color = colorResource(MR.colors.createTrans_chooseWallet_background))
+//            .background(color = colorResource(MR.colors.createTrans_chooseWallet_background))
+            .background(color = Color(0xf4f4f4))
+
     ) {
         Row(
             modifier = Modifier.background(Color.Black).fillMaxWidth()
@@ -210,7 +219,8 @@ fun AmountBottomSheet(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                MR.strings.createTrans_inputLabel_amount.desc().localized(),
+//                MR.strings.createTrans_inputLabel_amount.desc().localized(),
+                text = "Amount",
                 color = Color.White,
                 fontSize = textSize_createTransaction_chooseWallet_actionBar
             )
@@ -230,12 +240,15 @@ fun AmountBottomSheet(
                             inputText = inputText.dropLast(1)
                         }
                     }
+
                     SpecialButton.MINUS -> {
                         inputText += "-"
                     }
+
                     SpecialButton.CALCULATE -> {
                         // Perform calculation logic here
                     }
+
                     SpecialButton.EQUALS -> {
                         // Perform equals logic here
                     }
@@ -298,7 +311,8 @@ fun NumericButton(
     specialButton: SpecialButton? = null,
     onClick: () -> Unit
 ) {
-    val borderColor = colorResource(MR.colors.createTrans_chooseWallet_walletItem_border)
+//    val borderColor = colorResource(MR.colors.createTrans_chooseWallet_walletItem_border)
+    val borderColor = Color(0xCCCCCC)
     val paddingHorizontal = paddingHorizontal_createTrans_chooseWallet_walletItem
     val paddingVertical = paddingVertical_createTrans_chooseWallet_walletItem
 
@@ -323,6 +337,7 @@ fun NumericButton(
                     SpecialButton.CALCULATE -> "Cal"
                     SpecialButton.EQUALS -> "="
                 }
+
                 else -> ""
             },
             style = MaterialTheme.typography.h5,

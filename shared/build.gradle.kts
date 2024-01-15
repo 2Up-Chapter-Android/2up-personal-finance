@@ -57,8 +57,8 @@ kotlin {
                 implementation(project(":features:transaction"))
                 implementation(project(":features:category"))
                 implementation(project(":features:Main"))
-//                implementation(project(":features:More"))
-//                implementation(project(":features:Status"))
+                implementation(project(":features:More"))
+                implementation(project(":features:Status"))
                 implementation(project(":features:Accounts"))
                 api(project(":common:resources"))
 
@@ -89,8 +89,10 @@ kotlin {
         }
         val androidMain by getting {
             kotlin.srcDirs("src/jvmMain/kotlin")
+            dependsOn(commonMain)
             dependencies {
                 api(libs.activity.compose)
+//                implementation(libs.moko.resources)
             }
         }
         val iosX64Main by getting
