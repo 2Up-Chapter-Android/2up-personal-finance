@@ -49,7 +49,22 @@ fun Transactions.toTransaction(): TransactionLocalModel{
         transactionAccount = transaction_account,
         transactionSelectIndex = transaction_selectIndex.toInt(),
         transactionAccountFrom = transaction_accountFrom,
-        transactionAccountTo = transaction_accountTo
+        transactionAccountTo = transaction_accountTo,
+
+//        transaction_id = transaction_id,
+//        transaction_income = transaction_income,
+//        transaction_expenses = transaction_expenses,
+//        transaction_transfer = transaction_transfer,
+//        transaction_description = transaction_description,
+//        transaction_note = transaction_note,
+//        transaction_created = Instant.fromEpochMilliseconds(transaction_created).toLocalDateTime(kotlinx.datetime.TimeZone.currentSystemDefault()),
+//        transaction_month = transaction_month,
+//        transaction_year = transaction_year,
+//        transaction_category = transaction_category,
+//        transaction_account = transaction_account,
+//        transaction_selectIndex = transaction_selectIndex.toInt(),
+//        transaction_accountTo = transaction_accountTo,
+//        transaction_accountFrom = transaction_accountFrom,
     )
 }
 

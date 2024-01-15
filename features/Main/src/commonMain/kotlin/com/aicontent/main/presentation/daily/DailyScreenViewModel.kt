@@ -14,10 +14,7 @@ import com.twoup.personalfinance.domain.usecase.localTransaction.category.UseCas
 import com.twoup.personalfinance.domain.usecase.localTransaction.transaction.UseCaseGetAllTransaction
 import com.twoup.personalfinance.domain.usecase.localTransaction.transaction.UseCaseInsertTransaction
 import com.twoup.personalfinance.domain.usecase.localTransaction.account.UseCaseUpdateAccountById
-<<<<<<< HEAD
 import com.twoup.personalfinance.domain.usecase.localTransaction.transaction.UseCaseFilterTransactionByMonth
-=======
->>>>>>> fd594fb534333d1d134a6821078b606b76c8c827
 import com.twoup.personalfinance.domain.usecase.localTransaction.transaction.UseCaseUpdateTransactionById
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -61,6 +58,7 @@ class DailyScreenViewModel : ScreenModel, KoinComponent {
     fun filterTransactionByMonth(month: Int, year: Int) {
         useCaseFilterTransactionByMonth.filterTransactionByMonth(month.toLong(), year.toLong())
     }
+
     fun updateTransaction(transaction: TransactionLocalModel) {
         useCaseUpdateTransaction.updateTransaction(
             transaction = transaction,
@@ -71,7 +69,6 @@ class DailyScreenViewModel : ScreenModel, KoinComponent {
     // Function to update transactionUiState with a selected transaction
     fun updateTransactionUiState(transaction: TransactionLocalModel) {
         _transactionUiState.value = transactionUiState.value.copy(
-<<<<<<< HEAD
             id = transaction.transactionId,
             date = transaction.transactionCreated,
             category = transaction.transactionCategory,
@@ -84,20 +81,6 @@ class DailyScreenViewModel : ScreenModel, KoinComponent {
             accountFrom = transaction.transactionAccountFrom,
             accountTo = transaction.transactionAccountTo,
             selectIndex = transaction.transactionSelectIndex
-=======
-            id = transaction.transaction_id,
-            date = transaction.transaction_created,
-            category = transaction.transaction_category,
-            account = transaction.transaction_account,
-            note = transaction.transaction_note,
-            description = transaction.transaction_description,
-            income = transaction.transaction_income,
-            expenses = transaction.transaction_expenses,
-            transfer = transaction.transaction_transfer,
-            accountFrom = transaction.transaction_accountFrom,
-            accountTo = transaction.transaction_accountTo,
-            selectIndex = transaction.transaction_selectIndex
->>>>>>> fd594fb534333d1d134a6821078b606b76c8c827
         )
     }
 
@@ -166,6 +149,7 @@ class DailyScreenViewModel : ScreenModel, KoinComponent {
             // For example, you can set a validation error state in your UI
         }
     }
+
     fun onExpensesChange(text: String) {
         try {
             val expenses = if (text.isBlank()) 0L else text.toLong()
@@ -174,6 +158,7 @@ class DailyScreenViewModel : ScreenModel, KoinComponent {
             // Handle the case where text is not a valid long (non-numeric input)
         }
     }
+
     fun onTransferChange(text: String) {
         try {
             val transferBalance = if (text.isBlank()) 0L else text.toLong()
@@ -182,6 +167,7 @@ class DailyScreenViewModel : ScreenModel, KoinComponent {
             // Handle the case where text is not a valid long (non-numeric input)
         }
     }
+
     fun openCloseDatePicker(isOpen: Boolean) {
         _transactionUiState.value = transactionUiState.value.copy(
             isOpenDatePicker = isOpen,
@@ -211,43 +197,27 @@ class DailyScreenViewModel : ScreenModel, KoinComponent {
             isOpenChooseAccountFrom = isOpen,
         )
     }
+
     fun calculateTotalIncome(transactions: List<TransactionLocalModel>): Long {
-<<<<<<< HEAD
         return transactions.filter { it.transactionIncome > 0 }.sumOf { it.transactionIncome }
     }
 
     fun calculateTotalExpenses(transactions: List<TransactionLocalModel>): Long {
         return transactions.filter { it.transactionExpenses > 0 }.sumOf { it.transactionExpenses }
     }
-    fun calculateColorText(transaction: TransactionLocalModel): Color {
-        return when {
-            transaction.transactionIncome - transaction.transactionExpenses > 0 -> Color.Blue
-            transaction.transactionExpenses - transaction.transactionIncome > 0 -> Color.Red
-=======
-        return transactions.filter { it.transaction_income > 0 }.sumOf { it.transaction_income }
-    }
 
-    fun calculateTotalExpenses(transactions: List<TransactionLocalModel>): Long {
-        return transactions.filter { it.transaction_expenses > 0 }.sumOf { it.transaction_expenses }
-    }
     fun calculateColorText(transaction: TransactionLocalModel): Color {
         return when {
-            transaction.transaction_income - transaction.transaction_expenses > 0 -> Color.Blue
-            transaction.transaction_expenses - transaction.transaction_income > 0 -> Color.Red
->>>>>>> fd594fb534333d1d134a6821078b606b76c8c827
+            transaction.transactionExpenses - transaction.transactionExpenses > 0 -> Color.Blue
+            transaction.transactionIncome - transaction.transactionIncome > 0 -> Color.Red
             else -> Color.Black
         }
     }
 
     fun calculateIncomeOrExpenses(transaction: TransactionLocalModel): Long {
         return when {
-<<<<<<< HEAD
             transaction.transactionIncome - transaction.transactionExpenses > 0 -> transaction.transactionIncome
             transaction.transactionExpenses - transaction.transactionIncome > 0 -> transaction.transactionExpenses
-=======
-            transaction.transaction_income - transaction.transaction_expenses > 0 -> transaction.transaction_income
-            transaction.transaction_expenses - transaction.transaction_income > 0 -> transaction.transaction_expenses
->>>>>>> fd594fb534333d1d134a6821078b606b76c8c827
             else -> 0
         }
     }

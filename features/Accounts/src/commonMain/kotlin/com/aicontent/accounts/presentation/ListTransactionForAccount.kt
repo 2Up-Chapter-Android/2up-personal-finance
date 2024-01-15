@@ -58,10 +58,6 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import com.aicontent.accounts.theme.height_row_top_bar
 import com.aicontent.accounts.theme.padding_end_text_daily_item
 import com.aicontent.accounts.theme.padding_text_top_bar
-<<<<<<< HEAD
-=======
-import com.aicontent.accounts.theme.rounded_corner_shape
->>>>>>> fd594fb534333d1d134a6821078b606b76c8c827
 import com.twoup.personalfinance.domain.model.transaction.account.AccountLocalModel
 import com.twoup.personalfinance.domain.model.transaction.createTrans.TransactionLocalModel
 import com.twoup.personalfinance.navigation.MainScreenSharedScreen
@@ -69,10 +65,7 @@ import com.twoup.personalfinance.utils.DateTimeUtil
 import com.twoup.personalfinance.utils.DateTimeUtil.formatTimeForAccountFirst
 import com.twoup.personalfinance.utils.DateTimeUtil.formatTimeForAccountLast
 import com.twoup.personalfinance.utils.presentation.adjustFontSize
-<<<<<<< HEAD
 import com.twoup.personalfinance.utils.presentation.getAbbreviatedMonth
-=======
->>>>>>> fd594fb534333d1d134a6821078b606b76c8c827
 import io.github.aakira.napier.Napier
 
 class ListTransactionForAccount(
@@ -88,10 +81,6 @@ class ListTransactionForAccount(
             viewModel.transactionByMonth.collectAsState().value,
             account
         )
-<<<<<<< HEAD
-=======
-
->>>>>>> fd594fb534333d1d134a6821078b606b76c8c827
         val listTransactions = viewModel.getAccountTransactions(allTransaction, account)
         val monthYear = viewModel.currentMonthYear
 
@@ -111,11 +100,8 @@ class ListTransactionForAccount(
                 Column(
                     modifier = Modifier.padding(bottom = 56.dp), // Adjust the bottom padding to match BottomAppBar height
                 ) {
-<<<<<<< HEAD
                     val firstTransaction = transactionByMonth.firstOrNull() ?: viewModel.getDefaultTransaction()
-=======
-                    val firstTransaction = listTransactions.firstOrNull() ?: viewModel.getDefaultTransaction()
->>>>>>> fd594fb534333d1d134a6821078b606b76c8c827
+//                    val firstTransaction = listTransactions.firstOrNull() ?: viewModel.getDefaultTransaction()
                     GroupTopBar(firstTransaction)
                     Divider(thickness = 0.5.dp, color = Color.LightGray)
                     ElementAccount(viewModel, transactionByMonth, listTransactions, account)
@@ -408,11 +394,8 @@ fun TopAppBarListAccount(
                 }
 
                 BoldMonthText(
-<<<<<<< HEAD
                     month = getAbbreviatedMonth(viewModel.currentMonthYear.value.month),
-=======
-                    month = viewModel.getAbbreviatedMonth(viewModel.currentMonthYear.value.month),
->>>>>>> fd594fb534333d1d134a6821078b606b76c8c827
+//                    month = viewModel.getAbbreviatedMonth(viewModel.currentMonthYear.value.month),
                     year = viewModel.currentMonthYear.value.year
                 )
 

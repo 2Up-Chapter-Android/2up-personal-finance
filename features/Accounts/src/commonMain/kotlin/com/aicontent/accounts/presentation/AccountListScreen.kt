@@ -101,11 +101,9 @@ fun AccountList(accounts: List<AccountLocalModel>, viewModel: AccountListViewMod
         )
 
         fun getSelectedTransactions(account: AccountLocalModel): List<TransactionLocalModel> {
-<<<<<<< HEAD
             return transactions.filter { transaction -> transaction.transactionAccount == account.account_name }
-=======
-            return transactions.filter { transaction -> transaction.transaction_account == account.account_name }
->>>>>>> fd594fb534333d1d134a6821078b606b76c8c827
+
+//            return transactions.filter { transaction -> transaction.transaction_account == account.account_name }
         }
 
         // In your LazyColumn

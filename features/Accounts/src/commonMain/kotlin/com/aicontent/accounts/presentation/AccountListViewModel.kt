@@ -12,10 +12,7 @@ import com.twoup.personalfinance.domain.usecase.localTransaction.transaction.Use
 import com.twoup.personalfinance.domain.usecase.localTransaction.account.UseCaseInsertAccount
 import com.twoup.personalfinance.domain.usecase.localTransaction.account.UseCaseUpdateAccountById
 import com.twoup.personalfinance.utils.DateTimeUtil
-<<<<<<< HEAD
 import io.github.aakira.napier.Napier
-=======
->>>>>>> fd594fb534333d1d134a6821078b606b76c8c827
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -64,15 +61,12 @@ class AccountListViewModel : ScreenModel, KoinComponent {
         account: AccountLocalModel
     ): List<TransactionLocalModel> {
         return allTransactions.filter {
-<<<<<<< HEAD
             it.transactionAccount == account.account_name
                     || it.transactionAccountFrom == account.account_name
                     || it.transactionAccountTo == account.account_name
-=======
-            it.transaction_account == account.account_name
-                    || it.transaction_accountFrom == account.account_name
-                    || it.transaction_accountTo == account.account_name
->>>>>>> fd594fb534333d1d134a6821078b606b76c8c827
+//            it.transaction_account == account.account_name
+//                    || it.transaction_accountFrom == account.account_name
+//                    || it.transaction_accountTo == account.account_name
         }
     }
 
@@ -116,19 +110,11 @@ class AccountListViewModel : ScreenModel, KoinComponent {
         allTransaction: List<TransactionLocalModel>,
         account: AccountLocalModel
     ) {
-        val incomeValue =
-<<<<<<< HEAD
-            listTransaction.filter { it.transactionIncome > 0 }.sumOf { it.transactionIncome }
-        val expensesValue =
-            listTransaction.filter { it.transactionExpenses > 0 }.sumOf { it.transactionExpenses }
-        val transferFromValue =
-            listTransaction.filter { it.transactionAccountFrom == account.account_name }
-                .sumOf { it.transactionTransfer }
-        val transferToValue =
-            listTransaction.filter { it.transactionAccountTo == account.account_name }
-                .sumOf { it.transactionTransfer }
-        val totalValue = incomeValue - expensesValue - transferFromValue + transferToValue
-
+        val incomeValue = listTransaction.filter { it.transactionIncome > 0 }.sumOf { it.transactionIncome }
+        val expensesValue = listTransaction.filter { it.transactionExpenses > 0 }.sumOf { it.transactionExpenses }
+        val transferFromValue = listTransaction.filter { it.transactionAccountFrom == account.account_name }.sumOf { it.transactionTransfer }
+        val transferToValue = listTransaction.filter { it.transactionAccountTo == account.account_name }.sumOf { it.transactionTransfer }
+//        val totalValue = incomeValue - expensesValue - transferFromValue + transferToValue
         val totalAccountIncomeValue =
             allTransaction.filter { it.transactionIncome > 0 }.sumOf { it.transactionIncome }
         val totalAccountExpensesValue =
@@ -139,29 +125,27 @@ class AccountListViewModel : ScreenModel, KoinComponent {
         val totalAccountTransferToValue =
             allTransaction.filter { it.transactionAccountTo == account.account_name }
                 .sumOf { it.transactionTransfer }
-=======
-            listTransaction.filter { it.transaction_income > 0 }.sumOf { it.transaction_income }
-        val expensesValue =
-            listTransaction.filter { it.transaction_expenses > 0 }.sumOf { it.transaction_expenses }
-        val transferFromValue =
-            listTransaction.filter { it.transaction_accountFrom == account.account_name }
-                .sumOf { it.transaction_transfer }
-        val transferToValue =
-            listTransaction.filter { it.transaction_accountTo == account.account_name }
-                .sumOf { it.transaction_transfer }
+//            listTransaction.filter { it.transaction_income > 0 }.sumOf { it.transaction_income }
+//        val expensesValue =
+//            listTransaction.filter { it.transaction_expenses > 0 }.sumOf { it.transaction_expenses }
+//        val transferFromValue =
+//            listTransaction.filter { it.transaction_accountFrom == account.account_name }
+//                .sumOf { it.transaction_transfer }
+//        val transferToValue =
+//            listTransaction.filter { it.transaction_accountTo == account.account_name }
+//                .sumOf { it.transaction_transfer }
         val totalValue = incomeValue - expensesValue - transferFromValue + transferToValue
 
-        val totalAccountIncomeValue =
-            allTransaction.filter { it.transaction_income > 0 }.sumOf { it.transaction_income }
-        val totalAccountExpensesValue =
-            allTransaction.filter { it.transaction_expenses > 0 }.sumOf { it.transaction_expenses }
-        val totalAccountTransferFromValue =
-            allTransaction.filter { it.transaction_accountFrom == account.account_name }
-                .sumOf { it.transaction_transfer }
-        val totalAccountTransferToValue =
-            allTransaction.filter { it.transaction_accountTo == account.account_name }
-                .sumOf { it.transaction_transfer }
->>>>>>> fd594fb534333d1d134a6821078b606b76c8c827
+//        val totalAccountIncomeValue =
+//            allTransaction.filter { it.transaction_income > 0 }.sumOf { it.transaction_income }
+//        val totalAccountExpensesValue =
+//            allTransaction.filter { it.transaction_expenses > 0 }.sumOf { it.transaction_expenses }
+//        val totalAccountTransferFromValue =
+//            allTransaction.filter { it.transaction_accountFrom == account.account_name }
+//                .sumOf { it.transaction_transfer }
+//        val totalAccountTransferToValue =
+//            allTransaction.filter { it.transaction_accountTo == account.account_name }
+//                .sumOf { it.transaction_transfer }
         val totalAccountValue =
             totalAccountIncomeValue - totalAccountExpensesValue + totalAccountTransferToValue - totalAccountTransferFromValue
 
@@ -213,7 +197,6 @@ class AccountListViewModel : ScreenModel, KoinComponent {
         filterTransactionByMonth(currentMonthYear.value.month, currentMonthYear.value.year)
     }
 
-<<<<<<< HEAD
 //    fun getAbbreviatedMonth(monthNumber: Int): String {
 //        return when (monthNumber) {
 //            1 -> "Jan"
@@ -247,46 +230,47 @@ class AccountListViewModel : ScreenModel, KoinComponent {
             transactionTransfer = 0,
             transactionYear = 0,
             transactionCreated = DateTimeUtil.now()
-=======
-    fun getAbbreviatedMonth(monthNumber: Int): String {
-        return when (monthNumber) {
-            1 -> "Jan"
-            2 -> "Feb"
-            3 -> "Mar"
-            4 -> "Apr"
-            5 -> "May"
-            6 -> "Jun"
-            7 -> "Jul"
-            8 -> "Aug"
-            9 -> "Sep"
-            10 -> "Oct"
-            11 -> "Nov"
-            12 -> "Dec"
-            else -> "Invalid Month"
-        }
-    }
-    fun getDefaultTransaction(): TransactionLocalModel {
-        return TransactionLocalModel(
-            transaction_account = "", // Provide default values
-            transaction_accountFrom = "",
-            transaction_accountTo = "",
-            transaction_category = "",
-            transaction_description = "",
-            transaction_expenses = 0,
-            transaction_id = 0,
-            transaction_income = 0,
-            transaction_month = 0,
-            transaction_note = "",
-            transaction_selectIndex = 0,
-            transaction_transfer = 0,
-            transaction_year = 0,
-            transaction_created = DateTimeUtil.now()
->>>>>>> fd594fb534333d1d134a6821078b606b76c8c827
         )
     }
 
+//    fun getAbbreviatedMonth(monthNumber: Int): String {
+//        return when (monthNumber) {
+//            1 -> "Jan"
+//            2 -> "Feb"
+//            3 -> "Mar"
+//            4 -> "Apr"
+//            5 -> "May"
+//            6 -> "Jun"
+//            7 -> "Jul"
+//            8 -> "Aug"
+//            9 -> "Sep"
+//            10 -> "Oct"
+//            11 -> "Nov"
+//            12 -> "Dec"
+//            else -> "Invalid Month"
+//        }
+//    }
+//    fun getDefaultTransaction(): TransactionLocalModel {
+//        return TransactionLocalModel(
+//            transaction_account = "", // Provide default values
+//            transaction_accountFrom = "",
+//            transaction_accountTo = "",
+//            transaction_category = "",
+//            transaction_description = "",
+//            transaction_expenses = 0,
+//            transaction_id = 0,
+//            transaction_income = 0,
+//            transaction_month = 0,
+//            transaction_note = "",
+//            transaction_selectIndex = 0,
+//            transaction_transfer = 0,
+//            transaction_year = 0,
+//            transaction_created = DateTimeUtil.now()
+//>>>>>>> fd594fb534333d1d134a6821078b606b76c8c827
+//        )
+//    }
+
     fun calculateTotalIncome(transactions: List<TransactionLocalModel>): Long {
-<<<<<<< HEAD
         return transactions.filter { it.transactionIncome > 0 }.sumOf { it.transactionIncome }
     }
 
@@ -336,14 +320,12 @@ class AccountListViewModel : ScreenModel, KoinComponent {
         return totalIncome - totalExpense - totalTransferFrom + totalTransferTo
     }
 
-=======
-        return transactions.filter { it.transaction_income > 0 }.sumOf { it.transaction_income }
-    }
+//        return transactions.filter { it.transaction_income > 0 }.sumOf { it.transaction_income }
+//    }
 
-    fun calculateTotalExpenses(transactions: List<TransactionLocalModel>): Long {
-        return transactions.filter { it.transaction_expenses > 0 }.sumOf { it.transaction_expenses }
-    }
->>>>>>> fd594fb534333d1d134a6821078b606b76c8c827
+//    fun calculateTotalExpenses(transactions: List<TransactionLocalModel>): Long {
+//        return transactions.filter { it.transaction_expenses > 0 }.sumOf { it.transaction_expenses }
+//    }
 }
 
 data class MonthYear(val month: Int, val year: Int)

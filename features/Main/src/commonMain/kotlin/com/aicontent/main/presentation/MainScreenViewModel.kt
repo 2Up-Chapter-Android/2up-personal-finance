@@ -7,13 +7,9 @@ import cafe.adriel.voyager.core.model.ScreenModel
 import com.twoup.personalfinance.domain.model.transaction.createTrans.TransactionLocalModel
 import com.twoup.personalfinance.domain.model.transaction.getTransaction.GetAllTransactionsResponseModel
 import com.twoup.personalfinance.domain.usecase.localTransaction.transaction.UseCaseFilterTransactionByMonth
-<<<<<<< HEAD
 import com.twoup.personalfinance.domain.usecase.localTransaction.transaction.UseCaseFilterTransactionByYear
 import com.twoup.personalfinance.domain.usecase.localTransaction.transaction.UseCaseGetAllTransaction
 import com.twoup.personalfinance.domain.usecase.localTransaction.transaction.UseCaseSearchTransactionByNote
-=======
-import com.twoup.personalfinance.domain.usecase.localTransaction.transaction.UseCaseGetAllTransaction
->>>>>>> fd594fb534333d1d134a6821078b606b76c8c827
 import com.twoup.personalfinance.domain.usecase.transaction.GetListTransactionUseCase
 import com.twoup.personalfinance.utils.DateTimeUtil
 import com.twoup.personalfinance.utils.data.Resource
@@ -23,6 +19,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.datetime.LocalDateTime
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -57,7 +54,7 @@ class MainScreenViewModel : ScreenModel, KoinComponent {
 
     val searchResults: MutableStateFlow<StateFlow<List<TransactionLocalModel>>> = _searchResultsFlow
 
-    var openDiaLog : MutableState<Boolean> = mutableStateOf(false)
+    var openDiaLog: MutableState<Boolean> = mutableStateOf(false)
 
     init {
         loadTransaction()
@@ -125,15 +122,18 @@ class MainScreenViewModel : ScreenModel, KoinComponent {
     fun openCloseDatePicker(isOpen: Boolean) {
         openDiaLog.value = isOpen
     }
-    fun onDateMonthChange(text: LocalDateTime){
+
+    fun onDateMonthChange(text: LocalDateTime) {
         currentMonthYear.value = MonthYear(text.monthNumber, text.year)
         filterTransactionByMonth(currentMonthYear.value.month, currentMonthYear.value.year)
         filterTransactionByYear(currentMonthYear.value.year)
 
     }
-    fun onDateYearChange(text: LocalDateTime){
+
+    fun onDateYearChange(text: LocalDateTime) {
         filterTransactionByYear(text.year)
     }
+
     fun decrementYear() {
         adjustYear(-1)
     }
@@ -174,11 +174,7 @@ class MainScreenViewModel : ScreenModel, KoinComponent {
             else -> "Invalid Month"
         }
     }
-    fun calculateTotalIncome(transactions: List<TransactionLocalModel>): Long {
-        return transactions.filter { it.transaction_income > 0 }.sumOf { it.transaction_income }
-    }
 
-<<<<<<< HEAD
     fun calculateTotalIncome(transactions: List<TransactionLocalModel>): Long {
         return transactions.filter { it.transactionIncome > 0 }.sumOf { it.transactionIncome }
     }
@@ -201,11 +197,7 @@ class MainScreenViewModel : ScreenModel, KoinComponent {
             transaction.transactionExpenses - transaction.transactionIncome > 0 -> transaction.transactionExpenses
             else -> 0
         }
-=======
-    fun calculateTotalExpenses(transactions: List<TransactionLocalModel>): Long {
-        return transactions.filter { it.transaction_expenses > 0 }.sumOf { it.transaction_expenses }
->>>>>>> fd594fb534333d1d134a6821078b606b76c8c827
     }
-}
 
-data class MonthYear(var month: Int, val year: Int)
+    data class MonthYear(var month: Int, val year: Int)
+}

@@ -23,13 +23,9 @@ import com.twoup.personalfinance.domain.usecase.localTransaction.account.UseCase
 import com.twoup.personalfinance.domain.usecase.localTransaction.category.UseCaseUpdateCategoryExpensesById
 import com.twoup.personalfinance.domain.usecase.localTransaction.category.UseCaseUpdateCategoryIncomeById
 import com.twoup.personalfinance.domain.usecase.localTransaction.note.UseCaseGetNoteById
-<<<<<<< HEAD
 import com.twoup.personalfinance.domain.usecase.localTransaction.transaction.UseCaseFilterTransactionByYear
 import com.twoup.personalfinance.domain.usecase.localTransaction.transaction.UseCaseGetTransactionById
 import com.twoup.personalfinance.domain.usecase.localTransaction.transaction.UseCaseSearchTransactionByNote
-=======
-import com.twoup.personalfinance.domain.usecase.localTransaction.transaction.UseCaseGetTransactionById
->>>>>>> fd594fb534333d1d134a6821078b606b76c8c827
 import com.twoup.personalfinance.domain.usecase.localTransaction.transaction.UseCaseUpdateTransactionById
 import com.twoup.personalfinance.domain.usecase.transaction.GetListWalletsUseCase
 import org.koin.dsl.module
@@ -78,19 +74,12 @@ private fun localTransactionDomainModule() = module {
     single { UseCaseUpdateCategoryIncomeById(get()) }
     single { UseCaseUpdateCategoryExpensesById(get()) }
     single { UseCaseFilterTransactionByMonth(get()) }
-<<<<<<< HEAD
     single { UseCaseFilterTransactionByYear(get()) }
-=======
->>>>>>> fd594fb534333d1d134a6821078b606b76c8c827
     single { UseCaseGetAccountById(get())}
     single { UseCaseGetTransactionById(get())}
     single { UseCaseDeleteCategoryIncomeById(get())}
     single { UseCaseDeleteCategoryExpenseById(get())}
     single { UseCaseGetNoteById(get())}
-<<<<<<< HEAD
     single { UseCaseSearchTransactionByNote(get())}
-=======
 
-
->>>>>>> fd594fb534333d1d134a6821078b606b76c8c827
 }

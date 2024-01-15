@@ -17,7 +17,6 @@ class UseCaseGetTransactionById(private val dataSource: TransactionLocalDataSour
     val transactionState: MutableStateFlow<TransactionLocalModel> =
         MutableStateFlow(
             TransactionLocalModel(
-<<<<<<< HEAD
                 transactionId = 0,
                 transactionCreated = DateTimeUtil.now(),
                 transactionMonth = DateTimeUtil.now().month.ordinal.toLong(),
@@ -32,22 +31,20 @@ class UseCaseGetTransactionById(private val dataSource: TransactionLocalDataSour
                 transactionIncome = 0,
                 transactionAccountFrom = "",
                 transactionYear = 0,
-=======
-                transaction_id = 0,
-                transaction_created = DateTimeUtil.now(),
-                transaction_month = DateTimeUtil.now().month.ordinal.toLong(),
-                transaction_transfer = 0,
-                transaction_selectIndex = 0,
-                transaction_note = "",
-                transaction_category = "",
-                transaction_accountTo = "",
-                transaction_account = "",
-                transaction_description = "",
-                transaction_expenses = 0,
-                transaction_income = 0,
-                transaction_accountFrom = "",
-                transaction_year = 0,
->>>>>>> fd594fb534333d1d134a6821078b606b76c8c827
+//                transaction_id = 0,
+//                transaction_created = DateTimeUtil.now(),
+//                transaction_month = DateTimeUtil.now().month.ordinal.toLong(),
+//                transaction_transfer = 0,
+//                transaction_selectIndex = 0,
+//                transaction_note = "",
+//                transaction_category = "",
+//                transaction_accountTo = "",
+//                transaction_account = "",
+//                transaction_description = "",
+//                transaction_expenses = 0,
+//                transaction_income = 0,
+//                transaction_accountFrom = "",
+//                transaction_year = 0,
             )
         )
 

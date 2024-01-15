@@ -15,20 +15,35 @@ class UseCaseUpdateTransactionById(private val dataSource: TransactionLocalDataS
             withContext(Dispatchers.Main) {
                 dataSource.updateTransaction(
                     TransactionLocalModel(
-                        transaction_id = transaction.transaction_id,
-                        transaction_income = transaction.transaction_income,
-                        transaction_expenses = transaction.transaction_expenses,
-                        transaction_transfer = transaction.transaction_transfer,
-                        transaction_description = transaction.transaction_description,
-                        transaction_note = transaction.transaction_note,
-                        transaction_created = transaction.transaction_created,
-                        transaction_month = transaction.transaction_month,
-                        transaction_year = transaction.transaction_year,
-                        transaction_category = transaction.transaction_category,
-                        transaction_account = transaction.transaction_account,
-                        transaction_selectIndex = transaction.transaction_selectIndex,
-                        transaction_accountTo = transaction.transaction_accountTo,
-                        transaction_accountFrom = transaction.transaction_accountFrom
+//                        transaction_id = transaction.transaction_id,
+//                        transaction_income = transaction.transaction_income,
+//                        transaction_expenses = transaction.transaction_expenses,
+//                        transaction_transfer = transaction.transaction_transfer,
+//                        transaction_description = transaction.transaction_description,
+//                        transaction_note = transaction.transaction_note,
+//                        transaction_created = transaction.transaction_created,
+//                        transaction_month = transaction.transaction_month,
+//                        transaction_year = transaction.transaction_year,
+//                        transaction_category = transaction.transaction_category,
+//                        transaction_account = transaction.transaction_account,
+//                        transaction_selectIndex = transaction.transaction_selectIndex,
+//                        transaction_accountTo = transaction.transaction_accountTo,
+//                        transaction_accountFrom = transaction.transaction_accountFrom,
+
+                        transactionAccount = transaction.transactionAccount,
+                        transactionAccountFrom = transaction.transactionAccountFrom,
+                        transactionAccountTo = transaction.transactionAccountTo,
+                        transactionCategory = transaction.transactionCategory,
+                        transactionCreated = transaction.transactionCreated,
+                        transactionDescription = transaction.transactionDescription,
+                        transactionExpenses = transaction.transactionId,
+                        transactionId = transaction.transactionId,
+                        transactionIncome = transaction.transactionIncome,
+                        transactionMonth = transaction.transactionMonth,
+                        transactionNote = transaction.transactionNote,
+                        transactionSelectIndex = transaction.transactionSelectIndex,
+                        transactionTransfer = transaction.transactionTransfer,
+                        transactionYear = transaction.transactionYear
                     )
                 )
             }

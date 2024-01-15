@@ -64,13 +64,6 @@ fun ItemDailyScreen(
                 )
             }
             Spacer(Modifier.padding(1.dp))
-
-<<<<<<< HEAD
-=======
-            val colorText = viewModel.calculateColorText(transaction)
-            val incomeOrExpenses = viewModel.calculateIncomeOrExpenses(transaction)
-
->>>>>>> fd594fb534333d1d134a6821078b606b76c8c827
             Text(
                 modifier = Modifier.padding(end = padding_end_text_daily_item),
                 text = if(isTransfer) "${transaction.transactionTransfer} đ" else "${viewModel.calculateIncomeOrExpenses(transaction)} đ",
