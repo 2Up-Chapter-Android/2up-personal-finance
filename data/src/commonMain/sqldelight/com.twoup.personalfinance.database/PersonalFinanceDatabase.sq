@@ -221,6 +221,13 @@ CREATE TABLE Transactions (
     transaction_accountTo TEXT NOT NULL
 );
 
+calculateTotalIncomeByDate:
+SELECT SUM(transaction_income) FROM Transactions AS total_income WHERE transaction_created = ? AND transaction_income > 0;
+
+calculateTotalExpensesByDate:
+SELECT SUM(transaction_expenses) FROM Transactions AS total_expenses WHERE transaction_created = ? AND transaction_expenses > 0;
+
+
 insertTransaction:
 INSERT INTO Transactions(transaction_income, transaction_expenses, transaction_transfer, transaction_description, transaction_note, transaction_created,transaction_month,transaction_year, transaction_category, transaction_account, transaction_selectIndex, transaction_accountFrom, transaction_accountTo)
 VALUES (?, ?, ?, ?, ?, ?, ?,?, ?, ?,?, ?, ?);
