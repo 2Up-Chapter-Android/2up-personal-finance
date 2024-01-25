@@ -37,7 +37,7 @@ class MainScreenViewModel : ScreenModel, KoinComponent {
         MutableStateFlow<Resource<GetAllTransactionsResponseModel>>(Resource.loading())
 
     private val _selectedTransaction = MutableStateFlow<TransactionLocalModel?>(null)
-    val selectedTransaction: StateFlow<TransactionLocalModel?> = _selectedTransaction.asStateFlow()
+    val selectedTransaction: StateFlow<TransactionLocalModel?> get() = _selectedTransaction.asStateFlow()
 
     val getListTransactionState = _getListTransactionState.asStateFlow()
 
@@ -61,6 +61,7 @@ class MainScreenViewModel : ScreenModel, KoinComponent {
         getListTransaction()
         filterTransactionByMonth(currentMonthYear.value.month, currentMonthYear.value.year)
         filterTransactionByYear(currentMonthYear.value.year)
+        generateCalendarData(currentMonthYear)
     }
 
     fun loadTransaction() {
@@ -197,6 +198,36 @@ class MainScreenViewModel : ScreenModel, KoinComponent {
             transaction.transactionExpenses - transaction.transactionIncome > 0 -> transaction.transactionExpenses
             else -> 0
         }
+    }
+
+    private var _calendarDays = MutableStateFlow<List<LocalDateTime>>(emptyList())
+    var daysList: StateFlow<List<LocalDateTime>> = _calendarDays.asStateFlow()
+
+    fun generateCalendarData(selectedDate: MutableState<MonthYear>): StateFlow<List<LocalDateTime>> {
+        val allDaysInMonth =
+            DateTimeUtil.getAllDaysInMonth(selectedDate.value.year, selectedDate.value.month)
+        val allDayInMonthBefore =
+            DateTimeUtil.getAllDaysInMonthBefore(selectedDate.value.year, selectedDate.value.month)
+        val allDayInMonthAfter =
+            DateTimeUtil.getAllDaysInMonthAfter(selectedDate.value.year, selectedDate.value.month)
+        val (firstDayInMonth, lastDayInMonth) = DateTimeUtil.getFirstAndLastDayOfMonth(
+            selectedDate.value.year,
+            selectedDate.value.month
+        )
+        val remainingDaysInFirstRow = firstDayInMonth.dayOfWeek.ordinal
+        val remainingDaysInLastRow = (7 - (allDaysInMonth.size % 7))
+
+        val daysBeforeFirstRow = allDayInMonthBefore.takeLast(remainingDaysInFirstRow)
+        val daysAfterLastRow = allDayInMonthAfter.take(remainingDaysInLastRow)
+        val daylist =
+            if ((allDayInMonthBefore.size + allDaysInMonth.size + allDayInMonthBefore.size) == 35) {
+                daysBeforeFirstRow + allDaysInMonth + allDayInMonthAfter.take(remainingDaysInLastRow + 7)
+            } else {
+                daysBeforeFirstRow + allDaysInMonth + daysAfterLastRow
+            }
+//        _calendarDays.value = daylist
+        _calendarDays.value = daylist
+        return daysList
     }
 
     data class MonthYear(var month: Int, val year: Int)

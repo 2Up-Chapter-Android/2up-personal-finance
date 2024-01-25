@@ -1,5 +1,7 @@
 package com.aicontent.main.presentation
 
+//import CalendarView
+import CalendarView
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -85,26 +87,6 @@ class MainScreen() : Screen {
             viewModel.filterTransactionByYear(monthYear.value.year)
         }
 
-//        LaunchedEffect(listTransactionState.value) {
-//            listTransactionState.value.fold(
-//                onSuccess = {
-//                    Napier.d(tag = "MainScreen", message = "Get list transaction success $it")
-//                    listTransaction.value.clear()
-//                    listTransaction.value.addAll(it.data)
-//                },
-//                onFailure = {
-//                    Napier.d(tag = "MainScreen", message = "Get list transaction failed $it")
-//                },
-//                onLoading = {
-//                    Napier.d(tag = "MainScreen", message = "Get list transaction loading $it")
-//                    it?.data?.let { it1 ->
-//                        listTransaction.value.clear()
-//                        listTransaction.value.addAll(it1)
-//                    }
-//                }
-//            )
-//        }
-
         Scaffold(
             topBar = {
                 TopAppBar(
@@ -129,7 +111,7 @@ class MainScreen() : Screen {
                     ) {
                         when (viewModel.selectedTabIndex.value) {
                             0 -> DailyScreen(viewModelDailyScreen, transactionByMonth, viewModel)
-                            1 -> CalenderScreen()
+                            1 -> CalendarView(viewModel)
                             2 -> MonthlyScreen(viewModelMonthLyScreen, transactionByYear, viewModel)
                             3 -> TotalScreen()
                             else -> NoteScreen()
