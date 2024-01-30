@@ -13,7 +13,6 @@ object DateTimeUtil {
         return Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
     }
 
-
     fun toEpochMillis(dateTime: LocalDateTime): Long {
         return dateTime.toInstant(TimeZone.currentSystemDefault()).toEpochMilliseconds()
     }
@@ -230,19 +229,69 @@ object DateTimeUtil {
 
         return "$monthFirst.$dayFirst ~ $monthLast.$dayLast"
     }
-
-//    fun formatTimeForTheFirstOfWeek(dateTime: List<LocalDateTime>): String {
-//        val monthFormatter = DateTimeFormatter.ofPattern("MM")
-//        val dayFormatter = DateTimeFormatter.ofPattern("dd")
-//
-//        val monthFirst = monthFormatter.format(dateTime.first())
-//        val monthLast = monthFormatter.format(dateTime.last())
-//
-//        val dayFirst = dayFormatter.format(dateTime.first())
-//        val dayLast = dayFormatter.format(dateTime.last())
-//
-//        return "$monthFirst.$dayFirst ~ $monthLast.$dayLast"
-//    }
+    fun getAllDaysInMonth(year: Int, month: Int): List<LocalDateTime> {
+        val firstDayOfMonth = LocalDateTime(year, month, 1, 0, 0)
+        val lastDayOfMonth = LocalDateTime(year, month, getLastDayOfMonthForCalendar(year, month), 23, 59)
+        val allDays = mutableListOf<LocalDateTime>()
+        var currentDay = firstDayOfMonth
+        while (currentDay <= lastDayOfMonth) {
+            allDays.add(currentDay)
+            currentDay = addDays(currentDay, 1)
+        }
+        return allDays
+    }
+    fun getAllDaysInMonthBefore(year: Int, month: Int): List<LocalDateTime> {
+        val allDays = mutableListOf<LocalDateTime>()
+        val adjustedMonth = if (month == 1) {
+            12
+        } else {
+            month - 1
+        }
+        val adjustedYear = if (month == 1) {
+            year - 1
+        } else {
+            year
+        }
+        val firstDayOfMonth = LocalDateTime(adjustedYear, adjustedMonth, 1, 0, 0)
+        val lastDayOfMonth =
+            LocalDateTime(adjustedYear, adjustedMonth, getLastDayOfMonthForCalendar(adjustedYear, adjustedMonth), 23, 59)
+        var currentDay = firstDayOfMonth
+        while (currentDay <= lastDayOfMonth) {
+            allDays.add(currentDay)
+            currentDay = addDays(currentDay, 1)
+        }
+        return allDays
+    }
+    fun getAllDaysInMonthAfter(year: Int, month: Int): List<LocalDateTime> {
+        val allDays = mutableListOf<LocalDateTime>()
+        val adjustedMonth = if (month == 12) {
+            1
+        } else {
+            month + 1
+        }
+        val adjustedYear = if (month == 12) {
+            year + 1
+        } else {
+            year
+        }
+        val firstDayOfMonth = LocalDateTime(adjustedYear, adjustedMonth, 1, 0, 0)
+        val lastDayOfMonth =
+            LocalDateTime(adjustedYear, adjustedMonth, getLastDayOfMonthForCalendar(adjustedYear, adjustedMonth), 23, 59)
+        var currentDay = firstDayOfMonth
+        while (currentDay <= lastDayOfMonth) {
+            allDays.add(currentDay)
+            currentDay = addDays(currentDay, -1)
+        }
+        return allDays
+    }
+    private fun getLastDayOfMonthForCalendar(year: Int, month: Int): Int {
+        val lastDay = when (Month.values()[month - 1]) {
+            Month.JANUARY, Month.MARCH, Month.MAY, Month.JULY, Month.AUGUST, Month.OCTOBER, Month.DECEMBER -> 31
+            Month.APRIL, Month.JUNE, Month.SEPTEMBER, Month.NOVEMBER -> 30
+            else -> if (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)) 29 else 28
+        }
+        return lastDay
+    }
     fun formatFirstAndLastDayOfMonthRange(year: Int, month: Int): String {
         require(month in 1..12) { "Invalid month: $month. Month should be between 1 and 12." }
 
