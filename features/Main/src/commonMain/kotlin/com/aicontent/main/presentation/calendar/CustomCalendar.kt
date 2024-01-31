@@ -6,7 +6,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
@@ -36,10 +35,11 @@ fun CalendarView(
 fun CalendarGrid(
     viewModel: MainScreenViewModel
 ) {
-//    val daylist by viewModel.daysList.collectAsState()
-    val daylist by viewModel.generateCalendarData(viewModel.currentMonthYear).collectAsState()
-    val allTransaction = viewModel.transaction.value
+//    val dayList by viewModel.calendarDays.collectAsState()
+    val dayList by viewModel.generateCalendarData(viewModel.currentMonthYear).collectAsState()
+//    val allTransaction = viewModel.transaction.value
 
+    Napier.d(message = " daylist = $dayList", tag = "test")
     LazyColumn(
         modifier = Modifier.fillMaxSize().border(0.5.dp, Color.Gray)
     ) {
@@ -59,7 +59,7 @@ fun CalendarGrid(
                 }
             }
         }
-        items(daylist.chunked(7)) { weekList ->
+        items(dayList.chunked(7)) { weekList ->
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -109,46 +109,46 @@ fun CalendarGrid(
                                     }
                                 )
                             }
-                            Text(
-                                modifier = Modifier.align(Alignment.End).weight(1f),
-                                text = backgroundColor.value.toString(),
-                                style = MaterialTheme.typography.bodySmall.copy(
-                                    fontWeight = FontWeight.Normal,
-                                    fontSize = 8.sp
-                                ),
-                                color = Color.Red,
-                            )
-                            Text(
-                                text = if (viewModel.calculateTotalIncome(allTransaction.filter { it.transactionCreated.date == day.date })
-                                        .toInt() != 0
-                                )
-                                    viewModel.calculateTotalIncome(allTransaction.filter { it.transactionCreated.date == day.date })
-                                        .toString()
-                                else
-                                    "",
-                                style = MaterialTheme.typography.bodySmall.copy(
-                                    fontWeight = FontWeight.Normal,
-                                    fontSize = 8.sp
-                                ),
-                                color = Color.Blue,
-                                modifier = Modifier.align(Alignment.End).weight(1f),
-                            )
+//                            Text(
+//                                modifier = Modifier.align(Alignment.End).weight(1f),
+//                                text = backgroundColor.value.toString(),
+//                                style = MaterialTheme.typography.bodySmall.copy(
+//                                    fontWeight = FontWeight.Normal,
+//                                    fontSize = 8.sp
+//                                ),
+//                                color = Color.Red,
+//                            )
+//                            Text(
+//                                text = if (viewModel.calculateTotalIncome(allTransaction.filter { it.transactionCreated.date == day.date })
+//                                        .toInt() != 0
+//                                )
+//                                    viewModel.calculateTotalIncome(allTransaction.filter { it.transactionCreated.date == day.date })
+//                                        .toString()
+//                                else
+//                                    "",
+//                                style = MaterialTheme.typography.bodySmall.copy(
+//                                    fontWeight = FontWeight.Normal,
+//                                    fontSize = 8.sp
+//                                ),
+//                                color = Color.Blue,
+//                                modifier = Modifier.align(Alignment.End).weight(1f),
+//                            )
 
-                            Text(
-                                modifier = Modifier.align(Alignment.End).weight(1f),
-                                text = if (viewModel.calculateTotalExpenses(allTransaction.filter { it.transactionCreated.date == day.date })
-                                        .toInt() != 0
-                                )
-                                    viewModel.calculateTotalExpenses(allTransaction.filter { it.transactionCreated.date == day.date })
-                                        .toString()
-                                else
-                                    "",
-                                style = MaterialTheme.typography.bodySmall.copy(
-                                    fontWeight = FontWeight.Normal,
-                                    fontSize = 8.sp
-                                ),
-                                color = Color.Red,
-                            )
+//                            Text(
+//                                modifier = Modifier.align(Alignment.End).weight(1f),
+//                                text = if (viewModel.calculateTotalExpenses(allTransaction.filter { it.transactionCreated.date == day.date })
+//                                        .toInt() != 0
+//                                )
+//                                    viewModel.calculateTotalExpenses(allTransaction.filter { it.transactionCreated.date == day.date })
+//                                        .toString()
+//                                else
+//                                    "",
+//                                style = MaterialTheme.typography.bodySmall.copy(
+//                                    fontWeight = FontWeight.Normal,
+//                                    fontSize = 8.sp
+//                                ),
+//                                color = Color.Red,
+//                            )
 
                         }
                     }
