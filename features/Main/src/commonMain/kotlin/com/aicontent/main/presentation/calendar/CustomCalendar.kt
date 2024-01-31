@@ -6,7 +6,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
@@ -38,7 +37,7 @@ fun CalendarGrid(
 ) {
 //    val dayList by viewModel.calendarDays.collectAsState()
     val dayList by viewModel.generateCalendarData(viewModel.currentMonthYear).collectAsState()
-    val allTransaction = viewModel.transaction.value
+//    val allTransaction = viewModel.transaction.value
 
     Napier.d(message = " daylist = $dayList", tag = "test")
     LazyColumn(
