@@ -50,6 +50,4 @@ class MonthlyScreenViewModel : ScreenModel, KoinComponent {
             else -> 0
         }
     }
-
-
 }

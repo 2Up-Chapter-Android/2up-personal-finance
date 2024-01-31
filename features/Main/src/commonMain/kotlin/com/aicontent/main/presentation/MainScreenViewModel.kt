@@ -200,35 +200,47 @@ class MainScreenViewModel : ScreenModel, KoinComponent {
         }
     }
 
-    private var _calendarDays = MutableStateFlow<List<LocalDateTime>>(emptyList())
-    var daysList: StateFlow<List<LocalDateTime>> = _calendarDays.asStateFlow()
+    private var _calendarDays =
+        MutableStateFlow<List<LocalDateTime>>(emptyList()) // Ensure _calendarDays is properly initialized
+
+    var calendarDays: StateFlow<List<LocalDateTime>> = _calendarDays.asStateFlow()
 
     fun generateCalendarData(selectedDate: MutableState<MonthYear>): StateFlow<List<LocalDateTime>> {
+
         val allDaysInMonth =
             DateTimeUtil.getAllDaysInMonth(selectedDate.value.year, selectedDate.value.month)
         val allDayInMonthBefore =
             DateTimeUtil.getAllDaysInMonthBefore(selectedDate.value.year, selectedDate.value.month)
         val allDayInMonthAfter =
             DateTimeUtil.getAllDaysInMonthAfter(selectedDate.value.year, selectedDate.value.month)
+
         val (firstDayInMonth, lastDayInMonth) = DateTimeUtil.getFirstAndLastDayOfMonth(
             selectedDate.value.year,
             selectedDate.value.month
         )
+
         val remainingDaysInFirstRow = firstDayInMonth.dayOfWeek.ordinal
-        val remainingDaysInLastRow = (7 - (allDaysInMonth.size % 7))
 
         val daysBeforeFirstRow = allDayInMonthBefore.takeLast(remainingDaysInFirstRow)
+
+        val remainingDaysInLastRow = (7 - ((allDaysInMonth.size + daysBeforeFirstRow.size) % 7))
+
         val daysAfterLastRow = allDayInMonthAfter.take(remainingDaysInLastRow)
-        val daylist =
-            if ((allDayInMonthBefore.size + allDaysInMonth.size + allDayInMonthBefore.size) == 35) {
-                daysBeforeFirstRow + allDaysInMonth + allDayInMonthAfter.take(remainingDaysInLastRow + 7)
+
+        val hmm = (daysBeforeFirstRow.size + allDaysInMonth.size + daysAfterLastRow.size)
+        val dayList =
+            if (hmm == 35 ) {
+                daysBeforeFirstRow + allDaysInMonth + allDayInMonthAfter.take(remainingDaysInLastRow + 35 - hmm + 7)
             } else {
                 daysBeforeFirstRow + allDaysInMonth + daysAfterLastRow
             }
-//        _calendarDays.value = daylist
-        _calendarDays.value = daylist
-        return daysList
+
+        // Ensure _calendarDays is not null before accessing its value
+        _calendarDays?.value = dayList // NullPointerException occurs here if _calendarDays is null
+
+        return _calendarDays
     }
+
 
     data class MonthYear(var month: Int, val year: Int)
 }

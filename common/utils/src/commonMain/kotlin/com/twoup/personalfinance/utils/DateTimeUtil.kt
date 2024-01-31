@@ -157,7 +157,7 @@ object DateTimeUtil {
                 currentWeek.clear()
             }
 
-            currentDateTime = addDays(currentDateTime,1)
+            currentDateTime = addDays(currentDateTime, 1)
         }
 
         return weeks
@@ -179,7 +179,8 @@ object DateTimeUtil {
             // Check if day exceeds the maximum for the current month
             if (dayOfMonth > getLastDayOfMonth(year, month)) {
                 dayOfMonth = 1
-                month = if (month.ordinal == Month.DECEMBER.ordinal) Month.JANUARY else Month.values()[month.ordinal + 1]
+                month =
+                    if (month.ordinal == Month.DECEMBER.ordinal) Month.JANUARY else Month.values()[month.ordinal + 1]
 
                 // Check if month is January, increment year
                 if (month == Month.JANUARY) {
@@ -196,7 +197,9 @@ object DateTimeUtil {
         val lastDay = when (month) {
             Month.JANUARY, Month.MARCH, Month.MAY, Month.JULY, Month.AUGUST, Month.OCTOBER, Month.DECEMBER -> 31
             Month.APRIL, Month.JUNE, Month.SEPTEMBER, Month.NOVEMBER -> 30
-            else -> {if (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)) 29 else 28}
+            else -> {
+                if (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)) 29 else 28
+            }
         }
         return lastDay
     }
@@ -209,7 +212,9 @@ object DateTimeUtil {
         val lastDayOfMonth = when (Month(month)) {
             Month.JANUARY, Month.MARCH, Month.MAY, Month.JULY, Month.AUGUST, Month.OCTOBER, Month.DECEMBER -> 31
             Month.APRIL, Month.JUNE, Month.SEPTEMBER, Month.NOVEMBER -> 30
-            else -> {if (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)) 29 else 28}
+            else -> {
+                if (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)) 29 else 28
+            }
         }
 
         val lastDay = LocalDateTime(year, Month(month), lastDayOfMonth, 23, 59, 59)
@@ -223,15 +228,17 @@ object DateTimeUtil {
         val monthLast =
             if (dateTime.last().monthNumber < 10) "0${dateTime.last().monthNumber}" else dateTime.last().monthNumber
 
-        val dayFirst= dateTime.first().dayOfMonth
+        val dayFirst = dateTime.first().dayOfMonth
 
         val dayLast = dateTime.last().dayOfMonth
 
         return "$monthFirst.$dayFirst ~ $monthLast.$dayLast"
     }
+
     fun getAllDaysInMonth(year: Int, month: Int): List<LocalDateTime> {
         val firstDayOfMonth = LocalDateTime(year, month, 1, 0, 0)
-        val lastDayOfMonth = LocalDateTime(year, month, getLastDayOfMonthForCalendar(year, month), 23, 59)
+        val lastDayOfMonth =
+            LocalDateTime(year, month, getLastDayOfMonthForCalendar(year, month), 23, 59)
         val allDays = mutableListOf<LocalDateTime>()
         var currentDay = firstDayOfMonth
         while (currentDay <= lastDayOfMonth) {
@@ -240,6 +247,7 @@ object DateTimeUtil {
         }
         return allDays
     }
+
     fun getAllDaysInMonthBefore(year: Int, month: Int): List<LocalDateTime> {
         val allDays = mutableListOf<LocalDateTime>()
         val adjustedMonth = if (month == 1) {
@@ -254,7 +262,13 @@ object DateTimeUtil {
         }
         val firstDayOfMonth = LocalDateTime(adjustedYear, adjustedMonth, 1, 0, 0)
         val lastDayOfMonth =
-            LocalDateTime(adjustedYear, adjustedMonth, getLastDayOfMonthForCalendar(adjustedYear, adjustedMonth), 23, 59)
+            LocalDateTime(
+                adjustedYear,
+                adjustedMonth,
+                getLastDayOfMonthForCalendar(adjustedYear, adjustedMonth),
+                23,
+                59
+            )
         var currentDay = firstDayOfMonth
         while (currentDay <= lastDayOfMonth) {
             allDays.add(currentDay)
@@ -262,28 +276,33 @@ object DateTimeUtil {
         }
         return allDays
     }
+
     fun getAllDaysInMonthAfter(year: Int, month: Int): List<LocalDateTime> {
         val allDays = mutableListOf<LocalDateTime>()
-        val adjustedMonth = if (month == 12) {
-            1
-        } else {
-            month + 1
-        }
-        val adjustedYear = if (month == 12) {
-            year + 1
-        } else {
-            year
-        }
+        val adjustedMonth = if (month == 12) 1 else month + 1
+        val adjustedYear = if (month == 12) year + 1 else year
+
         val firstDayOfMonth = LocalDateTime(adjustedYear, adjustedMonth, 1, 0, 0)
         val lastDayOfMonth =
-            LocalDateTime(adjustedYear, adjustedMonth, getLastDayOfMonthForCalendar(adjustedYear, adjustedMonth), 23, 59)
+            LocalDateTime(
+                adjustedYear,
+                adjustedMonth,
+                getLastDayOfMonthForCalendar(adjustedYear, adjustedMonth),
+                23,
+                59
+            )
+
         var currentDay = firstDayOfMonth
         while (currentDay <= lastDayOfMonth) {
             allDays.add(currentDay)
-            currentDay = addDays(currentDay, -1)
+            currentDay = addDays(currentDay, 1)
         }
         return allDays
     }
+
+
+
+
     private fun getLastDayOfMonthForCalendar(year: Int, month: Int): Int {
         val lastDay = when (Month.values()[month - 1]) {
             Month.JANUARY, Month.MARCH, Month.MAY, Month.JULY, Month.AUGUST, Month.OCTOBER, Month.DECEMBER -> 31
@@ -292,6 +311,7 @@ object DateTimeUtil {
         }
         return lastDay
     }
+
     fun formatFirstAndLastDayOfMonthRange(year: Int, month: Int): String {
         require(month in 1..12) { "Invalid month: $month. Month should be between 1 and 12." }
 
@@ -300,7 +320,9 @@ object DateTimeUtil {
         val lastDayOfMonth = when (Month(month)) {
             Month.JANUARY, Month.MARCH, Month.MAY, Month.JULY, Month.AUGUST, Month.OCTOBER, Month.DECEMBER -> 31
             Month.APRIL, Month.JUNE, Month.SEPTEMBER, Month.NOVEMBER -> 30
-            else -> {if (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)) 29 else 28}
+            else -> {
+                if (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)) 29 else 28
+            }
         }
 
         val lastDay = LocalDateTime(year, Month(month), lastDayOfMonth, 23, 59, 59)
@@ -322,5 +344,3 @@ fun main() {
         println("Week ${index + 1}: $week")
     }
 }
-
-
