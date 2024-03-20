@@ -8,9 +8,11 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
@@ -73,6 +75,8 @@ fun CalendarGrid(
 ) {
 //    val dayList by viewModel.calendarDays.collectAsState()
     val dayList by viewModel.generateCalendarData(viewModel.currentMonthYear).collectAsState()
+    val listTrans = viewModel.transactionByMonth.collectAsState().value
+    val distinctTransactions = listTrans.distinctBy { it.transactionCreated.date.dayOfMonth}
 //    val allTransaction = viewModel.transaction.value
 
     Napier.d(message = " daylist = $dayList", tag = "test")
@@ -95,7 +99,7 @@ fun CalendarGrid(
                 }
             }
         }
-        items(dayList.chunked(7)) { weekList ->
+        itemsIndexed(dayList.chunked(7)) { index,weekList ->
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -145,6 +149,12 @@ fun CalendarGrid(
                                     }
                                 )
                             }
+
+                            val transDate = distinctTransactions.filter { it.transactionCreated.date == day.date }
+                            Napier.d { "transDate = $distinctTransactions" }
+                            Text(
+                                text = if (transDate.isNotEmpty()) transDate[0].transactionIncome.toString() else "",
+                                )
 //                            Text(
 //                                modifier = Modifier.align(Alignment.End).weight(1f),
 //                                text = backgroundColor.value.toString(),

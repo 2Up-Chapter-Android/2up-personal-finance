@@ -164,6 +164,25 @@ INSERT INTO CategorieIncome(category_name) VALUES ('bonus');
 
 INSERT INTO CategorieIncome(category_name) VALUES ('other');
 
+INSERT INTO Transactions (
+    transaction_income, transaction_expenses, transaction_transfer,
+    transaction_description, transaction_note,
+    transaction_created, transaction_month, transaction_year,
+    transaction_category, transaction_account,
+    transaction_selectIndex, transaction_accountFrom, transaction_accountTo
+) VALUES
+(500, 100, 0, 'Salary', 'Direct deposit', 1707964800, 2, 2024, 'Income', 'Checking', 1, '', ''),
+(200, 50, 0, 'Freelance work', 'Invoice #123', 1707964800, 2, 2024, 'Income', 'Savings', 2, '', ''),
+(0, 150, 0, 'Groceries', 'Weekly food shopping', 1707964800, 2, 2024, 'Expenses', 'Checking', 3, '', ''),
+(0, 200, 0, 'Online Courses', 'Learning new skills', 1707964800, 2, 2024, 'Expenses', 'Checking', 4, '', ''),
+(0, 0, 300, 'Transfer to savings', 'Monthly savings', 1707964800, 2, 2024, 'Transfer', 'Savings', 5, 'Checking', 'Savings'),
+(600, 0, 0, 'Bonus', 'Annual bonus', 1707964800, 2, 2024, 'Income', 'Checking', 6, '', ''),
+(0, 75, 0, 'Utilities', 'Monthly bills', 1707964800, 2, 2024, 'Expenses', 'Checking', 7, '', ''),
+(0, 0, 200, 'Transfer to investment', 'Investment fund', 1707964800, 2, 2024, 'Transfer', 'Investment', 8, 'Checking', 'Investment'),
+(0, 120, 0, 'Dining Out', 'Dinner with friends', 1707964800, 2, 2024, 'Expenses', 'Checking', 9, '', ''),
+(100, 0, 0, 'Gift', 'Birthday gift', 1707964800, 2, 2024, 'Income', 'Savings', 10, '', '');
+
+
 updagteCategoryExpensesById:
 UPDATE CategorieExpense
 SET category_name = ?

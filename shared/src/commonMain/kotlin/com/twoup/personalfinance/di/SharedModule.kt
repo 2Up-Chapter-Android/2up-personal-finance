@@ -3,6 +3,7 @@ package com.twoup.personalfinance.di
 import com.aicontent.accounts.di.accountScreenNavigationModule
 import com.aicontent.category.di.categoryNavigationModule
 import com.aicontent.main.di.mainScreenNavigationModule
+import com.aicontent.status.di.statusNavigationModule
 import com.twoup.personalfinance.authentication.di.authenticationNavigationModule
 import com.twoup.personalfinance.domain.di.domainModule
 import com.twoup.personalfinance.transaction.di.transactionNavigationModule
@@ -20,7 +21,8 @@ fun initKoin(enableNetworkLogs: Boolean = true, appDeclaration: KoinAppDeclarati
             transactionNavigationModule(),
             categoryNavigationModule(),
             mainScreenNavigationModule(),
-            accountScreenNavigationModule()
+            accountScreenNavigationModule(),
+            statusNavigationModule()
         )
     }
 

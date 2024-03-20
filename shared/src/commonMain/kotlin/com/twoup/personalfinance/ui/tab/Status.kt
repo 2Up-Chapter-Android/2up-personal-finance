@@ -12,6 +12,7 @@ import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import com.aicontent.main.presentation.MainScreen
+import com.aicontent.status.presentation.StatusScreen
 
 //import com.twoup.personalfinance.features.note.ui.Note.setting.SettingsScreen
 
@@ -38,7 +39,7 @@ internal object Status: DestinationTab {
 //        PINScreen {
 //            println("PIN $it")
 //        }
-//        Navigator(StatusScreen())
+        Navigator(StatusScreen())
 //        TabContent()
         Text("Status Screen", fontSize = 20.sp)
 
